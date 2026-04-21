@@ -17,9 +17,9 @@ enum LessonStatus {
 
 enum TaskType {
   READ
-  QUIZ_SELECTION 
-  CONVERT  
-  MATCHING 
+  QUIZ_SELECTION
+  CONVERT
+  MATCHING
 }
 
 enum TaskDifficulty {
@@ -30,11 +30,12 @@ enum TaskDifficulty {
 
 // Tables
 model User {
-  id             String               @id 
+  id             String               @id
+  name           String
   email          String               @unique
-  displayName    String
+  userName       String
   avatarUrl      String?
-  totalXp        Int                  @default(0)
+  totalXp        Int                  @default(10)
   createdAt      DateTime             @default(now())
   updatedAt      DateTime             @updatedAt
   lessonProgress UserLessonProgress[]
@@ -45,7 +46,7 @@ model User {
 model Level {
   id      String   @id @default(cuid())
   title   String
-  order   Int      @unique // Dashboard der heded orj bgagin haruulah too 
+  order   Int      @unique // Dashboard der heded orj bgagin haruulah too
   lessons Lesson[]
 
   @@map("level_table")
@@ -55,7 +56,7 @@ model Lesson {
   id           String               @id @default(cuid())
   title        String
   description  String?
-  order        Int 
+  order        Int
   levelId      String
   level        Level                @relation(fields: [levelId], references: [id])
   tasks        Task[]
@@ -71,7 +72,7 @@ model Task {
   lesson        Lesson         @relation(fields: [lessonId], references: [id])
   type          TaskType
   difficulty    TaskDifficulty
-  xpReward      Int // negj task bolgon heden xp uguh ve (aldval: 0, zuv hiisn: 15xp geh met) 
+  xpReward      Int // negj task bolgon heden xp uguh ve (aldval: 0, zuv hiisn: 15xp geh met)
   question      String
   correctAnswer String
   options       Json? // List of choices for MC or Matching
@@ -93,4 +94,24 @@ model UserLessonProgress {
 
   @@unique([userId, lessonId]) // One progress record per user per lesson
   @@map("user_lesson_progress")
+}
+
+model SpeechTargets {
+  id            String           @id @default(uuid())
+  expected_text String
+  created_at    DateTime         @default(now())
+
+  attempts      SpeechAttempts[]
+}
+
+model SpeechAttempts {
+  id                String       @id @default(uuid())
+  user_id           String
+  imageUrl          String
+  target_id         String
+  transcribed_text  String
+  accuracy_score    Int
+  created_at        DateTime     @default(now())
+
+  target            SpeechTargets @relation(fields: [target_id], references: [id])
 }
