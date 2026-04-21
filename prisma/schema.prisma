@@ -12,6 +12,12 @@ datasource db {
   provider = "postgresql"
 }
 
+enum LessonStatus {
+  STARTED
+  COMPLETED
+  FAILED
+}
+
 model User {
   id         Int    @id @default(autoincrement())
   firstName  String
@@ -24,7 +30,7 @@ model User {
 
 model users_table {
   id          String
-  email       String
+  email       String   @unique
   displayName String
   avatarUrl   String?
   totalXp     Int
@@ -33,34 +39,34 @@ model users_table {
 }
 
 model UserLessonProgress {
-  id           String
+  id           String    @unique
   userId       String
   lessonId     String
-  status       Enum
+  // status       LessonStatus @default(STARTED)
   mistakeCount Int
   xpEarned     Int
   completedAt  DateTime?
 }
 
 model lessons_table {
-  id          String
+  id          String  @unique
   title       String
   description String?
   order       Int
 }
 
 model level_table {
-  id          String
+  id          String  @unique
   title       String
   description String?
   order       Int
 }
 
 model taks_table {
-  id            String
+  id            String @unique
   lessonId      String
-  type          Enum
-  difficulty    Enum
+  // type          Enum
+  // difficulty    Enum
   xpReward      Int
   question      String
   correctAnswer String
