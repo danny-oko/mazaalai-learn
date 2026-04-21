@@ -21,3 +21,49 @@ model User {
   password   String
   profileUrl String
 }
+
+model users_table {
+  id          String
+  email       String
+  displayName String
+  avatarUrl   String?
+  totalXp     Int
+  createdAt   DateTime
+  updatedAt   DateTime
+}
+
+model UserLessonProgress {
+  id           String
+  userId       String
+  lessonId     String
+  status       Enum
+  mistakeCount Int
+  xpEarned     Int
+  completedAt  DateTime?
+}
+
+model lessons_table {
+  id          String
+  title       String
+  description String?
+  order       Int
+}
+
+model level_table {
+  id          String
+  title       String
+  description String?
+  order       Int
+}
+
+model taks_table {
+  id            String
+  lessonId      String
+  type          Enum
+  difficulty    Enum
+  xpReward      Int
+  question      String
+  correctAnswer String
+  options       Json?
+  order         Int
+}
