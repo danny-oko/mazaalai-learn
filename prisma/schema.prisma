@@ -94,3 +94,20 @@ model UserLessonProgress {
   @@unique([userId, lessonId]) // One progress record per user per lesson
   @@map("user_lesson_progress")
 }
+
+model SpeechTargets {
+  id              String   @id @default(uuid())
+  expected_text_  String
+  created_at      DateTime
+
+}
+
+model SpeechAttempts {
+   id              String   @id @default(uuid())
+   user_id          String   @id @default(uuid())
+   imageURL String
+   target_id String
+   transcripted_text String
+   accuracy_score  Int
+   craated_at DateTime
+}
