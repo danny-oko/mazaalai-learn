@@ -1,75 +1,96 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
-generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
-}
-
+// This is your Prisma schema file
 datasource db {
   provider = "postgresql"
 }
 
+generator client {
+  provider = "prisma-client-js"
+}
+
+
+//  enums for tables
 enum LessonStatus {
-  STARTED
+  LOCKED
+  IN_PROGRESS
   COMPLETED
-  FAILED
 }
 
+enum TaskType {
+  READ
+  QUIZ_SELECTION 
+  CONVERT  
+  MATCHING 
+}
+
+enum TaskDifficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+// Tables
 model User {
-  id         Int    @id @default(autoincrement())
-  firstName  String
-  email      String @unique
-  userName   String @unique
-  age        Int
-  password   String
-  profileUrl String
+  id             String               @id 
+  email          String               @unique
+  displayName    String
+  avatarUrl      String?
+  totalXp        Int                  @default(0)
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+  lessonProgress UserLessonProgress[]
+
+  @@map("users_table")
 }
 
-model users_table {
-  id          String
-  email       String   @unique
-  displayName String
-  avatarUrl   String?
-  totalXp     Int
-  createdAt   DateTime
-  updatedAt   DateTime
+model Level {
+  id      String   @id @default(cuid())
+  title   String
+  order   Int      @unique // Dashboard der heded orj bgagin haruulah too 
+  lessons Lesson[]
+
+  @@map("level_table")
+}
+
+model Lesson {
+  id           String               @id @default(cuid())
+  title        String
+  description  String?
+  order        Int 
+  levelId      String
+  level        Level                @relation(fields: [levelId], references: [id])
+  tasks        Task[]
+  userProgress UserLessonProgress[]
+
+  @@unique([levelId, order])
+  @@map("lessons_table")
+}
+
+model Task {
+  id            String         @id @default(cuid())
+  lessonId      String
+  lesson        Lesson         @relation(fields: [lessonId], references: [id])
+  type          TaskType
+  difficulty    TaskDifficulty
+  xpReward      Int // negj task bolgon heden xp uguh ve (aldval: 0, zuv hiisn: 15xp geh met) 
+  question      String
+  correctAnswer String
+  options       Json? // List of choices for MC or Matching
+  order         Int // Sequence within the lesson
+
+  @@map("tasks_table")
 }
 
 model UserLessonProgress {
-  id           String    @unique
+  id           String       @id @default(cuid())
   userId       String
+  user         User         @relation(fields: [userId], references: [id])
   lessonId     String
-  // status       LessonStatus @default(STARTED)
-  mistakeCount Int
-  xpEarned     Int
+  lesson       Lesson       @relation(fields: [lessonId], references: [id])
+  status       LessonStatus @default(LOCKED)
+  mistakeCount Int          @default(0) // 0-3 management (3 udaa aldval lesson oo ehnees ni ehluulne)
+  xpEarned     Int          @default(0)
   completedAt  DateTime?
-}
 
-model lessons_table {
-  id          String  @unique
-  title       String
-  description String?
-  order       Int
-}
-
-model level_table {
-  id          String  @unique
-  title       String
-  description String?
-  order       Int
-}
-
-model taks_table {
-  id            String @unique
-  lessonId      String
-  // type          Enum
-  // difficulty    Enum
-  xpReward      Int
-  question      String
-  correctAnswer String
-  options       Json?
-  order         Int
+  @@unique([userId, lessonId]) // One progress record per user per lesson
+  @@map("user_lesson_progress")
 }
