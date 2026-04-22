@@ -1,4 +1,3 @@
-// This is your Prisma schema file
 datasource db {
   provider = "postgresql"
 }
@@ -7,8 +6,6 @@ generator client {
   provider = "prisma-client-js"
 }
 
-
-//  enums for tables
 enum LessonStatus {
   LOCKED
   IN_PROGRESS
