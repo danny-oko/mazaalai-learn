@@ -36,6 +36,7 @@ model User {
   createdAt      DateTime             @default(now())
   updatedAt      DateTime             @updatedAt
   lessonProgress UserLessonProgress[]
+  speechAttempts SpeechAttempts[]
 
   @@map("users_table")
 }
@@ -94,21 +95,24 @@ model UserLessonProgress {
 }
 
 model SpeechTargets {
-  id            String           @id @default(uuid())
-  expected_text String
-  created_at    DateTime         @default(now())
+  id           String @id @default(uuid())
+  title        String
+  expectedText String
+  wordsCount   Int
 
-  attempts      SpeechAttempts[]
+  createdAt DateTime @default(now())
+
+  attempts SpeechAttempts[]
 }
 
 model SpeechAttempts {
-  id                String       @id @default(uuid())
-  user_id           String
-  imageUrl          String
-  target_id         String
-  transcribed_text  String
-  accuracy_score    Int
-  created_at        DateTime     @default(now())
+  id              String   @id @default(uuid())
+  userId          String
+  targetId        String
+  transcribedText String
+  wordsRead       Int
+  createdAt       DateTime @default(now())
 
-  target            SpeechTargets @relation(fields: [target_id], references: [id])
+  target SpeechTargets @relation(fields: [targetId], references: [id])
+  user   User          @relation(fields: [userId], references: [id])
 }

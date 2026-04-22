@@ -1,5 +1,4 @@
 import prisma from "@/lib/prisma";
-
 import { NextRequest, NextResponse } from "next/server";
 
 // POST /api/lessons
@@ -26,13 +25,11 @@ export const POST = async (req: NextRequest) => {
       },
     },
   });
-
   return NextResponse.json(lesson, { status: 201 });
 };
 
 // GET /api/lessons
 export const GET = async () => {
   const lessons = await prisma.lesson.findMany();
-
   return NextResponse.json(lessons);
 };
