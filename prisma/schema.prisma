@@ -13,10 +13,9 @@ enum LessonStatus {
 }
 
 enum TaskType {
-  READ
-  QUIZ_SELECTION
-  CONVERT
-  MATCHING
+  MC
+  TRANSLATE
+  MATCH
 }
 
 enum TaskDifficulty {
@@ -25,26 +24,31 @@ enum TaskDifficulty {
   HARD
 }
 
-// Tables
 model User {
-  id             String               @id
-  name           String
+  id             String               @id // clerkId from Clerk Auth
   email          String               @unique
-  userName       String
+  displayName    String               
+  userName       String               @unique 
   avatarUrl      String?
+  
+  // UI Stats
   totalXp        Int                  @default(10)
+  globalRanking  Int?                 // League position
+  streak         Int                  @default(0)  // Flame icon
+  
   createdAt      DateTime             @default(now())
   updatedAt      DateTime             @updatedAt
+  
   lessonProgress UserLessonProgress[]
   speechAttempts SpeechAttempts[]
 
   @@map("users_table")
 }
 
-model Level {
+model Section {
   id      String   @id @default(cuid())
-  title   String
-  order   Int      @unique // Dashboard der heded orj bgagin haruulah too
+  title   String   // "Basics 1"
+  order   Int      @unique
   lessons Lesson[]
 
   @@map("level_table")
@@ -55,13 +59,32 @@ model Lesson {
   title        String
   description  String?
   order        Int
+  isCompleted  Boolean              @default(false)
   levelId      String
-  level        Level                @relation(fields: [levelId], references: [id])
-  tasks        Task[]
+  level        Section                @relation(fields: [levelId], references: [id])
+  
+  // Relations
+  content      LessonContent[]      // The "Teaching" items
+  tasks        Task[]               // The exercises/quizzes
   userProgress UserLessonProgress[]
 
   @@unique([levelId, order])
   @@map("lessons_table")
+}
+
+model LessonContent {
+  id          String   @id @default(cuid())
+  lessonId    String
+  lesson      Lesson   @relation(fields: [lessonId], references: [id])
+  
+  name        String   // e.g., "The letter 'A'" or "Past Tense"
+  text        String   // The actual character or core item being taught
+  // audioUrl    String?  // Optional: for pronunciation
+  imageUrl    String?  // Optional: for visual aids
+  
+  order       Int      // Sequence to show these items within the lesson teaching phase
+
+  @@map("lesson_contents_table")
 }
 
 model Task {
@@ -70,11 +93,11 @@ model Task {
   lesson        Lesson         @relation(fields: [lessonId], references: [id])
   type          TaskType
   difficulty    TaskDifficulty
-  xpReward      Int // negj task bolgon heden xp uguh ve (aldval: 0, zuv hiisn: 15xp geh met)
+  xpReward      Int            // 3, 5, or 10
   question      String
   correctAnswer String
-  options       Json? // List of choices for MC or Matching
-  order         Int // Sequence within the lesson
+  options       Json?          
+  order         Int            
 
   @@map("tasks_table")
 }
@@ -86,23 +109,21 @@ model UserLessonProgress {
   lessonId     String
   lesson       Lesson       @relation(fields: [lessonId], references: [id])
   status       LessonStatus @default(LOCKED)
-  mistakeCount Int          @default(0) // 0-3 management (3 udaa aldval lesson oo ehnees ni ehluulne)
+  mistakeCount Int          @default(3) // 0-3 "Hearts"
   xpEarned     Int          @default(0)
   completedAt  DateTime?
 
-  @@unique([userId, lessonId]) // One progress record per user per lesson
+  @@unique([userId, lessonId])
   @@map("user_lesson_progress")
 }
 
 model SpeechTargets {
-  id           String @id @default(uuid())
+  id           String   @id @default(uuid())
   title        String
   expectedText String
   wordsCount   Int
-
-  createdAt DateTime @default(now())
-
-  attempts SpeechAttempts[]
+  createdAt    DateTime @default(now())
+  attempts     SpeechAttempts[]
 }
 
 model SpeechAttempts {
@@ -113,6 +134,6 @@ model SpeechAttempts {
   wordsRead       Int
   createdAt       DateTime @default(now())
 
-  target SpeechTargets @relation(fields: [targetId], references: [id])
-  user   User          @relation(fields: [userId], references: [id])
+  target          SpeechTargets @relation(fields: [targetId], references: [id])
+  user            User          @relation(fields: [userId], references: [id])
 }
