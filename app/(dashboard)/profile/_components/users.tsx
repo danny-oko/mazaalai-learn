@@ -26,6 +26,7 @@ export default function Users() {
 
   return (
     <div>
+      <h1 className="border border-red-500">Profile</h1>
       {users.map((user) => (
         <div key={user.id}>
           <img
