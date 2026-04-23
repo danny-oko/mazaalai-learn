@@ -45,7 +45,7 @@ model User {
   @@map("users_table")
 }
 
-model Level {
+model Section {
   id      String   @id @default(cuid())
   title   String   // "Basics 1"
   order   Int      @unique
@@ -61,7 +61,7 @@ model Lesson {
   order        Int
   isCompleted  Boolean              @default(false)
   levelId      String
-  level        Level                @relation(fields: [levelId], references: [id])
+  level        Section                @relation(fields: [levelId], references: [id])
   
   // Relations
   content      LessonContent[]      // The "Teaching" items
@@ -79,7 +79,6 @@ model LessonContent {
   
   name        String   // e.g., "The letter 'A'" or "Past Tense"
   text        String   // The actual character or core item being taught
-  description String?  // Detailed explanation or usage notes
   // audioUrl    String?  // Optional: for pronunciation
   imageUrl    String?  // Optional: for visual aids
   
@@ -110,7 +109,7 @@ model UserLessonProgress {
   lessonId     String
   lesson       Lesson       @relation(fields: [lessonId], references: [id])
   status       LessonStatus @default(LOCKED)
-  mistakeCount Int          @default(0) // 0-3 "Hearts"
+  mistakeCount Int          @default(3) // 0-3 "Hearts"
   xpEarned     Int          @default(0)
   completedAt  DateTime?
 
