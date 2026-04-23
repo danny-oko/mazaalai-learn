@@ -1,4 +1,5 @@
-import { HeaderSideBar } from "./HeaderSideBar";
+import { DockBar } from "./dock-bar";
+import { SideBar } from "./side-bar";
 
 export const menuLabels = [
   "Map",
@@ -15,6 +16,11 @@ export const menuPaths: Record<MenuLabel, string> = {
   Profile: "/profile",
 };
 
-export const Header = () => {
-  return <HeaderSideBar menuLabels={menuLabels} menuPaths={menuPaths} />;
+export const BarSections = () => {
+  return (
+    <div>
+      <SideBar menuLabels={menuLabels} menuPaths={menuPaths} />
+      <DockBar menuLabels={menuLabels} menuPaths={menuPaths} />
+    </div>
+  );
 };
