@@ -42,9 +42,20 @@ export const useLessons = () => {
 
   useEffect(() => {
     fetch("/api/lessons")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
+        return res.json();
+      })
       .then((data: Lesson[]) => {
+        if (!Array.isArray(data)) {
+          console.error("Expected array, got:", data);
+          return;
+        }
         setLessons(assignStatuses(data, 0));
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
         setLoading(false);
       });
   }, []);

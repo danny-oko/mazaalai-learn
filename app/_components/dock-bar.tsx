@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
-import type { MenuLabel } from "./ScreenBars";
+import type { MenuLabel } from "./Bar-Sections/ScreenBars";
 
 const menuIcons: Record<MenuLabel, string> = {
   Map: "./house.png",
@@ -46,7 +46,9 @@ export const DockBar = ({ menuLabels, menuPaths }: DockBarProps) => {
                 alt={label}
                 width={30}
                 height={30}
-                className={`transition-all duration-200`}
+                className={`transition-all duration-200 ${
+                  isActive ? "opacity-100" : "opacity-100"
+                }`}
               />
             </button>
           );

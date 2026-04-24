@@ -12,7 +12,7 @@ import {
   SidebarMenuButton,
   SidebarProvider,
 } from "@/components/ui/sidebar";
-import type { MenuLabel } from "./main-bars";
+import { MenuLabel } from "./ScreenBars";
 
 const menuIcons: Record<MenuLabel, string> = {
   Map: "./house.png",
@@ -35,8 +35,11 @@ export const SideBarSection = ({ menuLabels, menuPaths }: SideBarProps) => {
     menuLabels[0];
 
   return (
-    <SidebarProvider>
-      <Sidebar className="hidden md:flex border-r-0 bg-[#FEFAE8] font-['Plus_Jakarta_Sans']">
+    <SidebarProvider
+      style={{ "--sidebar-width": "16rem" } as React.CSSProperties}
+      className="min-h-0"
+    >
+      <Sidebar className="hidden md:flex border-r-0 font-['Plus_Jakarta_Sans'] shadow-2xl xl:w-100 lg:w-80">
         <SidebarHeader className="px-5 h-[60px] flex justify-center border-b border-[#E8DFC8]">
           <h2 className="font-bold text-[#0F5238] text-lg">Mazaalai Learn</h2>
         </SidebarHeader>
@@ -54,7 +57,7 @@ export const SideBarSection = ({ menuLabels, menuPaths }: SideBarProps) => {
                       transition-all duration-150
                       ${
                         isActive
-                          ? "bg-[#0F5238] text-white hover:bg-[#0F5238] hover:text-white shadow-md"
+                          ? "bg-[#0F5238] text-white"
                           : "text-[#0F5238] hover:bg-[#F2EEDD] hover:text-[#0F5238]"
                       }`}
                   >

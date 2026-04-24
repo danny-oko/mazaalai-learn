@@ -1,5 +1,6 @@
+// main-bars.tsx
 import { DockBar } from "./dock-bar";
-import { SideBarSection } from "./side-bar";
+import { SideBarSection } from "./SideBar";
 
 export const menuLabels = [
   "Map",
@@ -18,9 +19,9 @@ export const menuPaths: Record<MenuLabel, string> = {
 
 export const BarSections = () => {
   return (
-    <div>
+    <>
       <SideBarSection menuLabels={menuLabels} menuPaths={menuPaths} />
       <DockBar menuLabels={menuLabels} menuPaths={menuPaths} />
-    </div>
+    </>
   );
 };

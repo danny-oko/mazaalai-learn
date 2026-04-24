@@ -9,7 +9,7 @@ export const HomePath = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-[#F0EDE3]">
+      <div className="flex justify-center items-center min-h-screen">
         <p className="text-[#0F5238] font-bold animate-pulse">Loading...</p>
       </div>
     );
@@ -18,7 +18,7 @@ export const HomePath = () => {
   const totalH = lessons.length * ROW + 80;
 
   return (
-    <div className="flex justify-center bg-[#F0EDE3] min-h-screen py-10">
+    <div>
       <div className="relative w-[340px]" style={{ height: totalH }}>
         <RoadPath lessonCount={lessons.length} completedUpTo={completedUpTo} />
         <LessonCards
