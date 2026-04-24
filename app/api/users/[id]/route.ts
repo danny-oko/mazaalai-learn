@@ -6,7 +6,16 @@ type Params = { params: Promise<{ id: string }> };
 // GET /api/users/:id
 export const GET = async (_req: NextRequest, { params }: Params) => {
   const { id } = await params;
-  const user = await prisma.user.findUnique({ where: { id } });
+  const user = await prisma.user.findUnique({
+    where: { id },
+    select: {
+      id: true,
+      name: true,
+      userName: true,
+      avatarUrl: true,
+      totalXp: true,
+    },
+  });
 
   if (!user)
     return NextResponse.json({ message: "User not found" }, { status: 404 });
