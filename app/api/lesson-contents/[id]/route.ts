@@ -5,10 +5,12 @@ export const GET = async (
   _: NextRequest,
   { params }: { params: { id: string } },
 ) => {
-  const task = await prisma.task.findUnique({ where: { id: params.id } });
-  if (!task)
+  const content = await prisma.lessonContent.findUnique({
+    where: { id: params.id },
+  });
+  if (!content)
     return NextResponse.json({ message: "Not found" }, { status: 404 });
-  return NextResponse.json(task);
+  return NextResponse.json(content);
 };
 
 export const PATCH = async (
@@ -16,25 +18,22 @@ export const PATCH = async (
   { params }: { params: { id: string } },
 ) => {
   const body = await req.json();
-  const task = await prisma.task.update({
+  const content = await prisma.lessonContent.update({
     where: { id: params.id },
     data: {
-      ...(body.question && { question: body.question }),
-      ...(body.correctAnswer && { correctAnswer: body.correctAnswer }),
-      ...(body.options !== undefined && { options: body.options }),
-      ...(body.xpReward !== undefined && { xpReward: parseInt(body.xpReward) }),
-      ...(body.difficulty && { difficulty: body.difficulty }),
-      ...(body.type && { type: body.type }),
+      ...(body.name && { name: body.name }),
+      ...(body.text && { text: body.text }),
+      ...(body.imageUrl !== undefined && { imageUrl: body.imageUrl }),
       ...(body.order !== undefined && { order: parseInt(body.order) }),
     },
   });
-  return NextResponse.json(task);
+  return NextResponse.json(content);
 };
 
 export const DELETE = async (
   _: NextRequest,
   { params }: { params: { id: string } },
 ) => {
-  await prisma.task.delete({ where: { id: params.id } });
+  await prisma.lessonContent.delete({ where: { id: params.id } });
   return NextResponse.json({ message: "Deleted" });
 };

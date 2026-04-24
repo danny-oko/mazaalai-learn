@@ -1,40 +1,41 @@
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
+// GET /api/sections/:id
 export const GET = async (
   _: NextRequest,
   { params }: { params: { id: string } },
 ) => {
-  const task = await prisma.task.findUnique({ where: { id: params.id } });
-  if (!task)
+  const section = await prisma.section.findUnique({
+    where: { id: params.id },
+    include: { lessons: true },
+  });
+  if (!section)
     return NextResponse.json({ message: "Not found" }, { status: 404 });
-  return NextResponse.json(task);
+  return NextResponse.json(section);
 };
 
+// PATCH /api/sections/:id
 export const PATCH = async (
   req: NextRequest,
   { params }: { params: { id: string } },
 ) => {
   const body = await req.json();
-  const task = await prisma.task.update({
+  const section = await prisma.section.update({
     where: { id: params.id },
     data: {
-      ...(body.question && { question: body.question }),
-      ...(body.correctAnswer && { correctAnswer: body.correctAnswer }),
-      ...(body.options !== undefined && { options: body.options }),
-      ...(body.xpReward !== undefined && { xpReward: parseInt(body.xpReward) }),
-      ...(body.difficulty && { difficulty: body.difficulty }),
-      ...(body.type && { type: body.type }),
+      ...(body.title && { title: body.title }),
       ...(body.order !== undefined && { order: parseInt(body.order) }),
     },
   });
-  return NextResponse.json(task);
+  return NextResponse.json(section);
 };
 
+// DELETE /api/sections/:id
 export const DELETE = async (
   _: NextRequest,
   { params }: { params: { id: string } },
 ) => {
-  await prisma.task.delete({ where: { id: params.id } });
+  await prisma.section.delete({ where: { id: params.id } });
   return NextResponse.json({ message: "Deleted" });
 };
