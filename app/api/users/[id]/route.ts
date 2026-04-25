@@ -10,7 +10,7 @@ export const GET = async (_req: NextRequest, { params }: Params) => {
     where: { id },
     select: {
       id: true,
-      name: true,
+      displayName: true,
       userName: true,
       avatarUrl: true,
       totalXp: true,
