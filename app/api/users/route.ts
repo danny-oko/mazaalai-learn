@@ -3,9 +3,9 @@ import { NextRequest, NextResponse } from "next/server";
 
 // POST /api/users
 export const POST = async (req: NextRequest) => {
-  const { displayName, email, userName, avatarUrl } = await req.json();
+  const { name, email, userName, avatarUrl } = await req.json();
 
-  if (!displayName || !email || !userName) {
+  if (!userName || !email || !name) {
     return NextResponse.json(
       { message: "Missing required fields" },
       { status: 400 },
@@ -13,7 +13,7 @@ export const POST = async (req: NextRequest) => {
   }
 
   const user = await prisma.user.create({
-    data: { id: crypto.randomUUID(), displayName, email, userName, avatarUrl },
+    data: { id: crypto.randomUUID(), userName, email, name, avatarUrl },
   });
 
   return NextResponse.json(user, { status: 201 });
@@ -26,7 +26,7 @@ export const GET = async () => {
       totalXp: "desc",
     },
     select: {
-      displayName: true,
+      userName: true,
       totalXp: true,
       avatarUrl: true,
     },
@@ -44,7 +44,7 @@ export const GET = async () => {
     }
 
     return {
-      name: user.displayName,
+      name: user.userName,
       xp: user.totalXp,
       title,
       avatar: user.avatarUrl,

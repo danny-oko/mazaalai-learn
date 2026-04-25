@@ -8,7 +8,7 @@ export const GET = async () => {
       totalXp: "desc",
     },
     select: {
-      displayName: true,
+      userName: true,
       totalXp: true,
       avatarUrl: true,
     },
@@ -26,7 +26,7 @@ export const GET = async () => {
     }
 
     return {
-      name: user.displayName,
+      name: user.userName,
       xp: user.totalXp,
       title,
       avatar: user.avatarUrl,

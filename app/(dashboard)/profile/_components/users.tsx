@@ -29,12 +29,13 @@ export default function Users() {
       <h1 className="border border-red-500">Profile</h1>
       {users.map((user) => (
         <div key={user.id}>
-          <img
-            src={user.avatarUrl ?? ""}
-            alt={user.name}
-            width={40}
-            height={40}
-          />
+          <div className="inline-flex h-10 w-10 shrink-0 overflow-hidden rounded-full border-4 border-[#1d5d42] bg-black">
+            <img
+              src={user.avatarUrl ?? ""}
+              alt={user.name}
+              className="h-full w-full object-cover"
+            />
+          </div>
           <p>{user.name}</p>
           <p>@{user.userName}</p>
           <p>{user.totalXp} XP</p>
