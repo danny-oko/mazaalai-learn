@@ -29,8 +29,9 @@ export const SideBar = ({ menuLabels, menuPaths }: HeaderClientProps) => {
   };
 
   return (
-    <div
-      className={`fixed top-0 left-0 h-full hidden md:block bg-[#FEFAE8] shadow-2xl z-40 flex flex-col md:w-60 lg:w-70 xl:w-100`}
+    <aside
+      className="fixed top-0 left-0 z-40 hidden h-full w-[15rem] flex-col bg-[#FEFAE8] shadow-2xl md:flex lg:w-[17.5rem] xl:w-[25rem]"
+      aria-label="Main navigation"
     >
       <div className="flex items-center justify-between px-5 h-[60px] border-b border-[#E8DFC8]">
         <h2 className="font-bold text-[#0F5238] text-lg font-['Plus_Jakarta_Sans']">
@@ -68,6 +69,6 @@ export const SideBar = ({ menuLabels, menuPaths }: HeaderClientProps) => {
           );
         })}
       </nav>
-    </div>
+    </aside>
   );
 };

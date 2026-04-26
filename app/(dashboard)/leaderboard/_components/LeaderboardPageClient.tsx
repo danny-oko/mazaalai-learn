@@ -1,8 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import {
+  LeaderboardPeriodToggle,
+  type LeaderboardPeriod,
+} from "./LeaderboardPeriodToggle";
 import { LeaderboardPodium, type PodiumPlayer } from "./LeaderboardPodium";
 import { LeaderboardRankList, type RankListRow } from "./LeaderboardRankList";
+import { LeaderboardRightSection } from "./LeaderboardRightRail";
 
 type LeaderboardApiRow = {
   id: string;
@@ -19,6 +24,7 @@ export function LeaderboardPageClient({
 }) {
   const [users, setUsers] = useState<LeaderboardApiRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [period, setPeriod] = useState<LeaderboardPeriod>("weekly");
 
   useEffect(() => {
     const load = async () => {
@@ -36,12 +42,12 @@ export function LeaderboardPageClient({
   }, []);
 
   const pageShellClass =
-    "min-h-screen bg-[#f8f4e3] py-8 pl-6 pr-4 pb-28 md:ml-[15rem] md:pb-10 lg:ml-[17.5rem] xl:ml-[25rem]";
+    "min-h-screen bg-[#F9F7E8] px-4 pb-28 pt-6 sm:px-6 md:ml-[15rem] md:px-8 md:pb-10 md:pt-8 lg:ml-[17.5rem] xl:ml-[25rem]";
 
   if (loading) {
     return (
       <div className={pageShellClass}>
-        <p className="text-[#2F372B]">Уншиж байна...</p>
+        <p className="text-[#1B4332]">Уншиж байна...</p>
       </div>
     );
   }
@@ -92,13 +98,31 @@ export function LeaderboardPageClient({
 
   return (
     <div className={pageShellClass}>
-      <h1 className="text-2xl font-bold text-[#2D6A4F]">The Imperial Court</h1>
+      <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-10">
+        <div className="min-w-0 flex-1">
+          <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
+            <div>
+              <h1 className="text-2xl font-bold tracking-tight text-[#1B4332] sm:text-3xl md:text-4xl">
+                The Imperial Court
+              </h1>
+              <p className="mt-2 max-w-xl text-sm leading-relaxed text-[#2F372B]/85 sm:text-base">
+                Climb the steppes and earn your glory.
+              </p>
+            </div>
+            <div className="shrink-0 self-start sm:self-auto">
+              <LeaderboardPeriodToggle value={period} onChange={setPeriod} />
+            </div>
+          </header>
 
-      {podiumPlayers.length > 0 && (
-        <LeaderboardPodium players={podiumPlayers} />
-      )}
+          {podiumPlayers.length > 0 && (
+            <LeaderboardPodium players={podiumPlayers} />
+          )}
 
-      <LeaderboardRankList rows={rankRows} />
+          <LeaderboardRankList rows={rankRows} />
+        </div>
+
+        <LeaderboardRightSection />
+      </div>
     </div>
   );
 }

@@ -7,17 +7,21 @@ type HeaderProps = {
 
 export const Header = ({ streak, xp }: HeaderProps) => {
   return (
-    <div className="w-full fixed top-4 z-100 md:w-[40%]">
-      <div className="flex items-center justify-between bg-[#FEFAE8] shadow-xl rounded-full px-5 py-3 font-['Plus_Jakarta_Sans'] text-[#0F5238]">
-        <h1 className="font-bold text-base">Mazaalai Learn</h1>
-        <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5 bg-[#F2EEDD] px-3 py-1.5 rounded-full border border-[#E8DFC8]">
-            <Flame className="w-4 h-4 fill-orange-500 text-orange-500" />
-            <span className="text-sm font-black">{streak}</span>
-          </div>
-          <div className="flex items-center gap-1.5 bg-[#F2EEDD] px-3 py-1.5 rounded-full border border-[#E8DFC8]">
-            <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-            <span className="text-sm font-black">{xp} XP</span>
+    <div
+      className="fixed top-4 z-[100] flex w-full justify-center px-4 pt-[env(safe-area-inset-top)] md:justify-start md:pl-[calc(15rem+1rem)] lg:pl-[calc(17.5rem+1rem)] xl:pl-[calc(25rem+1rem)] md:pr-6"
+    >
+      <div className="w-full max-w-lg md:max-w-[min(40vw,22rem)]">
+        <div className="flex items-center justify-between rounded-full bg-[#FEFAE8] px-4 py-3 font-['Plus_Jakarta_Sans'] text-[#0F5238] shadow-xl sm:px-5">
+          <h1 className="truncate text-sm font-bold sm:text-base">Mazaalai Learn</h1>
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+            <div className="flex items-center gap-1.5 rounded-full border border-[#E8DFC8] bg-[#F2EEDD] px-2 py-1.5 sm:px-3">
+              <Flame className="h-4 w-4 fill-orange-500 text-orange-500" />
+              <span className="text-xs font-black sm:text-sm">{streak}</span>
+            </div>
+            <div className="flex items-center gap-1.5 rounded-full border border-[#E8DFC8] bg-[#F2EEDD] px-2 py-1.5 sm:px-3">
+              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+              <span className="text-xs font-black sm:text-sm">{xp} XP</span>
+            </div>
           </div>
         </div>
       </div>

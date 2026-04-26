@@ -13,7 +13,7 @@ export type PodiumPlayer = {
 
 export function LeaderboardPodium({ players }: { players: PodiumPlayer[] }) {
   return (
-    <div className="mx-auto mt-8 w-full max-w-md grid grid-cols-3 items-end gap-4 sm:max-w-lg md:max-w-xl">
+    <div className="mx-auto mt-6 grid w-full max-w-md grid-cols-3 items-end gap-2 px-1 sm:mt-8 sm:gap-4 sm:px-0 sm:max-w-lg md:max-w-xl">
       {players.map((player) => {
         const isFirstPlace = player.place === 1;
 
@@ -35,7 +35,7 @@ export function LeaderboardPodium({ players }: { players: PodiumPlayer[] }) {
 
         let xpExtraClass = "";
         if (isFirstPlace) {
-          xpExtraClass = "rounded-md bg-[#e2f3dc] px-2 py-0.5";
+          xpExtraClass = "rounded-full bg-[#e2f3dc] px-2.5 py-1";
         }
 
         let podiumClass = "h-20 rounded-t-[20px] bg-[#ecead9]";
@@ -124,15 +124,22 @@ export function LeaderboardPodium({ players }: { players: PodiumPlayer[] }) {
 
             <p
               className={
-                "mt-0.5 max-w-[10rem] text-center text-xs font-medium leading-snug " +
+                "mt-0.5 max-w-[6.5rem] text-center text-[11px] font-medium leading-snug sm:max-w-[10rem] sm:text-xs " +
                 titleColorClass
               }
             >
               {rankTitle}
             </p>
 
-            <p className={"text-xs " + xpColorClass + " " + xpExtraClass}>
-              {player.xp} XP
+            <p
+              className={
+                "text-xs font-semibold tabular-nums " +
+                xpColorClass +
+                " " +
+                xpExtraClass
+              }
+            >
+              {player.xp.toLocaleString()} XP
             </p>
 
             <div
@@ -140,8 +147,12 @@ export function LeaderboardPodium({ players }: { players: PodiumPlayer[] }) {
                 "mt-3 flex w-full items-center justify-center " + podiumClass
               }
             >
-              {isFirstPlace && (
+              {isFirstPlace ? (
                 <span className="text-2xl font-bold text-[#4b7e69]">1</span>
+              ) : (
+                <span className="text-xl font-bold text-[#C9C5B8]">
+                  {player.place}
+                </span>
               )}
             </div>
           </div>
