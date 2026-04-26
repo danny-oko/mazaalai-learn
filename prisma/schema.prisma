@@ -26,12 +26,17 @@ enum TaskDifficulty {
 
 model User {
   id             String               @id // clerkId from Clerk Auth
-  name           String
+  name           String?
   email          String               @unique
+  displayName    String               
   userName       String               @unique 
-  avatarUrl      String? 
+  avatarUrl      String?
+  
   // UI Stats
-  totalXp        Int                  @default(10) 
+  totalXp        Int                  @default(10)
+  globalRanking  Int?                 // League position
+  streak         Int                  @default(0)  // Flame icon
+  
   createdAt      DateTime             @default(now())
   updatedAt      DateTime             @updatedAt
   
