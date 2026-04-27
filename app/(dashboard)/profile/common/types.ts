@@ -4,4 +4,5 @@ export type User = {
   userName: string;
   avatarUrl: string | null;
   totalXp: number;
+  title: string;
 };

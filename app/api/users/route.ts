@@ -1,8 +1,9 @@
 import prisma from "@/lib/prisma";
+import { getRankNameFromXp } from "@/lib/utils/getRankNameFromXp";
 import { NextRequest, NextResponse } from "next/server";
 
 // POST /api/users
-
+// Body: name OR displayName (or both), email, userName, avatarUrl optional, totalXp optional
 export const POST = async (req: NextRequest) => {
   const body = await req.json();
   const {
@@ -19,10 +20,7 @@ export const POST = async (req: NextRequest) => {
 
   if (!userName || !email || !finalDisplayName) {
     return NextResponse.json(
-      {
-        message:
-          "Missing required fields: email, userName, and name or displayName",
-      },
+      { message: "Missing required fields: email, userName, and name or displayName" },
       { status: 400 },
     );
   }
@@ -55,6 +53,7 @@ export const GET = async () => {
       totalXp: "desc",
     },
     select: {
+      id: true,
       name: true,
       displayName: true,
       userName: true,
@@ -64,21 +63,17 @@ export const GET = async () => {
   });
 
   const data = users.map((user) => {
-    let title = "Арслан";
-
-    if (user.totalXp >= 3000) {
-      title = "Дархан аварга";
-    } else if (user.totalXp >= 2000) {
-      title = "Даян аварга";
-    } else if (user.totalXp >= 1000) {
-      title = "Аварга";
-    }
+    const title = getRankNameFromXp(user.totalXp);
 
     return {
+      id: user.id,
       name: user.name ?? user.displayName ?? user.userName,
+      userName: user.userName,
+      totalXp: user.totalXp,
       xp: user.totalXp,
       title,
       avatar: user.avatarUrl,
+      avatarUrl: user.avatarUrl,
     };
   });
 
