@@ -1,8 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import {
+  LeaderboardPeriodToggle,
+  type LeaderboardPeriod,
+} from "./LeaderboardPeriodToggle";
 import { LeaderboardPodium, type PodiumPlayer } from "./LeaderboardPodium";
 import { LeaderboardRankList, type RankListRow } from "./LeaderboardRankList";
+import { LeaderboardRightSection } from "./LeaderboardRightSection";
 
 type LeaderboardApiRow = {
   id: string;
@@ -19,6 +24,7 @@ export function LeaderboardPageClient({
 }) {
   const [users, setUsers] = useState<LeaderboardApiRow[]>([]);
   const [loading, setLoading] = useState(true);
+  const [period, setPeriod] = useState<LeaderboardPeriod>("weekly");
 
   useEffect(() => {
     const load = async () => {
@@ -92,13 +98,24 @@ export function LeaderboardPageClient({
 
   return (
     <div className={pageShellClass}>
-      <h1 className="text-2xl font-bold text-[#2D6A4F]">The Imperial Court</h1>
+      <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-10">
+        <div className="min-w-0 flex-1">
+          <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
+            <h1 className="text-2xl font-bold text-[#2D6A4F]">The Imperial Court</h1>
+            <div className="self-start sm:self-auto">
+              <LeaderboardPeriodToggle value={period} onChange={setPeriod} />
+            </div>
+          </header>
 
-      {podiumPlayers.length > 0 && (
-        <LeaderboardPodium players={podiumPlayers} />
-      )}
+          {podiumPlayers.length > 0 && (
+            <LeaderboardPodium players={podiumPlayers} />
+          )}
 
-      <LeaderboardRankList rows={rankRows} />
+          <LeaderboardRankList rows={rankRows} />
+        </div>
+
+        <LeaderboardRightSection />
+      </div>
     </div>
   );
 }

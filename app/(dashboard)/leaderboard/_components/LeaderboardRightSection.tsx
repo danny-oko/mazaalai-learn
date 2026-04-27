@@ -3,7 +3,7 @@ import { Medal, Users } from "lucide-react";
 export function LeaderboardRightSection() {
   return (
     <aside
-      className="hidden w-72 shrink-0 space-y-8 xl:block"
+      className="hidden w-72 shrink-0 space-y-8 lg:block"
       aria-label="Friends and achievements"
     >
       <section>
