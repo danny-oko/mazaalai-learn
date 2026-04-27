@@ -1,9 +1,33 @@
-import Users from "./_components/users";
+import AchievementSection from "./_components/AchievementSection";
+import ProgressSection from "./_components/ProgressSection";
+import SettingsSection from "./_components/SettingsSection";
+import UserHeaderCard from "./_components/UserHeaderCard";
 
-export default function Profile() {
+export default function ProfilePage() {
   return (
-    <div className="min-h-screen bg-[#f8f4e3] px-4 pb-28 pt-6 sm:px-6 md:ml-[15rem] md:px-8 md:pb-10 md:pt-8 lg:ml-[17.5rem] xl:ml-[25rem]">
-      <Users />
+    <div className="min-h-screen bg-[#F4EFE8] flex flex-col items-center">
+      <div className="w-full max-w-sm px-5 pt-6 pb-28 flex flex-col gap-6">
+        <UserHeaderCard
+          name="Batu"
+          username="nomad_batu"
+          avatarUrl=""
+          rank="SILVER STEPPE"
+          xp={1240}
+          leaguePosition={1}
+          streak={12}
+        />
+
+        <ProgressSection
+          moduleTitle="Basics 1"
+          totalLessons={12}
+          completedLessons={8}
+          progress={65}
+        />
+
+        <AchievementSection />
+
+        <SettingsSection />
+      </div>
     </div>
   );
 }
