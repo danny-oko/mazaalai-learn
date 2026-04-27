@@ -1,25 +1,7 @@
 import prisma from "@/lib/prisma";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-// POST /api/users
-export const POST = async (req: NextRequest) => {
-  const { name, email, userName, avatarUrl } = await req.json();
-
-  if (!userName || !email || !name) {
-    return NextResponse.json(
-      { message: "Missing required fields" },
-      { status: 400 },
-    );
-  }
-
-  const user = await prisma.user.create({
-    data: { id: crypto.randomUUID(), userName, email, name, avatarUrl },
-  });
-
-  return NextResponse.json(user, { status: 201 });
-};
-
-// GET /api/users
+// GET /api/leaderboard
 export const GET = async () => {
   const users = await prisma.user.findMany({
     orderBy: {
