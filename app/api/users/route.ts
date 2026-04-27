@@ -2,7 +2,7 @@ import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 // POST /api/users
-// Body: name OR displayName (or both), email, userName, avatarUrl optional, totalXp optional
+
 export const POST = async (req: NextRequest) => {
   const body = await req.json();
   const {
@@ -19,7 +19,10 @@ export const POST = async (req: NextRequest) => {
 
   if (!userName || !email || !finalDisplayName) {
     return NextResponse.json(
-      { message: "Missing required fields: email, userName, and name or displayName" },
+      {
+        message:
+          "Missing required fields: email, userName, and name or displayName",
+      },
       { status: 400 },
     );
   }
