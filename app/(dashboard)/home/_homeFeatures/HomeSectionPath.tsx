@@ -18,11 +18,8 @@ export const HomePath = () => {
   const totalH = lessons.length * ROW + 80;
 
   return (
-    <div className="flex min-h-screen w-full justify-center bg-[#F0EDE3] px-3 py-8 sm:px-4 sm:py-10 md:px-6">
-      <div
-        className="relative w-full max-w-[340px]"
-        style={{ height: totalH }}
-      >
+    <div className="flex justify-center bg-[#F0EDE3] min-h-screen py-10">
+      <div className="relative w-[340px]" style={{ height: totalH }}>
         <RoadPath lessonCount={lessons.length} completedUpTo={completedUpTo} />
         <LessonCards
           lessons={lessons}
