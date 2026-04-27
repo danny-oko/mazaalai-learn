@@ -25,6 +25,17 @@ enum TaskDifficulty {
   HARD
 }
 
+enum FormType {
+  INITIAL
+  MEDIAL
+  FINAL
+}
+
+enum CharacterType {
+  VOWALS
+  CONSONANTS
+}
+
 // Tables
 model User {
   id             String               @id
@@ -115,4 +126,29 @@ model SpeechAttempts {
 
   target SpeechTargets @relation(fields: [targetId], references: [id])
   user   User          @relation(fields: [userId], references: [id])
+}
+
+// Characters schema models here!
+
+model Character {
+  id          String        @id @default(uuid())
+  name        String        @unique
+  latinForm   String?
+  unicode     String        @unique
+  description String?
+  forms       Form[]
+  type        CharacterType
+  order       Int
+  createdAt   DateTime      @default(now())
+}
+
+model Form {
+  id          String    @id @default(uuid())
+  glyph       String
+  type        FormType
+  imgUrl      String?
+  characterId String
+  character   Character @relation(fields: [characterId], references: [id])
+
+  @@unique([characterId, type])
 }

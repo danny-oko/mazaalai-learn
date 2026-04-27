@@ -12,6 +12,7 @@ import {
   BookOpen,
   Trophy,
   User,
+  BookOpenCheck,
   type LucideIcon,
 } from "lucide-react";
 import type { MenuLabel } from "./Header";
@@ -21,6 +22,7 @@ const menuIcons: Record<MenuLabel, LucideIcon> = {
   Dictionary: BookOpen,
   Leaderboard: Trophy,
   Profile: User,
+
 };
 
 type HeaderClientProps = {
@@ -56,7 +58,7 @@ export const HeaderSideBar = ({ menuLabels, menuPaths }: HeaderClientProps) => {
           transition-transform duration-300 ease-in-out lg:translate-x-0
           ${open ? "translate-x-0" : "-translate-x-full"}`}
       >
-        <div className="flex items-center justify-between px-5 h-[60px] border-b border-[#E8DFC8]">
+        <div className="flex items-center justify-between px-5 h-15 border-b border-[#E8DFC8]">
           <h2 className="font-bold text-[#0F5238] text-lg font-['Plus_Jakarta_Sans']">
             Mazaalai Learn
           </h2>
@@ -94,7 +96,7 @@ export const HeaderSideBar = ({ menuLabels, menuPaths }: HeaderClientProps) => {
         </nav>
       </div>
 
-      <div className="bg-[#FEFAE8] w-full h-[60px] shadow-md font-['Plus_Jakarta_Sans'] text-[#0F5238] relative z-30 min-lg:hidden">
+      <div className="bg-[#FEFAE8] w-full h-15 shadow-md font-['Plus_Jakarta_Sans'] text-[#0F5238] relative z-30 min-lg:hidden">
         <div className="flex items-center h-full px-5 justify-between">
           <div className="flex items-center gap-2">
             <Button

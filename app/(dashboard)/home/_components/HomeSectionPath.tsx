@@ -37,7 +37,7 @@ export const HomePath = () => {
   }
 
   return (
-    <div className="relative w-[340px]" style={{ height: totalH }}>
+    <div className="relative w-85" style={{ height: totalH }}>
       {/* Road */}
       <svg
         viewBox={`0 0 ${SW} ${totalH}`}

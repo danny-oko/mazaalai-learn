@@ -1,6 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600&display=swap");
 @import "tailwindcss";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -49,7 +48,7 @@
 }
 
 :root {
-  --background: #F8F4E3;
+  --background: #f8f4e3;
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -136,6 +135,10 @@
   }
 
   .light body {
-    background: #F8F4E3;
+    background: #f8f4e3;
   }
+}
+
+.font-serif {
+  font-family: "Noto Serif", serif;
 }
