@@ -1,6 +1,5 @@
-// Top 3 podium only (separate from the rank list below).
+// Top 3 podium heseg //
 
-import { getRankNameFromXp } from "@/lib/utils/getRankNameFromXp";
 import { ChessQueen } from "lucide-react";
 import { getAvatarPictureUrl } from "./leaderboard-helpers";
 
@@ -26,12 +25,6 @@ export function LeaderboardPodium({ players }: { players: PodiumPlayer[] }) {
 
         let xpColorClass = "text-[#1d5d42]";
         if (player.place === 3) xpColorClass = "text-[#9f7772]";
-
-        let titleColorClass = "text-[#1D5B5E]";
-        if (isFirstPlace) titleColorClass = "text-[#1d5d42]";
-        if (player.place === 3) titleColorClass = "text-[#9f7772]";
-
-        const rankTitle = getRankNameFromXp(player.xp);
 
         let xpExtraClass = "";
         if (isFirstPlace) {
@@ -120,15 +113,6 @@ export function LeaderboardPodium({ players }: { players: PodiumPlayer[] }) {
 
             <p className={"mt-2 text-sm font-bold " + nameColorClass}>
               {player.name}
-            </p>
-
-            <p
-              className={
-                "mt-0.5 max-w-[10rem] text-center text-xs font-medium leading-snug " +
-                titleColorClass
-              }
-            >
-              {rankTitle}
             </p>
 
             <p className={"text-xs " + xpColorClass + " " + xpExtraClass}>
