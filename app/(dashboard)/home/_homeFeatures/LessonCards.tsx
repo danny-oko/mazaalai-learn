@@ -3,8 +3,9 @@
 
 import { Lock, BookOpen, PenLine, Check } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
-type Lesson = {
+export type Lesson = {
   id: string;
   title: string;
   description: string;
@@ -42,9 +43,17 @@ export const useLessons = () => {
 
   useEffect(() => {
     fetch("/api/lessons")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
+        return res.json();
+      })
       .then((data: Lesson[]) => {
+        if (!Array.isArray(data)) return;
         setLessons(assignStatuses(data, 0));
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
         setLoading(false);
       });
   }, []);
@@ -67,6 +76,8 @@ export const LessonCards = ({
   completedUpTo: number;
   completeLesson: () => void;
 }) => {
+  const router = useRouter();
+
   return (
     <>
       {lessons.map((l, i) => {
@@ -90,7 +101,7 @@ export const LessonCards = ({
             <button
               disabled={isLocked}
               onClick={() => {
-                if (isActive) completeLesson();
+                if (!isLocked) router.push(`/lesson/${l.id}`);
               }}
               className="relative flex items-center justify-center rounded-full transition-all duration-300"
               style={{
