@@ -22,7 +22,12 @@ export default function Users() {
     fetchFavorites();
   }, []);
 
-  if (loading) return <p>Уншиж байна ...</p>;
+  if (loading)
+    return (
+      <p className="text-[#2F372B]" lang="mn">
+        Уншиж байна ...
+      </p>
+    );
 
   return (
     <div>
