@@ -26,7 +26,7 @@ enum TaskDifficulty {
 
 model User {
   id             String               @id // clerkId from Clerk Auth
-  name           String
+  name           String?
   email          String               @unique
   userName       String               @unique 
   avatarUrl      String? 
