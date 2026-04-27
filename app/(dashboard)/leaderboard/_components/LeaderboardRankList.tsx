@@ -71,7 +71,7 @@ export function LeaderboardRankList({ rows }: { rows: RankListRow[] }) {
 
                 <p
                   className={
-                    "min-w-0 break-words text-sm font-medium " + titleColor
+                    "min-w-0 wrap-break-word text-sm font-medium " + titleColor
                   }
                 >
                   {row.title}

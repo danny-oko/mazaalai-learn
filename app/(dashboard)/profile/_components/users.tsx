@@ -22,7 +22,12 @@ export default function Users() {
     fetchFavorites();
   }, []);
 
-  if (loading) return <p>Уншиж байна ...</p>;
+  if (loading)
+    return (
+      <p className="text-[#2F372B]" lang="mn">
+        Уншиж байна ...
+      </p>
+    );
 
   return (
     <div>
@@ -39,6 +44,7 @@ export default function Users() {
           <p>{user.name}</p>
           <p>@{user.userName}</p>
           <p>{user.totalXp} XP</p>
+          <p className="text-muted-foreground">{user.title}</p>
         </div>
       ))}
     </div>
