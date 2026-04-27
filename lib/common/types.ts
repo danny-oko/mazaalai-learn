@@ -16,7 +16,7 @@ export enum TaskDifficulty {
   HARD = "HARD",
 }
 
-export type User = {
+export type UserType = {
   id: string;
   name: string | null;
   email: string;
@@ -75,7 +75,7 @@ export type Task = {
 export type UserLessonProgress = {
   id: string;
   userId: string;
-  user: User;
+  user: UserType;
   lessonId: string;
   lesson: Lesson;
   status: LessonStatus;
@@ -101,5 +101,5 @@ export type SpeechAttempts = {
   wordsRead: number;
   createdAt: Date;
   target: SpeechTargets;
-  user: User;
+  user: UserType;
 };
