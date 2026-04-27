@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
+import Image from "next/image";
 import type { MenuLabel } from "./main-bars";
 
 const menuIcons: Record<MenuLabel, string> = {
@@ -24,11 +25,8 @@ export const DockBar = ({ menuLabels, menuPaths }: DockBarProps) => {
     menuLabels[0];
 
   return (
-    <nav
-      className="fixed bottom-0 z-50 w-full p-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:hidden"
-      aria-label="Mobile navigation"
-    >
-      <div className="flex items-center justify-around gap-1 rounded-full bg-[#FEFAE8] p-3 shadow-xl backdrop-blur-md">
+    <div className="fixed bottom-0 z-50 md:hidden w-full p-5">
+      <div className="flex items-center justify-around gap-1 bg-[#FEFAE8] backdrop-blur-md shadow-xl rounded-full p-3">
         {menuLabels.map((label) => {
           const isActive = active === label;
 
@@ -54,6 +52,6 @@ export const DockBar = ({ menuLabels, menuPaths }: DockBarProps) => {
           );
         })}
       </div>
-    </nav>
+    </div>
   );
 };
