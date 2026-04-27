@@ -18,7 +18,7 @@ export function LeaderboardRankList({ rows }: { rows: RankListRow[] }) {
     <div className="mt-10 w-full max-w-full overflow-x-auto pr-1">
       <div className="mx-auto w-[669.12px] max-w-full">
         {/* header heseg */}
-        <div className="mb-3 grid grid-cols-[minmax(0,0.9fr)_minmax(0,2fr)_minmax(0,1.2fr)_minmax(0,1fr)] gap-3 px-3 text-xs font-semibold uppercase tracking-wide text-[#2F372B]/70">
+        <div className="mb-3 grid grid-cols-[minmax(0,0.9fr)_minmax(0,2fr)_minmax(0,1.2fr)_minmax(0,1fr)] gap-3 px-3 text-xs font-semibold uppercase tracking-wide text-[#6A758B]">
           <span>Rank</span>
           <span>Nomad Scholar</span>
           <span>Title</span>
@@ -28,42 +28,45 @@ export function LeaderboardRankList({ rows }: { rows: RankListRow[] }) {
         <ul className="flex flex-col gap-2">
           {rows.map((row) => {
             const imgSrc = row.avatar ?? getAvatarPictureUrl(row.name);
-            const rowBg = row.isCurrentUser ? "bg-[#C1F0D6]" : "bg-white";
+            const rowBg = row.isCurrentUser ? "bg-[#FFF3DD]" : "bg-[#F1EADD]";
             const rowHover =
-              "transition-colors duration-200 ease-out hover:bg-[#AFF4C6] hover:shadow-md";
+              "transition-all duration-200 ease-out hover:-translate-y-0.5 hover:bg-[#ECE2D3] hover:shadow-[0_10px_20px_rgba(28,43,74,0.08)]";
             const titleColor = row.isCurrentUser
-              ? "text-[#1d5d42]"
-              : "text-[#1D5B5E]";
+              ? "text-[#2E8B6F]"
+              : "text-[#1C2B4A]/75";
 
             return (
               <li
                 key={row.rank + "-" + row.name}
                 className={
-                  "grid grid-cols-[minmax(0,0.9fr)_minmax(0,2fr)_minmax(0,1.2fr)_minmax(0,1fr)] items-center gap-3 rounded-2xl border-l-4 border-transparent px-3 py-3 shadow-sm hover:border-[#105644] " +
+                  "grid grid-cols-[minmax(0,0.9fr)_minmax(0,2fr)_minmax(0,1.2fr)_minmax(0,1fr)] items-center gap-3 rounded-2xl border border-[#E3D9C9] px-3 py-3 shadow-[0_3px_8px_rgba(28,43,74,0.05)] " +
+                  (row.isCurrentUser
+                    ? "border-l-4 border-l-[#E8920A] ring-1 ring-[#E8920A]/25 "
+                    : "") +
                   rowBg +
                   " " +
                   rowHover
                 }
               >
                 <div className="flex items-center gap-2">
-                  <div className="flex h-10 w-10 shrink-0 overflow-hidden rounded-full bg-black">
+                  <div className="flex h-10 w-10 shrink-0 overflow-hidden rounded-full bg-[#1C2B4A]">
                     <img
                       src={imgSrc}
                       alt=""
                       className="h-full w-full object-cover"
                     />
                   </div>
-                  <span className="text-sm font-bold text-[#2F372B]">
+                  <span className="text-sm font-bold text-[#1C2B4A]">
                     #{row.rank}
                   </span>
                 </div>
 
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-[#2F372B]">
+                  <p className="truncate text-sm font-semibold text-[#1C2B4A]">
                     {row.isCurrentUser ? `You (${row.name})` : row.name}
                   </p>
                   {row.isCurrentUser && (
-                    <p className="text-[10px] font-semibold uppercase tracking-wide text-[#2F372B]/60">
+                    <p className="text-[10px] font-semibold uppercase tracking-wide text-[#7C879A]">
                       Current rank
                     </p>
                   )}
@@ -77,7 +80,12 @@ export function LeaderboardRankList({ rows }: { rows: RankListRow[] }) {
                   {row.title}
                 </p>
 
-                <p className="text-right text-sm font-bold tabular-nums text-[#2F372B]">
+                <p
+                  className={
+                    "text-right text-sm font-bold tabular-nums " +
+                    (row.isCurrentUser ? "text-[#2E8B6F]" : "text-[#1C2B4A]")
+                  }
+                >
                   {row.xp.toLocaleString()}
                 </p>
               </li>
