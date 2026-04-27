@@ -1,5 +1,4 @@
 import prisma from "@/lib/prisma";
-import { getRankNameFromXp } from "@/lib/utils/getRankNameFromXp";
 import { NextResponse } from "next/server";
 
 // GET /api/leaderboard
@@ -19,7 +18,15 @@ export const GET = async () => {
   });
 
   const data = users.map((user) => {
-    const title = getRankNameFromXp(user.totalXp);
+    let title = "Арслан";
+
+    if (user.totalXp >= 3000) {
+      title = "Дархан аварга";
+    } else if (user.totalXp >= 2000) {
+      title = "Даян аварга";
+    } else if (user.totalXp >= 1000) {
+      title = "Аварга";
+    }
 
     return {
       id: user.id,

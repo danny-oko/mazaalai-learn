@@ -1,5 +1,4 @@
 import prisma from "@/lib/prisma";
-import { getRankNameFromXp } from "@/lib/utils/getRankNameFromXp";
 import { NextRequest, NextResponse } from "next/server";
 
 // POST /api/users
@@ -53,7 +52,6 @@ export const GET = async () => {
       totalXp: "desc",
     },
     select: {
-      id: true,
       name: true,
       displayName: true,
       userName: true,
@@ -63,17 +61,21 @@ export const GET = async () => {
   });
 
   const data = users.map((user) => {
-    const title = getRankNameFromXp(user.totalXp);
+    let title = "Арслан";
+
+    if (user.totalXp >= 3000) {
+      title = "Дархан аварга";
+    } else if (user.totalXp >= 2000) {
+      title = "Даян аварга";
+    } else if (user.totalXp >= 1000) {
+      title = "Аварга";
+    }
 
     return {
-      id: user.id,
       name: user.name ?? user.displayName ?? user.userName,
-      userName: user.userName,
-      totalXp: user.totalXp,
       xp: user.totalXp,
       title,
       avatar: user.avatarUrl,
-      avatarUrl: user.avatarUrl,
     };
   });
 

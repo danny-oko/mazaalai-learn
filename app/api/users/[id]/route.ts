@@ -1,5 +1,4 @@
 import prisma from "@/lib/prisma";
-import { getRankNameFromXp } from "@/lib/utils/getRankNameFromXp";
 import { NextRequest, NextResponse } from "next/server";
 
 type Params = { params: Promise<{ id: string }> };
@@ -22,10 +21,7 @@ export const GET = async (_req: NextRequest, { params }: Params) => {
   if (!user)
     return NextResponse.json({ message: "User not found" }, { status: 404 });
 
-  return NextResponse.json({
-    ...user,
-    title: getRankNameFromXp(user.totalXp),
-  });
+  return NextResponse.json(user);
 };
 
 // PATCH /api/users/:id

@@ -44,7 +44,6 @@ export default function Users() {
           <p>{user.name}</p>
           <p>@{user.userName}</p>
           <p>{user.totalXp} XP</p>
-          <p className="text-muted-foreground">{user.title}</p>
         </div>
       ))}
     </div>
