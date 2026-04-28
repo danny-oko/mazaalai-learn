@@ -42,7 +42,7 @@ export function LeaderboardPageClient({
   }, []);
 
   const pageShellClass =
-    "min-h-screen bg-[#F7F4EF] py-8 pl-6 pr-4 pb-28 md:ml-[15rem] md:pb-10 lg:ml-[17.5rem] xl:ml-[25rem]";
+    "min-h-screen bg-[#F7F4EF] py-8 pl-6 pr-4 pb-28 md:pl-[calc(15rem+1.5rem)] md:pr-6 md:pb-10 lg:pl-[calc(17.5rem+1.5rem)] xl:pl-[calc(25rem+1.5rem)]";
 
   if (loading) {
     return (

@@ -9,7 +9,7 @@ import WebUserHeaderCard from "./_components/WebUserHeaderCard";
 
 export default function ProfilePage() {
   return (
-    <div className="min-h-screen bg-[#F4EFE8]">
+    <div className="min-h-screen bg-[#F4EFE8] pb-28 md:pb-10 md:pl-60 lg:pl-70 xl:pl-100">
       {/* УТАС — md-с дээш нуугдана */}
       <div className="md:hidden flex flex-col items-center">
         <div className="w-full max-w-sm px-5 pt-6 pb-28 flex flex-col gap-6">
