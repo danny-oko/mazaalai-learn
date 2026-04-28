@@ -6,7 +6,6 @@ import CharacterDetail from "./CharacterDetail";
 
 type Filter = "ALL" | "VOWEL" | "CONSONANT";
 
-// Replace with your API fetch
 const MOCK_CHARACTERS: Character[] = [
   {
     id: "1",
@@ -200,16 +199,16 @@ export default function AlphabetChart() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F5F0E8] flex flex-col md:flex-row w-full">
+    <div className="h-full bg-[#F5F0E8] flex flex-col md:flex-row w-full overflow-hidden">
       {/* ── Left: grid panel ── */}
-      <div className="w-full md:w-95 lg:w-105 md:shrink-0 md:border-r-2 md:border-[#D9D0BC] overflow-y-auto px-5 pt-6 pb-28 md:pb-8">
+      <div className="w-full md:w-80 md:shrink-0 md:border-r-2 md:border-[#D9D0BC] overflow-y-auto px-5 pt-6 pb-28 md:pb-8">
         {/* Header */}
         <div className="mb-5">
-          <h1 className="font-serif text-2xl font-semibold text-[#1B4332] leading-tight">
-            Mongolian Script
+          <h1 className="mongol-script text-2xl font-semibold text-[#1B4332] leading-tight">
+            ᠮᠣᠩᠭᠣᠯ ᠪᠢᠴᠢᢉ
           </h1>
-          <p className="text-xs text-[#6B6B5E] mt-0.5">
-            Traditional Vertical Alphabet
+          <p className="mongol-script text-xs text-[#6B6B5E] mt-0.5">
+            ᠤᠯᠠᠮᠵᠢᠯᠠᠯᠲᠤ ᠪᠣᠰᠤᠭ᠎ᠠ ᠪᠢᠴᠢᢉ ᠦ᠋ᠨ ᠴᠠᠭᠠᠨ ᠲᠣᠯᠤᠭᠠᠢ
           </p>
         </div>
 
@@ -271,7 +270,7 @@ export default function AlphabetChart() {
       </div>
 
       {/* ── Right: detail panel (desktop only) ── */}
-      <div className="hidden md:flex flex-1 items-start p-8 min-w-0">
+      <div className="hidden md:flex flex-1 items-start p-8 min-w-0 overflow-y-auto">
         {selected ? (
           <CharacterDetail character={selected} />
         ) : (
@@ -294,7 +293,6 @@ export default function AlphabetChart() {
       </div>
 
       {/* ── Bottom sheet (mobile only) ── */}
-      {/* Backdrop */}
       <div
         onClick={() => setSheetOpen(false)}
         className={[
@@ -304,14 +302,12 @@ export default function AlphabetChart() {
             : "opacity-0 pointer-events-none",
         ].join(" ")}
       />
-      {/* Sheet */}
       <div
         className={[
           "md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#F5F0E8] rounded-t-3xl px-5 pt-4 pb-10 transition-transform duration-300",
           sheetOpen ? "translate-y-0" : "translate-y-full",
         ].join(" ")}
       >
-        {/* Handle */}
         <div className="w-10 h-1 bg-[#D9D0BC] rounded-full mx-auto mb-6" />
         {selected && <CharacterDetail character={selected} />}
       </div>
