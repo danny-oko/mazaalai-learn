@@ -25,16 +25,16 @@ enum TaskDifficulty {
 }
 
 model User {
-  id             String               @id // clerkId from Clerk Auth
-  name           String?
-  email          String               @unique
-  userName       String               @unique 
-  avatarUrl      String? 
+  id        String   @id // clerkId from Clerk Auth
+  name      String?
+  email     String   @unique
+  userName  String   @unique
+  avatarUrl String?
   // UI Stats
-  totalXp        Int                  @default(10) 
-  createdAt      DateTime             @default(now())
-  updatedAt      DateTime             @updatedAt
-  
+  totalXp   Int      @default(10)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
   lessonProgress UserLessonProgress[]
   speechAttempts SpeechAttempts[]
 
@@ -43,7 +43,7 @@ model User {
 
 model Section {
   id      String   @id @default(cuid())
-  title   String   // "Basics 1"
+  title   String // "Basics 1"
   order   Int      @unique
   lessons Lesson[]
 
@@ -51,17 +51,17 @@ model Section {
 }
 
 model Lesson {
-  id           String               @id @default(cuid())
-  title        String
-  description  String?
-  order        Int
-  isCompleted  Boolean              @default(false)
-  levelId      String
-  level        Section                @relation(fields: [levelId], references: [id])
-  
+  id          String  @id @default(cuid())
+  title       String
+  description String?
+  order       Int
+  isCompleted Boolean @default(false)
+  levelId     String
+  level       Section @relation(fields: [levelId], references: [id])
+
   // Relations
-  content      LessonContent[]      // The "Teaching" items
-  tasks        Task[]               // The exercises/quizzes
+  content      LessonContent[] // The "Teaching" items
+  tasks        Task[] // The exercises/quizzes
   userProgress UserLessonProgress[]
 
   @@unique([levelId, order])
@@ -69,16 +69,16 @@ model Lesson {
 }
 
 model LessonContent {
-  id          String   @id @default(cuid())
-  lessonId    String
-  lesson      Lesson   @relation(fields: [lessonId], references: [id])
-  
-  name        String   // e.g., "The letter 'A'" or "Past Tense"
-  text        String   // The actual character or core item being taught
+  id       String @id @default(cuid())
+  lessonId String
+  lesson   Lesson @relation(fields: [lessonId], references: [id])
+
+  name     String // e.g., "The letter 'A'" or "Past Tense"
+  text     String // The actual character or core item being taught
   // audioUrl    String?  // Optional: for pronunciation
-  imageUrl    String?  // Optional: for visual aids
-  
-  order       Int      // Sequence to show these items within the lesson teaching phase
+  imageUrl String? // Optional: for visual aids
+
+  order Int // Sequence to show these items within the lesson teaching phase
 
   @@map("lesson_contents_table")
 }
@@ -89,11 +89,11 @@ model Task {
   lesson        Lesson         @relation(fields: [lessonId], references: [id])
   type          TaskType
   difficulty    TaskDifficulty
-  xpReward      Int            // 3, 5, or 10
+  xpReward      Int // 3, 5, or 10
   question      String
   correctAnswer String
-  options       Json?          
-  order         Int            
+  options       Json?
+  order         Int
 
   @@map("tasks_table")
 }
@@ -114,11 +114,11 @@ model UserLessonProgress {
 }
 
 model SpeechTargets {
-  id           String   @id @default(uuid())
+  id           String           @id @default(uuid())
   title        String
   expectedText String
   wordsCount   Int
-  createdAt    DateTime @default(now())
+  createdAt    DateTime         @default(now())
   attempts     SpeechAttempts[]
 }
 
@@ -130,6 +130,6 @@ model SpeechAttempts {
   wordsRead       Int
   createdAt       DateTime @default(now())
 
-  target          SpeechTargets @relation(fields: [targetId], references: [id])
-  user            User          @relation(fields: [userId], references: [id])
+  target SpeechTargets @relation(fields: [targetId], references: [id])
+  user   User          @relation(fields: [userId], references: [id])
 }

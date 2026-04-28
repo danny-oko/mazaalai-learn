@@ -1,3 +1,4 @@
+import { UserType } from "@/lib/common/types";
 import prisma from "@/lib/prisma";
 import { getRankNameFromXp } from "@/lib/utils/getRankNameFromXp";
 import { NextResponse } from "next/server";
@@ -11,19 +12,18 @@ export const GET = async () => {
     select: {
       id: true,
       name: true,
-      displayName: true,
       userName: true,
       totalXp: true,
       avatarUrl: true,
     },
   });
 
-  const data = users.map((user) => {
+  const data = users.map((user: UserType) => {
     const title = getRankNameFromXp(user.totalXp);
 
     return {
       id: user.id,
-      name: user.name ?? user.displayName ?? user.userName,
+      name: user.name ?? user.userName,
       xp: user.totalXp,
       title,
       avatar: user.avatarUrl,
