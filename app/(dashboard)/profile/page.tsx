@@ -1,4 +1,5 @@
 import AchievementSection from "./_components/AchievementSection";
+import LogoutButton from "./_components/LogoutButton";
 import ProgressSection from "./_components/ProgressSection";
 import SettingsSection from "./_components/SettingsSection";
 import UserHeaderCard from "./_components/UserHeaderCard";
@@ -30,6 +31,9 @@ export default function ProfilePage() {
           />
           <AchievementSection />
           <SettingsSection />
+          <div className="pt-2">
+            <LogoutButton />
+          </div>
         </div>
       </div>
 
@@ -53,6 +57,9 @@ export default function ProfilePage() {
           />
           <WebAchievementSection />
           <WebSettingsSection />
+          <div className="pt-2">
+            <LogoutButton />
+          </div>
         </div>
       </div>
     </div>
