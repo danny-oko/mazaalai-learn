@@ -7,8 +7,10 @@ type HeaderProps = {
 
 export const Header = ({ streak, xp }: HeaderProps) => {
   return (
-    <div className="fixed inset-x-0 top-4 z-30 flex w-full justify-center px-4 pt-[env(safe-area-inset-top)]">
-      <div className="w-full max-w-lg">
+    <div
+      className="fixed top-4 z-[100] flex w-full justify-center px-4 pt-[env(safe-area-inset-top)] md:justify-start md:pl-[calc(15rem+1rem)] lg:pl-[calc(17.5rem+1rem)] xl:pl-[calc(25rem+1rem)] md:pr-6"
+    >
+      <div className="w-full max-w-lg md:max-w-[min(40vw,22rem)]">
         <div className="flex items-center justify-between rounded-full bg-[#FEFAE8] px-4 py-3 font-['Plus_Jakarta_Sans'] text-[#0F5238] shadow-xl sm:px-5">
           <h1 className="truncate text-sm font-bold sm:text-base">Mazaalai Learn</h1>
           <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">

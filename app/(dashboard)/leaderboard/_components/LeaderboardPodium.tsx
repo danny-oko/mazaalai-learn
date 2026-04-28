@@ -20,27 +20,30 @@ export function LeaderboardPodium({ players }: { players: PodiumPlayer[] }) {
         if (player.place === 1) columnOrderClass = "order-2";
         if (player.place === 2) columnOrderClass = "order-1";
 
-        let nameColorClass = "text-black";
-        if (isFirstPlace) nameColorClass = "text-[#1d5d42]";
+        let nameColorClass = "text-[#1C2B4A]";
+        if (isFirstPlace) nameColorClass = "text-[#1C2B4A]";
 
-        let xpColorClass = "text-[#1d5d42]";
-        if (player.place === 3) xpColorClass = "text-[#9f7772]";
+        let xpColorClass = "text-[#2E8B6F]";
+        if (player.place === 3) xpColorClass = "text-[#1C2B4A]/75";
 
         let xpExtraClass = "";
         if (isFirstPlace) {
-          xpExtraClass = "rounded-md bg-[#e2f3dc] px-2 py-0.5";
+          xpExtraClass = "rounded-md bg-[#E5F3EE] px-2 py-0.5";
         }
 
-        let podiumClass = "h-20 rounded-t-[20px] bg-[#ecead9]";
+        let podiumClass =
+          "h-20 rounded-t-[20px] bg-[#EFE7DA] shadow-[0_8px_16px_rgba(28,43,74,0.08)]";
         if (isFirstPlace) {
-          podiumClass = "h-28 rounded-t-[26px] bg-[#1d5d42]";
+          podiumClass =
+            "h-28 rounded-t-[26px] bg-[#1C2B4A] shadow-[0_12px_22px_rgba(28,43,74,0.16)]";
         } else if (player.place === 2) {
-          podiumClass = "h-24 rounded-t-[20px] bg-[#ecead9]";
+          podiumClass =
+            "h-24 rounded-t-[20px] bg-[#E6DECF] shadow-[0_10px_18px_rgba(28,43,74,0.1)]";
         }
 
         const avatarUrl = player.avatar ?? getAvatarPictureUrl(player.name);
 
-        let rankBadgeBgClass = "bg-[#b4540a]";
+        let rankBadgeBgClass = "bg-[#E8920A]";
         let rankBadgeTextClass = "text-white";
         if (player.place === 2) {
           rankBadgeBgClass = "bg-[#cbd5e1]";
@@ -57,18 +60,18 @@ export function LeaderboardPodium({ players }: { players: PodiumPlayer[] }) {
             {isFirstPlace ? (
               <div className="relative flex flex-col items-center">
                 <ChessQueen
-                  className="mb-1 h-9 w-9 -translate-x-1 translate-y-0.5 text-[#FFC73F] drop-shadow-[2px_3px_3px_rgba(47,55,43,0.1)]"
+                  className="mb-1 h-9 w-9 -translate-x-1 translate-y-0.5 text-[#E8920A] drop-shadow-[2px_3px_3px_rgba(28,43,74,0.16)]"
                   strokeWidth={1.75}
                   aria-hidden
                 />
 
                 <div className="relative inline-grid place-items-center overflow-visible pb-2 pr-2">
                   <div
-                    className="col-start-1 row-start-1 z-0 h-[6.2rem] w-[6.2rem] translate-x-1.5 translate-y-1.5 rounded-full bg-[#fffdf6]"
+                    className="col-start-1 row-start-1 z-0 h-[6.2rem] w-[6.2rem] translate-x-1.5 translate-y-1.5 rounded-full bg-[#F7F4EF]"
                     aria-hidden
                   />
 
-                  <div className="col-start-1 row-start-1 z-10 flex h-24 w-24 shrink-0 overflow-hidden rounded-full border-[5px] border-[#1d5d42] bg-black">
+                  <div className="col-start-1 row-start-1 z-10 flex h-24 w-24 shrink-0 overflow-hidden rounded-full border-[5px] border-[#1C2B4A] bg-[#1C2B4A]">
                     <img
                       src={avatarUrl}
                       alt={player.name}
@@ -78,11 +81,11 @@ export function LeaderboardPodium({ players }: { players: PodiumPlayer[] }) {
 
                   <div className="absolute bottom-0 right-0 z-20 h-9 w-9">
                     <div
-                      className="absolute bottom-0 right-0 h-7 w-7 rounded-full bg-[#fffdf6]"
+                      className="absolute bottom-0 right-0 h-7 w-7 rounded-full bg-[#F7F4EF]"
                       style={{ transform: "translate(5px, 5px)" }}
                       aria-hidden
                     />
-                    <div className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full border-[3px] border-white bg-[#D4AF37]">
+                    <div className="absolute bottom-0 right-0 flex h-8 w-8 items-center justify-center rounded-full border-[3px] border-white bg-[#E8920A]">
                       <span className="text-sm font-bold text-white">1</span>
                     </div>
                   </div>
@@ -90,7 +93,7 @@ export function LeaderboardPodium({ players }: { players: PodiumPlayer[] }) {
               </div>
             ) : (
               <div className="relative h-20 w-20 shrink-0">
-                <div className="flex h-full w-full overflow-hidden rounded-full border-4 border-white bg-black shadow">
+                <div className="flex h-full w-full overflow-hidden rounded-full border-4 border-white bg-[#1C2B4A] shadow">
                   <img
                     src={avatarUrl}
                     alt={player.name}
@@ -125,7 +128,7 @@ export function LeaderboardPodium({ players }: { players: PodiumPlayer[] }) {
               }
             >
               {isFirstPlace && (
-                <span className="text-2xl font-bold text-[#4b7e69]">1</span>
+                <span className="text-2xl font-bold text-[#E8920A]">1</span>
               )}
             </div>
           </div>

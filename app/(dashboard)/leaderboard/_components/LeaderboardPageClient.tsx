@@ -42,12 +42,12 @@ export function LeaderboardPageClient({
   }, []);
 
   const pageShellClass =
-    "min-h-screen bg-[#f8f4e3] py-8 pl-6 pr-4 pb-28 md:ml-[15rem] md:pb-10 lg:ml-[17.5rem] xl:ml-[25rem]";
+    "min-h-screen bg-[#F7F4EF] py-8 pl-6 pr-4 pb-28 md:ml-[15rem] md:pb-10 lg:ml-[17.5rem] xl:ml-[25rem]";
 
   if (loading) {
     return (
       <div className={pageShellClass}>
-        <p className="text-[#2F372B]">Уншиж байна...</p>
+        <p className="text-[#1C2B4A]">Уншиж байна...</p>
       </div>
     );
   }
@@ -101,7 +101,7 @@ export function LeaderboardPageClient({
       <div className="flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-10">
         <div className="min-w-0 flex-1">
           <header className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
-            <h1 className="text-2xl font-bold text-[#2D6A4F]">The Imperial Court</h1>
+            <h1 className="text-2xl font-bold text-[#1C2B4A]">The Imperial Court</h1>
             <div className="self-start sm:self-auto">
               <LeaderboardPeriodToggle value={period} onChange={setPeriod} />
             </div>
