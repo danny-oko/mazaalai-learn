@@ -2,9 +2,12 @@ interface LessonCheckButtonProps {
   disabled: boolean;
   onClick: () => void;
   onSkip?: () => void;
+  // skip/reveal state
   skipped?: boolean;
   correctAnswer?: string;
   onContinue?: () => void;
+  // teaching phase (just "Got it" / "Next")
+  isTeaching?: boolean;
 }
 
 export function LessonCheckButton({
@@ -14,7 +17,9 @@ export function LessonCheckButton({
   skipped,
   correctAnswer,
   onContinue,
+  isTeaching,
 }: LessonCheckButtonProps) {
+  // Revealed correct answer after skip/wrong
   if (skipped && correctAnswer) {
     return (
       <div className="w-full px-4 sm:px-8 py-8 sm:py-10 border-t-2 border-[#FF4B4B] bg-[#1A0A0A]">
@@ -39,6 +44,22 @@ export function LessonCheckButton({
     );
   }
 
+  // Teaching phase — no skip, just "Next"
+  if (isTeaching) {
+    return (
+      <div className="w-full px-4 sm:px-8 py-8 sm:py-10 border-t border-[#1F2937]">
+        <button
+          onClick={onClick}
+          className="w-full py-3.5 px-7 rounded-2xl font-black text-sm tracking-widest uppercase text-white active:scale-95 transition-all"
+          style={{ background: "#58CC02", boxShadow: "0 4px 0 #3A8C01" }}
+        >
+          Got it
+        </button>
+      </div>
+    );
+  }
+
+  // Task phase — skip + check
   return (
     <div className="w-full px-4 sm:px-8 py-8 sm:py-10 border-t border-[#1F2937]">
       <div className="flex items-center justify-between gap-4">
