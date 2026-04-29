@@ -1,12 +1,69 @@
-import { LeaderboardPageClient } from "./_components/LeaderboardPageClient";
+import BottomNav from "./_components/BottomNav";
+import CtaBanner from "./_components/CtaBanner";
+import LeaderboardHeader from "./_components/LeaderboardHeader";
+import LeaderboardList from "./_components/LeaderboardList";
+import PodiumSection from "./_components/PodiumSection";
+import TabToggle from "./_components/TabToggle";
 
-export default async function LeaderboardPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ me?: string }>;
-}) {
-  const sp = await searchParams;
-  const highlightUserId = sp.me ?? "";
+export default function RankPage() {
+  return (
+    <div className="min-h-screen bg-[#F4EFE8] pb-28 md:pb-10 md:pl-60 lg:pl-70 xl:pl-100">
+      {/* УТАС — md-с дээш нуугдана */}
+      <div className="md:hidden flex flex-col">
+        <LeaderboardHeader title={"Bichig\nten"} streak={12} />
+        <TabToggle />
+        <PodiumSection
+          users={[
+            { rank: 1, name: "MGL killer", xp: 3120 },
+            { rank: 2, name: "Batbayar", xp: 2840 },
+            { rank: 3, name: "Enkhmaa", xp: 2410 },
+          ]}
+        />
+        <LeaderboardList
+          users={[
+            {
+              rank: 4,
+              name: "Boldbaatar",
+              title: "Master Scribe",
+              xp: 1950,
+              isMe: false,
+            },
+            {
+              rank: 5,
+              name: "You (Tsolmon)",
+              title: "Scholar",
+              xp: 1820,
+              isMe: true,
+            },
+            {
+              rank: 6,
+              name: "Oyun-Erdene",
+              title: "Scribe Apprentice",
+              xp: 1680,
+              isMe: false,
+            },
+            {
+              rank: 7,
+              name: "Ganbaatar",
+              title: "Nomad Scholar",
+              xp: 1450,
+              isMe: false,
+            },
+          ]}
+        />
+        <CtaBanner
+          message="Complete 3 vertical script lessons to climb the ranks faster."
+          buttonText="Get Started"
+          href="/map"
+        />
 
-  return <LeaderboardPageClient highlightUserId={highlightUserId} />;
+        {/* дараагийн компонентүүд энд нэмэгдэнэ */}
+      </div>
+
+      {/* ВЭБ — md-с доош нуугдана */}
+      <div className="hidden md:flex flex-col">
+        {/* вэб хувилбар дараа хийнэ */}
+      </div>
+    </div>
+  );
 }
