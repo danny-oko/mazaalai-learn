@@ -1,4 +1,6 @@
 import Image from "next/image";
+import { Flame } from "lucide-react";
+
 import StatsCard from "./StatsCard";
 
 type WebUserHeaderCardProps = {
@@ -63,7 +65,15 @@ export default function WebUserHeaderCard({
         <div className="flex gap-3 shrink-0">
           <StatsCard value={xp.toLocaleString()} label="XP" />
           <StatsCard value={`#${leaguePosition}`} label="LEAGUE" />
-          <StatsCard value={`${streak}🔥`} label="STREAK" />
+          <StatsCard
+            value={
+              <span className="inline-flex items-center justify-center gap-0.5">
+                {streak}
+                <Flame className="size-5 shrink-0" strokeWidth={2.25} aria-hidden />
+              </span>
+            }
+            label="STREAK"
+          />
         </div>
       </div>
     </div>

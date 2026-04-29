@@ -35,9 +35,9 @@ export default function RootLayout({
       lang="mn"
       className={`${geistSans.variable} ${geistMono.variable} ${mongolFont.variable} h-full antialiased`}
     >
-      <body className="h-full flex flex-row overflow-hidden">
+      <body className="flex h-full min-h-0 flex-row overflow-hidden">
         <ConditionalBars />
-        <main className="flex-1 h-full overflow-hidden">{children}</main>
+        <main className="min-h-0 min-w-0 flex-1 overflow-y-auto">{children}</main>
       </body>
     </html>
   );

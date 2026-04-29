@@ -1,60 +1,43 @@
-import AchievementSection from "./_components/AchievementSection";
-import ProgressSection from "./_components/ProgressSection";
-import SettingsSection from "./_components/SettingsSection";
-import UserHeaderCard from "./_components/UserHeaderCard";
-import WebAchievementSection from "./_components/WebAchievementSection";
-import WebProgressSection from "./_components/WebProgressSection";
-import WebSettingsSection from "./_components/WebSettingsSection";
-import WebUserHeaderCard from "./_components/WebUserHeaderCard";
+import AchievementsPanel from "./_components/AchievementsPanel";
+import CurrentJourneyPanel from "./_components/CurrentJourneyPanel";
+import DailyChallengesPanel from "./_components/DailyChallengesPanel";
+import ExperiencePanel from "./_components/ExperiencePanel";
+import LeaguePanel from "./_components/LeaguePanel";
+import ProfileSummaryStats from "./_components/ProfileSummaryStats";
+import ProfileTabs from "./_components/ProfileTabs";
+import ProfileTopHeader from "./_components/ProfileTopHeader";
+import SettingsPanel from "./_components/SettingsPanel";
+import StreakPanel from "./_components/StreakPanel";
+import type { ProfileUser } from "./common/types";
+import mockUser from "./data/mock-user.json";
 
 export default function ProfilePage() {
+  const currentUser = mockUser as ProfileUser;
+
   return (
-    <div className="min-h-screen bg-[#F4EFE8] pb-28 md:pb-10 md:pl-60 lg:pl-70 xl:pl-100">
-      {/* УТАС — md-с дээш нуугдана */}
-      <div className="md:hidden flex flex-col items-center">
-        <div className="w-full max-w-sm px-5 pt-6 pb-28 flex flex-col gap-6">
-          <UserHeaderCard
-            name="Batu"
-            username="nomad_batu"
-            avatarUrl=""
-            rank="SILVER STEPPE"
-            xp={1240}
-            leaguePosition={1}
-            streak={12}
-          />
-          <ProgressSection
-            moduleTitle="Basics 1"
-            totalLessons={12}
-            completedLessons={8}
-            progress={65}
-          />
-          <AchievementSection />
-          <SettingsSection />
-        </div>
+    <div className="min-h-screen bg-[#f4efe5] pb-24 md:pb-10 md:pl-60 lg:pl-70 xl:pl-100">
+      <div className="mx-auto flex w-full max-w-[1220px] flex-col gap-4 px-4 pt-5 md:gap-5 md:px-6 md:pt-8">
+        <ProfileTopHeader user={currentUser} />
+        <ProfileSummaryStats user={currentUser} />
+        <ProfileTabs activeTab={currentUser.activeTab} />
       </div>
 
-      {/* ВЭБ — md-с доош нуугдана */}
-      <div className="hidden md:flex flex-col items-center">
-        <div className="w-full max-w-4xl px-8 pt-8 pb-16 flex flex-col gap-6">
-          <WebUserHeaderCard
-            name="Batu"
-            username="nomad_batu"
-            avatarUrl=""
-            rank="SILVER STEPPE"
-            xp={1240}
-            leaguePosition={1}
-            streak={12}
-          />
-          <WebProgressSection
-            moduleTitle="Basics 1"
-            totalLessons={12}
-            completedLessons={8}
-            progress={65}
-          />
-          <WebAchievementSection />
-          <WebSettingsSection />
-        </div>
+      <div className="mx-auto mt-4 grid w-full max-w-[1220px] gap-4 px-4 md:mt-5 md:grid-cols-[minmax(0,1fr)_320px] md:gap-5 md:px-6">
+        <main className="space-y-4 md:space-y-5">
+          <DailyChallengesPanel challenges={currentUser.dailyChallenges} />
+          <CurrentJourneyPanel journey={currentUser.journey} />
+        </main>
+
+        <aside className="space-y-4 md:space-y-5">
+          <StreakPanel streak={currentUser.streak} />
+          <ExperiencePanel experience={currentUser.experience} />
+          <LeaguePanel league={currentUser.league} />
+          <AchievementsPanel badges={currentUser.badges} />
+          <SettingsPanel settings={currentUser.settings} />
+        </aside>
       </div>
+
+      <div className="h-8" />
     </div>
   );
 }
