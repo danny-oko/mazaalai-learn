@@ -6,29 +6,38 @@ import { useState } from "react";
 import { LessonCheckButton } from "./lesson-check-button";
 import { LessonChoiceGrid } from "./lesson-choice-grid";
 import { LessonContentCard } from "./lesson-content-card";
+import { LessonTaskCard } from "./lesson-task-card";
 import { LessonStatusScreen } from "./lesson-status-screen";
 import { LessonTopBar } from "./lesson-top-bar";
 import { useLessonGame } from "./use-lesson-game";
+import { LessonReviewScreen } from "./lesson-review-screen";
 
-export function LessonPageClient({ lessonId }: { lessonId: string }) {
+export function LessonPageClient({
+  lessonId,
+  userId,
+}: {
+  lessonId: string;
+  userId: string;
+}) {
   const router = useRouter();
   const {
     loading,
-    contents,
-    item,
+    phase,
+    currentContent,
+    currentTask,
+    choices,
     selected,
     setSelected,
     hearts,
     progress,
-    choices,
-    checkAnswer,
     isFailed,
-  } = useLessonGame(lessonId);
+    reviewStats,
+    advanceContent,
+    checkTaskAnswer,
+  } = useLessonGame(lessonId, userId);
   const [skipped, setSkipped] = useState(false);
 
   if (loading) return <LessonStatusScreen message="Loading..." animated />;
-  if (!item || contents.length === 0)
-    return <LessonStatusScreen message="No content found." />;
   if (isFailed)
     return (
       <LessonStatusScreen
@@ -38,20 +47,31 @@ export function LessonPageClient({ lessonId }: { lessonId: string }) {
         onAction={() => router.back()}
       />
     );
+  if (reviewStats)
+    return (
+      <LessonReviewScreen
+        stats={reviewStats}
+        onContinue={() => router.back()}
+      />
+    );
+  if (phase === "teaching" && !currentContent)
+    return <LessonStatusScreen message="No content found." />;
+  if (phase === "tasks" && !currentTask)
+    return <LessonStatusScreen message="No tasks found." />;
 
-  function handleSkip() {
-    setSkipped(true);
-    setSelected(null);
+  function handleCheck() {
+    checkTaskAnswer(false);
+    if (selected !== currentTask?.correctAnswer) setSkipped(true);
   }
 
-  function handleContinue() {
+  function handleContinueAfterSkip() {
     setSkipped(false);
-    checkAnswer(() => router.back(), true);
+    checkTaskAnswer(true);
   }
 
   return (
     <div className="min-h-screen bg-[#111827] flex flex-col font-['Plus_Jakarta_Sans']">
-      <div className="w-full mx-auto flex flex-1 flex-col">
+      <div className="w-full flex flex-1 flex-col">
         <LessonTopBar
           progress={progress}
           hearts={hearts}
@@ -59,21 +79,33 @@ export function LessonPageClient({ lessonId }: { lessonId: string }) {
         />
         <div className="flex-1 flex flex-col items-center">
           <div className="w-full max-w-5xl px-4 sm:px-8 pt-6 sm:pt-10 pb-4 flex flex-col gap-8">
-            <LessonContentCard item={item} />
-            <LessonChoiceGrid
-              choices={choices}
-              selected={selected}
-              onSelect={setSelected}
-            />
+            {phase === "teaching" && currentContent ? (
+              <LessonContentCard item={currentContent} />
+            ) : (
+              currentTask && (
+                <>
+                  <LessonTaskCard task={currentTask} />
+                  <LessonChoiceGrid
+                    choices={choices}
+                    selected={selected}
+                    onSelect={setSelected}
+                  />
+                </>
+              )
+            )}
           </div>
         </div>
         <LessonCheckButton
-          disabled={!selected && !skipped}
-          onClick={() => checkAnswer(() => router.back())}
-          onSkip={handleSkip}
+          isTeaching={phase === "teaching"}
+          disabled={phase === "tasks" && !selected && !skipped}
+          onClick={phase === "teaching" ? advanceContent : handleCheck}
+          onSkip={() => {
+            setSkipped(true);
+            setSelected(null);
+          }}
           skipped={skipped}
-          correctAnswer={item?.name}
-          onContinue={handleContinue}
+          correctAnswer={currentTask?.correctAnswer}
+          onContinue={handleContinueAfterSkip}
         />
       </div>
     </div>
