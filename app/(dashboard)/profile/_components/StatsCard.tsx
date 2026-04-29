@@ -1,5 +1,7 @@
+import type { ReactNode } from "react";
+
 type StatsCardProps = {
-  value: string;
+  value: ReactNode;
   label: string;
 };
 
