@@ -30,16 +30,16 @@ export const SideBar = ({ menuLabels, menuPaths }: HeaderClientProps) => {
 
   return (
     <aside
-      className="fixed top-0 left-0 z-40 hidden h-full w-60 flex-col bg-[#FEFAE8] shadow-2xl md:flex lg:w-70 xl:w-100"
+      className="fixed top-0 left-0 z-40 hidden h-full flex-col bg-[#FEFAE8] shadow-2xl md:flex md:w-20 lg:w-[256px]"
       aria-label="Main navigation"
     >
-      <div className="flex items-center justify-between px-5 h-[60px] border-b border-[#E8DFC8]">
-        <h2 className="font-bold text-[#0F5238] text-lg font-['Plus_Jakarta_Sans']">
+      <div className="flex h-[60px] items-center justify-center border-b border-[#E8DFC8] px-5 lg:justify-between">
+        <h2 className="font-bold text-[#0F5238] text-lg font-['Plus_Jakarta_Sans'] md:hidden lg:block">
           Mazaalai Learn
         </h2>
       </div>
 
-      <nav className="flex flex-col gap-1 p-4 flex-1">
+      <nav className="flex flex-1 flex-col gap-1 p-3 lg:p-4">
         {menuLabels.map((label) => {
           const Icon = menuIcons[label];
           const isActive = active === label;
@@ -47,7 +47,7 @@ export const SideBar = ({ menuLabels, menuPaths }: HeaderClientProps) => {
             <button
               key={label}
               onClick={() => handleNav(label)}
-              className={`flex items-center gap-5 px-4 py-3 rounded-xl font-bold text-[16px]
+              className={`flex items-center justify-center rounded-xl px-3 py-3 font-bold text-[16px] lg:justify-start lg:gap-5 lg:px-4
               transition-all duration-150 font-['Plus_Jakarta_Sans']
               ${
                 isActive
@@ -64,7 +64,7 @@ export const SideBar = ({ menuLabels, menuPaths }: HeaderClientProps) => {
                   isActive ? "opacity-100" : "opacity-100"
                 }`}
               />
-              {label}
+              <div className="md:hidden lg:block">{label}</div>
             </button>
           );
         })}

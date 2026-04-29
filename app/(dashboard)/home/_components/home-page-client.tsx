@@ -1,8 +1,8 @@
 // HomePath.tsx
 "use client";
 
-import { ROW, SW, useLessons, LessonCards } from "./LessonCards";
-import { RoadPath } from "./RoadPath";
+import { ROW, SW, useLessons, LessonCards } from "./home-lesson-cards";
+import { RoadPath } from "./home-road-path";
 
 export const HomePath = () => {
   const { lessons, completedUpTo, loading, completeLesson } = useLessons();
@@ -19,10 +19,7 @@ export const HomePath = () => {
 
   return (
     <div className="flex min-h-screen w-full justify-center bg-[#F0EDE3] px-3 py-8 sm:px-4 sm:py-10 md:px-6">
-      <div
-        className="relative w-full max-w-[340px]"
-        style={{ height: totalH }}
-      >
+      <div className="relative w-full max-w-[340px]" style={{ height: totalH }}>
         <RoadPath lessonCount={lessons.length} completedUpTo={completedUpTo} />
         <LessonCards
           lessons={lessons}

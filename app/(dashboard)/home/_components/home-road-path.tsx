@@ -1,7 +1,7 @@
 // RoadPath.tsx
 "use client";
 
-import { X, ROW, SW } from "./LessonCards";
+import { X, ROW, SW } from "./home-lesson-cards";
 
 function buildPath(pts: { x: number; y: number }[]) {
   if (pts.length < 2) return "";
