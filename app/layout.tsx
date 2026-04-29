@@ -1,7 +1,16 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+
 import { ConditionalBars } from "./_components/Bar-Sections/conditional-bars";
+
+import { BarSections } from "./_components/Bar-Sections/main-bars";
+import localFont from "next/font/local";
+
+const mongolFont = localFont({
+  src: "./font/cmdashitseden.ttf",
+  variable: "--font-mongol",
+});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -23,12 +32,12 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      lang="mn"
+      className={`${geistSans.variable} ${geistMono.variable} ${mongolFont.variable} h-full antialiased`}
     >
-      <body className="min-h-full">
+      <body className="h-full flex flex-row overflow-hidden">
         <ConditionalBars />
-        {children}
+        <main className="flex-1 h-full overflow-hidden">{children}</main>
       </body>
     </html>
   );
