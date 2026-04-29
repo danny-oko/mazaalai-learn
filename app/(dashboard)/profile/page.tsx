@@ -15,29 +15,30 @@ export default function ProfilePage() {
   const currentUser = mockUser as ProfileUser;
 
   return (
-    <div className="min-h-screen bg-[#f4efe5] pb-24 md:pb-10 md:pl-60 lg:pl-70 xl:pl-100">
-      <div className="mx-auto flex w-full max-w-[1220px] flex-col gap-4 px-4 pt-5 md:gap-5 md:px-6 md:pt-8">
-        <ProfileTopHeader user={currentUser} />
-        <ProfileSummaryStats user={currentUser} />
-        <ProfileTabs activeTab={currentUser.activeTab} />
+    <div className="min-h-screen bg-[#f4efe5] pb-24 md:pb-10 md:pl-26 md:pr-6 lg:pl-70">
+      {/* Block-level shell so mx-auto centers reliably; inner flex only for vertical gaps */}
+      <div className="mx-auto w-full max-w-[1220px] px-4 pt-5 md:px-6 md:pt-8">
+        <div className="flex flex-col gap-4 md:gap-5">
+          <ProfileTopHeader user={currentUser} />
+          <ProfileSummaryStats user={currentUser} />
+          <ProfileTabs activeTab={currentUser.activeTab} />
+          <div className="grid w-full gap-4 md:grid-cols-[minmax(0,1fr)_320px] md:gap-5">
+            <main className="min-w-0 space-y-4 md:space-y-5">
+              <DailyChallengesPanel challenges={currentUser.dailyChallenges} />
+              <CurrentJourneyPanel journey={currentUser.journey} />
+            </main>
+
+            <aside className="min-w-0 space-y-4 md:space-y-5">
+              <StreakPanel streak={currentUser.streak} />
+              <ExperiencePanel experience={currentUser.experience} />
+              <LeaguePanel league={currentUser.league} />
+              <AchievementsPanel badges={currentUser.badges} />
+              <SettingsPanel settings={currentUser.settings} />
+            </aside>
+          </div>
+        </div>
+        <div className="h-8" />
       </div>
-
-      <div className="mx-auto mt-4 grid w-full max-w-[1220px] gap-4 px-4 md:mt-5 md:grid-cols-[minmax(0,1fr)_320px] md:gap-5 md:px-6">
-        <main className="space-y-4 md:space-y-5">
-          <DailyChallengesPanel challenges={currentUser.dailyChallenges} />
-          <CurrentJourneyPanel journey={currentUser.journey} />
-        </main>
-
-        <aside className="space-y-4 md:space-y-5">
-          <StreakPanel streak={currentUser.streak} />
-          <ExperiencePanel experience={currentUser.experience} />
-          <LeaguePanel league={currentUser.league} />
-          <AchievementsPanel badges={currentUser.badges} />
-          <SettingsPanel settings={currentUser.settings} />
-        </aside>
-      </div>
-
-      <div className="h-8" />
     </div>
   );
 }
