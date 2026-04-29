@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { LessonContent } from "./lesson-types";
 
 export function useLessonGame(lessonId: string) {
@@ -9,6 +9,7 @@ export function useLessonGame(lessonId: string) {
   const [selected, setSelected] = useState<string | null>(null);
   const [hearts, setHearts] = useState(5);
   const [loading, setLoading] = useState(true);
+  const [choices, setChoices] = useState<string[]>([]);
 
   useEffect(() => {
     fetch(`/api/lesson-contents?lessonId=${lessonId}`)
@@ -24,23 +25,31 @@ export function useLessonGame(lessonId: string) {
   const progress = (current / Math.max(contents.length, 1)) * 100;
   const isFailed = hearts === 0;
 
-  const choices = useMemo(() => {
-    if (!item) return [];
-    const distractors = contents
+  function buildShuffledChoices(target: LessonContent) {
+    const pool = contents
       .map((c) => c.name)
-      .filter((name) => name !== item.name)
+      .filter((n) => n !== target.name)
       .slice(0, 3);
-    const insertIndex = current % (distractors.length + 1);
-    return [
-      ...distractors.slice(0, insertIndex),
-      item.name,
-      ...distractors.slice(insertIndex),
-    ];
-  }, [contents, current, item]);
+    const next = [...pool, target.name];
+    for (let i = next.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [next[i], next[j]] = [next[j], next[i]];
+    }
+    return next;
+  }
 
-  function checkAnswer(onComplete: () => void) {
-    if (!selected || !item) return;
-    if (selected === item.name) {
+  useEffect(() => {
+    if (!item) {
+      setChoices([]);
+      return;
+    }
+    setChoices(buildShuffledChoices(item));
+  }, [contents, current]);
+
+  // skip=true advances without touching hearts
+  function checkAnswer(onComplete: () => void, skip = false) {
+    if (!item) return;
+    if (skip || selected === item.name) {
       if (current + 1 < contents.length) {
         setCurrent((p) => p + 1);
       } else {
@@ -48,6 +57,7 @@ export function useLessonGame(lessonId: string) {
       }
     } else {
       setHearts((h) => Math.max(0, h - 1));
+      setChoices(buildShuffledChoices(item));
     }
     setSelected(null);
   }

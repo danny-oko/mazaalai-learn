@@ -10,26 +10,22 @@ export function LessonChoiceGrid({
   onSelect,
 }: LessonChoiceGridProps) {
   return (
-    <div className="grid grid-cols-2 gap-3">
+    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
       {choices.map((choice) => {
-        const isSelected = selected === choice;
+        const sel = selected === choice;
         return (
           <button
             key={choice}
             onClick={() => onSelect(choice)}
-            className="flex flex-col items-center justify-center py-6 rounded-2xl border-2 transition-all duration-150 bg-white"
+            className="flex flex-col items-center justify-center py-5 rounded-2xl border-2 transition-all duration-100 active:scale-95"
             style={{
-              borderColor: isSelected ? "#0F5238" : "#e2e8f0",
-              background: isSelected ? "#f0faf5" : "white",
-              boxShadow: isSelected
-                ? "0 0 0 2px #0F523820"
-                : "0 2px 8px rgba(0,0,0,0.04)",
+              background: "#1A202C",
+              borderColor: sel ? "#58CC02" : "#374151",
+              boxShadow: sel ? "0 4px 0 #3A8C01" : "0 4px 0 #1F2937",
+              color: sel ? "#58CC02" : "#FFFFFF",
             }}
           >
-            <span className="text-4xl font-black text-slate-800">{choice[0]}</span>
-            <span className="text-[11px] font-black tracking-widest uppercase text-slate-400 mt-1">
-              {choice}
-            </span>
+            <span className="text-3xl font-black">{choice}</span>
           </button>
         );
       })}
