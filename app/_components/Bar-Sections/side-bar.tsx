@@ -34,6 +34,11 @@ export const SideBar = ({ menuLabels, menuPaths }: HeaderClientProps) => {
       aria-label="Main navigation"
     >
       <div className="flex h-[60px] items-center justify-center border-b border-[#E8DFC8] px-5 lg:justify-between">
+        <img
+          src="./bear.png"
+          alt="Mazaalai Learn"
+          className="block object-contain md:block lg:hidden w-50 h-50"
+        />
         <h2 className="font-bold text-[#0F5238] text-lg font-['Plus_Jakarta_Sans'] md:hidden lg:block">
           Mazaalai Learn
         </h2>
