@@ -14,10 +14,16 @@ export function LessonStatusScreen({
   onAction,
 }: LessonStatusScreenProps) {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-[#F8F4E3] px-5">
-      <div className="w-full max-w-md rounded-2xl bg-white border border-slate-200 p-6 text-center shadow-sm">
-        <p className={`text-[#0F5238] font-bold ${animated ? "animate-pulse" : ""}`}>{message}</p>
-        {description ? <p className="mt-2 text-sm text-slate-500">{description}</p> : null}
+    <div className="flex items-center justify-center min-h-screen px-5">
+      <div className="w-full max-w-md rounded-2x p-6 text-center">
+        <p
+          className={`text-[#0F5238] font-bold ${animated ? "animate-pulse" : ""}`}
+        >
+          {message}
+        </p>
+        {description ? (
+          <p className="mt-2 text-sm text-slate-500">{description}</p>
+        ) : null}
         {actionLabel && onAction ? (
           <button
             onClick={onAction}

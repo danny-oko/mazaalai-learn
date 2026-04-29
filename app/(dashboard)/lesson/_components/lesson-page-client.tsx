@@ -52,18 +52,20 @@ export function LessonPageClient({ lessonId }: LessonPageClientProps) {
 
   return (
     <div className="min-h-screen bg-[#F8F4E3] flex flex-col font-['Plus_Jakarta_Sans']">
-      <LessonTopBar progress={progress} hearts={hearts} onBack={() => router.back()} />
+      <div className="w-full max-w-lg mx-auto flex flex-1 flex-col">
+        <LessonTopBar progress={progress} hearts={hearts} onBack={() => router.back()} />
 
-      <div className="flex-1 px-5 pt-6 pb-4 flex flex-col gap-6">
-        <LessonContentCard item={item} />
-        <LessonChoiceGrid
-          choices={choices}
-          selected={selected}
-          onSelect={(choice) => setSelected(choice)}
-        />
+        <div className="flex-1 px-5 pt-6 pb-4 flex flex-col gap-6">
+          <LessonContentCard item={item} />
+          <LessonChoiceGrid
+            choices={choices}
+            selected={selected}
+            onSelect={(choice) => setSelected(choice)}
+          />
+        </div>
+
+        <LessonCheckButton disabled={!selected} onClick={() => checkAnswer(() => router.back())} />
       </div>
-
-      <LessonCheckButton disabled={!selected} onClick={() => checkAnswer(() => router.back())} />
     </div>
   );
 }
