@@ -13,31 +13,6 @@ export const GET = async (req: NextRequest) => {
 
 // POST /api/tasks
 export const POST = async (req: NextRequest) => {
-<<<<<<< HEAD
-  const {
-    lessonId,
-    type,
-    difficulty,
-    xpReward,
-    question,
-    correctAnswer,
-    options,
-    order,
-  } = await req.json();
-  if (
-    !lessonId ||
-    !type ||
-    !difficulty ||
-    !xpReward ||
-    !question ||
-    !correctAnswer ||
-    order === undefined
-  ) {
-    return NextResponse.json(
-      { message: "Missing required fields" },
-      { status: 400 },
-    );
-=======
   try {
     const body = await req.json();
     const {
@@ -107,19 +82,5 @@ export const POST = async (req: NextRequest) => {
     return NextResponse.json(task, { status: 201 });
   } catch (error: any) {
     return NextResponse.json({ message: error.message }, { status: 500 });
->>>>>>> 58916d7 (Smart Quiz Type Selector)
   }
-  const task = await prisma.task.create({
-    data: {
-      lessonId,
-      type,
-      difficulty,
-      xpReward: parseInt(xpReward),
-      question,
-      correctAnswer,
-      options: options ?? null,
-      order: parseInt(order),
-    },
-  });
-  return NextResponse.json(task, { status: 201 });
 };

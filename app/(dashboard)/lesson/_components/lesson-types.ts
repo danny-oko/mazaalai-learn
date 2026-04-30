@@ -54,12 +54,6 @@ export interface Task {
   xpReward: number;
   question: string;
   correctAnswer: string;
-<<<<<<< HEAD
-  options: {
-    choices: string[];
-  } | null;
-=======
   options: TaskOptions;
->>>>>>> 58916d7 (Smart Quiz Type Selector)
   order: number;
 }
