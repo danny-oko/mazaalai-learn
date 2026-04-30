@@ -131,7 +131,7 @@ export const LessonCards = ({
 
             {isActive && (
               <div
-                className="mt-3 px-5 py-1.5 rounded-full text-[11px] font-bold tracking-widest uppercase text-white whitespace-nowrap"
+                className="mt-3 px-5 py-1.5 rounded-full text-[13px] font-bold tracking-widest uppercase text-white whitespace-nowrap"
                 style={{ background: "#0F5238" }}
               >
                 {l.title}

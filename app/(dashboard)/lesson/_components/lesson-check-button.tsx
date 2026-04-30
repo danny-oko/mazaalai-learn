@@ -22,7 +22,7 @@ export function LessonCheckButton({
   // Revealed correct answer after skip/wrong
   if (skipped && correctAnswer) {
     return (
-      <div className="w-full px-4 sm:px-8 py-8 sm:py-10 border-t-2 border-[#FF4B4B] bg-[#1A0A0A]">
+      <div className="w-full px-4 sm:px-8 py-8 sm:py-10 border-t-4 border-[#FF4B4B] bg-[#FAD99A]">
         <div className="flex items-center justify-between gap-4">
           <div className="flex flex-col gap-0.5 shrink-0">
             <span className="text-xs font-black tracking-widest uppercase text-[#FF4B4B]">
@@ -44,14 +44,13 @@ export function LessonCheckButton({
     );
   }
 
-  // Teaching phase — no skip, just "Next"
   if (isTeaching) {
     return (
-      <div className="w-full px-4 sm:px-8 py-8 sm:py-10 border-t border-[#1F2937]">
+      <div className="w-full px-8 sm:px-16 md:px-32 lg:px-64 xl:px-128 py-8 sm:py-10 flex justify-end">
         <button
           onClick={onClick}
-          className="w-full py-3.5 px-7 rounded-2xl font-black text-sm tracking-widest uppercase text-white active:scale-95 transition-all"
-          style={{ background: "#58CC02", boxShadow: "0 4px 0 #3A8C01" }}
+          className="py-3.5 px-20 rounded-2xl font-black text-sm w-[300px]tracking-widest uppercase text-white active:scale-95 transition-all "
+          style={{ background: "#E8920A", boxShadow: "0 4px 10px #E8920A" }}
         >
           Got it
         </button>
@@ -59,9 +58,8 @@ export function LessonCheckButton({
     );
   }
 
-  // Task phase — skip + check
   return (
-    <div className="w-full px-4 sm:px-8 py-8 sm:py-10 border-t border-[#1F2937]">
+    <div className="w-full px-4 sm:px-8 py-8 sm:py-10">
       <div className="flex items-center justify-between gap-4">
         <button
           onClick={onSkip}

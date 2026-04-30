@@ -1,3 +1,10 @@
+import { Montserrat } from "next/font/google";
+
+const montserrat = Montserrat({
+  subsets: ["latin", "cyrillic"],
+  weight: ["400", "500", "600", "700"],
+});
+
 interface LessonChoiceGridProps {
   choices: string[];
   selected: string | null;
@@ -10,7 +17,9 @@ export function LessonChoiceGrid({
   onSelect,
 }: LessonChoiceGridProps) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <div
+      className={`grid grid-cols-2 sm:grid-cols-4 gap-3 ${montserrat.className}`}
+    >
       {choices.map((choice) => {
         const sel = selected === choice;
         return (

@@ -37,7 +37,7 @@ export function LessonPageClient({
   } = useLessonGame(lessonId, userId);
   const [skipped, setSkipped] = useState(false);
 
-  if (loading) return <LessonStatusScreen message="Loading..." animated />;
+  if (loading) return <LessonStatusScreen message="LOADING..." animated />;
   if (isFailed)
     return (
       <LessonStatusScreen
@@ -70,7 +70,7 @@ export function LessonPageClient({
   }
 
   return (
-    <div className="min-h-screen bg-[#111827] flex flex-col font-['Plus_Jakarta_Sans']">
+    <div className="min-h-screen bg-[#FEFAE8] flex flex-col font-['Plus_Jakarta_Sans']">
       <div className="w-full flex flex-1 flex-col">
         <LessonTopBar
           progress={progress}
