@@ -23,3 +23,4 @@ export const POST = async (req: NextRequest) => {
   });
   return NextResponse.json(content, { status: 201 });
 };
+// https://res.cloudinary.com/dll1at55f/image/upload/f_auto,q_auto/Screenshot_2026-04-30_at_11.07.43_cszfyp

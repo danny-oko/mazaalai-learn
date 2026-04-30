@@ -7,43 +7,48 @@ export const GET = async () => {
   return NextResponse.json(tasks);
 };
 
-// POST /api/tasks
 export const POST = async (req: NextRequest) => {
-  const {
-    lessonId,
-    type,
-    difficulty,
-    xpReward,
-    question,
-    correctAnswer,
-    options,
-    order,
-  } = await req.json();
-  if (
-    !lessonId ||
-    !type ||
-    !difficulty ||
-    !xpReward ||
-    !question ||
-    !correctAnswer ||
-    order === undefined
-  ) {
-    return NextResponse.json(
-      { message: "Missing required fields" },
-      { status: 400 },
-    );
-  }
-  const task = await prisma.task.create({
-    data: {
+  try {
+    const body = await req.json();
+    const {
       lessonId,
-      type,
+      taskType, // Match JSON
       difficulty,
-      xpReward: parseInt(xpReward),
-      question,
+      prompt, // Match JSON
       correctAnswer,
-      options: options ?? null,
-      order: parseInt(order),
-    },
-  });
-  return NextResponse.json(task, { status: 201 });
+      options, // Match JSON
+      orderIndex, // Match JSON
+    } = body;
+
+    // Use the exact variable names you just destructured above
+    if (!lessonId || !taskType || !prompt || orderIndex === undefined) {
+      return NextResponse.json(
+        { message: "Missing required fields" },
+        { status: 400 },
+      );
+    }
+
+    const task = await prisma.task.create({
+      data: {
+        lessonId,
+        taskType,
+        difficulty: difficulty || "beginner",
+        prompt,
+        correctAnswer,
+        orderIndex: parseInt(orderIndex),
+        options: {
+          create: options.map((opt: any) => ({
+            optionText: opt.optionText || null,
+            mediaUrl: opt.mediaUrl || null,
+            isCorrect: opt.isCorrect || false,
+            orderIndex: opt.orderIndex || 0,
+          })),
+        },
+      },
+    });
+
+    return NextResponse.json(task, { status: 201 });
+  } catch (error: any) {
+    return NextResponse.json({ message: error.message }, { status: 500 });
+  }
 };
