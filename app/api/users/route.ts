@@ -6,21 +6,14 @@ import { NextRequest, NextResponse } from "next/server";
 // Body: name OR displayName (or both), email, userName, avatarUrl optional, totalXp optional
 export const POST = async (req: NextRequest) => {
   const body = await req.json();
-  const {
-    name,
-    displayName,
-    email,
-    userName,
-    avatarUrl,
-    totalXp: totalXpRaw,
-  } = body;
+  const { name, userName, email, avatarUrl, totalXp: totalXpRaw } = body;
 
-  const finalDisplayName = displayName ?? name;
-  const finalName = name ?? displayName;
+  const finalDisplayName = userName ?? name;
+  const finalName = name ?? userName;
 
   if (!userName || !email || !finalDisplayName) {
     return NextResponse.json(
-      { message: "Missing required fields: email, userName, and name or displayName" },
+      { message: "Missing required fields: email, userName or name " },
       { status: 400 },
     );
   }
@@ -34,10 +27,9 @@ export const POST = async (req: NextRequest) => {
   const user = await prisma.user.create({
     data: {
       id: crypto.randomUUID(),
-      userName,
       email,
       name: finalName,
-      displayName: finalDisplayName,
+      userName: finalDisplayName,
       avatarUrl,
       ...(totalXp !== undefined && { totalXp }),
     },
@@ -55,7 +47,6 @@ export const GET = async () => {
     select: {
       id: true,
       name: true,
-      displayName: true,
       userName: true,
       totalXp: true,
       avatarUrl: true,
@@ -67,7 +58,7 @@ export const GET = async () => {
 
     return {
       id: user.id,
-      name: user.name ?? user.displayName ?? user.userName,
+      name: user.name ?? user.userName,
       userName: user.userName,
       totalXp: user.totalXp,
       xp: user.totalXp,

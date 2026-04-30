@@ -49,7 +49,7 @@
 }
 
 :root {
-  --background: #f8f4e3;
+  --background: #111827;
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -138,4 +138,19 @@
   .light body {
     background: #f8f4e3;
   }
+}
+
+@font-face {
+  font-family: "MongolFont";
+  src: url("./font/cmdashitseden.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.mongol-script {
+  font-family: "MongolFont", serif;
+  writing-mode: vertical-lr;
+  -webkit-writing-mode: vertical-lr;
+  text-orientation: mixed;
+  text-rendering: optimizeLegibility;
 }

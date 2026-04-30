@@ -110,14 +110,14 @@ export const LessonCards = ({
                 background: isLocked
                   ? "#E8E5DC"
                   : isDone
-                  ? "#539f7e"
-                  : "#0F5238",
+                    ? "#539f7e"
+                    : "#0F5238",
                 border: isLocked ? "2px dashed #BFC9C1" : "none",
                 boxShadow: isDone
                   ? "0 0 0 6px #C8EDD9"
                   : isActive
-                  ? "0 0 0 8px #C8EDD933"
-                  : "none",
+                    ? "0 0 0 8px #C8EDD933"
+                    : "none",
                 cursor: isLocked ? "not-allowed" : "pointer",
                 transform: isActive ? "scale(1.05)" : "scale(1)",
               }}
@@ -131,7 +131,7 @@ export const LessonCards = ({
 
             {isActive && (
               <div
-                className="mt-3 px-5 py-1.5 rounded-full text-[11px] font-bold tracking-widest uppercase text-white"
+                className="mt-3 px-5 py-1.5 rounded-full text-[13px] font-bold tracking-widest uppercase text-white whitespace-nowrap"
                 style={{ background: "#0F5238" }}
               >
                 {l.title}
@@ -140,7 +140,7 @@ export const LessonCards = ({
 
             {!isActive && (
               <p
-                className="mt-2 text-[13px] font-bold bg-[#ECE8D8] rounded-2xl px-3 py-1"
+                className="mt-2 text-[13px] font-bold bg-[#ECE8D8] rounded-2xl px-3 py-1 whitespace-nowrap"
                 style={{ color: isLocked ? "#BFC9C1" : "#0F5238" }}
               >
                 {l.title}
