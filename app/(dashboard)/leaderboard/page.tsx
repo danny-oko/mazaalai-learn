@@ -4,6 +4,7 @@ import LeaderboardHeader from "./_components/LeaderboardHeader";
 import LeaderboardList from "./_components/LeaderboardList";
 import PodiumSection from "./_components/PodiumSection";
 import TabToggle from "./_components/TabToggle";
+import WebLeaderboardHeader from "./_components/WebLeaderboardHeader";
 
 export default function RankPage() {
   return (
@@ -56,13 +57,24 @@ export default function RankPage() {
           buttonText="Get Started"
           href="/map"
         />
-
-        {/* дараагийн компонентүүд энд нэмэгдэнэ */}
       </div>
 
       {/* ВЭБ — md-с доош нуугдана */}
-      <div className="hidden md:flex flex-col">
-        {/* вэб хувилбар дараа хийнэ */}
+      <div className="hidden md:flex flex-col gap-4 px-8 pt-8">
+        <WebLeaderboardHeader
+          name="Batu Munkh"
+          username="nomad_batu"
+          rank="Silver Steppe League"
+          streak={12}
+          league="Silver Steppe"
+          language="Mongolian"
+          xp={1240}
+          xpTotal={1500}
+          xpToPromote={260}
+          leaderboardRank={1}
+          leadGap={260}
+          endsIn="5d"
+        />
       </div>
     </div>
   );
