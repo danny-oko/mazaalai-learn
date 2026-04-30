@@ -17,6 +17,8 @@ export interface Task {
   xpReward: number;
   question: string;
   correctAnswer: string;
-  options: string[] | null;
+  options: {
+    choices: string[];
+  } | null;
   order: number;
 }
