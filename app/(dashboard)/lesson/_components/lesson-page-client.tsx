@@ -25,6 +25,7 @@ export function LessonPageClient({
     phase,
     currentContent,
     currentTask,
+    matchData,
     choices,
     selected,
     setSelected,
@@ -61,7 +62,9 @@ export function LessonPageClient({
 
   function handleCheck() {
     checkTaskAnswer(false);
-    if (selected !== currentTask?.correctAnswer) setSkipped(true);
+    if (currentTask?.type !== "MATCH" && selected !== currentTask?.correctAnswer) {
+      setSkipped(true);
+    }
   }
 
   function handleContinueAfterSkip() {
@@ -86,6 +89,8 @@ export function LessonPageClient({
                 <>
                   <LessonTaskCard task={currentTask} />
                   <LessonChoiceGrid
+                    taskType={currentTask.type}
+                    matchData={matchData}
                     choices={choices}
                     selected={selected}
                     onSelect={setSelected}

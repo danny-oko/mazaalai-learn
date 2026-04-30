@@ -17,8 +17,11 @@ export const HomePath = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-[#F0EDE3] font-['Plus_Jakarta_Sans']">
-        <p className="text-[#0F5238] font-bold animate-pulse">LOADING...</p>
+      <div className="fixed inset-0 z-10 flex items-center justify-center bg-[#F0EDE3] font-['Plus_Jakarta_Sans']">
+        <p className={`text-lg font-black text-black animate-pulse}`}>
+          <img src="/bear.png" alt="Mazaalai Learn" className="animate-spin" />
+          LOADING...
+        </p>
       </div>
     );
   }
@@ -27,7 +30,7 @@ export const HomePath = () => {
 
   return (
     <div
-      className={`flex min-h-screen w-full justify-center bg-[#F0EDE3] px-3 py-8 sm:px-4 sm:py-10 md:px-6 ${montserrat.className}`}
+      className={`flex w-full justify-center bg-[#F0EDE3] px-3 py-8 sm:px-4 sm:py-10 md:px-6 ${montserrat.className}`}
     >
       <div className="relative w-full max-w-[340px]" style={{ height: totalH }}>
         <RoadPath lessonCount={lessons.length} completedUpTo={completedUpTo} />
