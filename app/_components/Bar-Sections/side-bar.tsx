@@ -69,7 +69,9 @@ export const SideBar = ({ menuLabels, menuPaths }: HeaderClientProps) => {
                   isActive ? "opacity-100" : "opacity-100"
                 }`}
               />
-              <div className="md:hidden lg:block">{label}</div>
+              <div className="md:hidden lg:block uppercase text-[12px] font-extrabold tracking-wider">
+                {label}
+              </div>
             </button>
           );
         })}

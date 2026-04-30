@@ -15,10 +15,10 @@ export function LessonTopBar({ progress, hearts, onBack }: LessonTopBarProps) {
       >
         <X className="w-6 h-6" strokeWidth={2.5} />
       </button>
-      <div className="flex-1 h-4 rounded-full overflow-hidden bg-[#2D3748]">
+      <div className="flex-1 h-4 rounded-full overflow-hidden bg-[#ECE8D8]">
         <div
           className="h-full rounded-full transition-all duration-700"
-          style={{ width: `${Math.max(progress, 2)}%`, background: "#58CC02" }}
+          style={{ width: `${Math.max(progress, 2)}%`, background: "#713638" }}
         />
       </div>
       <div className="flex items-center gap-1.5">
