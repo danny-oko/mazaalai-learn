@@ -8,7 +8,7 @@ export default function LogoutButton() {
   const { signOut } = useClerk()
 
   const handleLogout = async () => {
-    await signOut({ redirectUrl: '/' })
+    await signOut({ redirectUrl: '/sign-in' })
   }
 
   return (
