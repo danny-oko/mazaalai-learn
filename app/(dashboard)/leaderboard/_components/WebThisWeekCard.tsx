@@ -24,25 +24,23 @@ export default function WebThisWeekCard({
   return (
     <div className="bg-white rounded-2xl border border-[#E8D9C0] p-5">
       <p className="text-xs text-[#999] uppercase tracking-wide mb-4">
-        This Week
+        Энэ 7 хоног
       </p>
 
       <div className="grid grid-cols-2 gap-4">
-        {/* Total XP */}
         <div>
           <p className="text-2xl font-bold text-[#E8940A]">
             {totalXp.toLocaleString()}
           </p>
           <p className="text-xs text-[#999] mt-0.5">Total XP</p>
           <p className="text-[10px] text-green-500 mt-0.5">
-            ▲ +{xpChange} vs last week
+            ▲ +{xpChange} Өнгөрсөн долоо хоногтой харьцуулахад
           </p>
         </div>
 
-        {/* Day Streak */}
         <div>
           <p className="text-2xl font-bold text-[#222]">{dayStreak}</p>
-          <p className="text-xs text-[#999] mt-0.5">Day Streak</p>
+          <p className="text-xs text-[#999] mt-0.5">Өдрийн цуваа</p>
           {isPersonalBest && (
             <p className="text-[10px] text-[#E8940A] mt-0.5">
               🏆 Personal best!
@@ -50,16 +48,16 @@ export default function WebThisWeekCard({
           )}
         </div>
 
-        {/* XP Today */}
         <div>
           <p className="text-2xl font-bold text-[#222]">{xpToday}</p>
-          <p className="text-xs text-[#999] mt-0.5">XP Today</p>
+          <p className="text-xs text-[#999] mt-0.5">Өнөөдрийн XP</p>
           {isAboveAvg && (
-            <p className="text-[10px] text-green-500 mt-0.5">▲ Above avg</p>
+            <p className="text-[10px] text-green-500 mt-0.5">
+              ▲ Дундажаас дээгүүр
+            </p>
           )}
         </div>
 
-        {/* Days Active */}
         <div>
           <p className="text-2xl font-bold text-[#222]">
             {daysActive}
@@ -67,9 +65,9 @@ export default function WebThisWeekCard({
               /{totalDays}
             </span>
           </p>
-          <p className="text-xs text-[#999] mt-0.5">Days Active</p>
+          <p className="text-xs text-[#999] mt-0.5">Идэвхтэй өдрүүд</p>
           {isGoodPace && (
-            <p className="text-[10px] text-green-500 mt-0.5">✓ Good pace</p>
+            <p className="text-[10px] text-green-500 mt-0.5">✓ Сайн хэмнэл</p>
           )}
         </div>
       </div>

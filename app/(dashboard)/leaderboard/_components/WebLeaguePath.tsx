@@ -37,17 +37,16 @@ const STATUS_STYLES = {
 export default function WebLeaguePath() {
   return (
     <div className="bg-white rounded-2xl border border-[#E8D9C0] p-5">
-      {/* Гарчиг */}
       <div className="flex items-center justify-between mb-4">
         <p className="text-xs text-[#999] uppercase tracking-wide">
-          Your League Path
+          Таны лигийн замнал
         </p>
         <p className="text-xs text-[#E8940A] font-medium cursor-pointer hover:underline">
-          4 more to unlock
+          Нээхийн тулд дахиад 4 зүйл байна
         </p>
       </div>
 
-      <p className="text-sm font-semibold text-[#222] mb-3">Leagues</p>
+      <p className="text-sm font-semibold text-[#222] mb-3">Лигүүд</p>
 
       <div className="flex flex-col gap-2">
         {LEAGUES.map((league) => {
@@ -64,7 +63,7 @@ export default function WebLeaguePath() {
                 </p>
                 {league.xpRequired && league.status === "locked" && (
                   <p className="text-[10px] text-[#999]">
-                    {league.xpRequired} XP needed
+                    {league.xpRequired} XP шаардлагатай
                   </p>
                 )}
               </div>

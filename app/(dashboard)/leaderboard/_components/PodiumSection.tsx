@@ -89,14 +89,12 @@ export default function PodiumSection({ users }: PodiumSectionProps) {
 
   return (
     <div className="mx-4 mt-3 bg-white rounded-2xl border border-[#E8D9C0] px-3 pt-4 pb-5">
-      {/* Дээрх ⭐ */}
       <div className="flex justify-center mb-3">
         <div className="w-7 h-7 bg-[#E8940A] rounded-full flex items-center justify-center text-sm">
           ⭐
         </div>
       </div>
 
-      {/* Тавцан */}
       <div className="flex items-end justify-center gap-2">
         <PodiumPerson user={second} />
         <PodiumPerson user={first} />

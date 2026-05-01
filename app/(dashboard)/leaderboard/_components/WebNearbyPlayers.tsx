@@ -14,15 +14,16 @@ interface WebNearbyPlayersProps {
 export default function WebNearbyPlayers({ players }: WebNearbyPlayersProps) {
   return (
     <div className="bg-white rounded-2xl border border-[#E8D9C0] p-5">
-      {/* Гарчиг */}
       <div className="flex items-center justify-between mb-4">
         <p className="text-xs text-[#999] uppercase tracking-wide">
-          Nearby Players
+          Ойролцоох тоглогчид
         </p>
         <p className="text-xs text-[#999]">Ranks 1-3</p>
       </div>
 
-      <p className="text-sm font-semibold text-[#222] mb-3">Around you</p>
+      <p className="text-sm font-semibold text-[#222] mb-3">
+        Таны эргэн тойронд
+      </p>
 
       <div className="flex flex-col gap-2">
         {players.map((player) => (
@@ -32,12 +33,10 @@ export default function WebNearbyPlayers({ players }: WebNearbyPlayersProps) {
               player.isMe ? "bg-[#FFF3DC]" : ""
             }`}
           >
-            {/* Rank */}
             <span className="text-sm font-semibold text-[#888] w-4 shrink-0">
               {player.rank}
             </span>
 
-            {/* Avatar */}
             <div
               className={`w-8 h-8 rounded-full shrink-0 flex items-center justify-center text-sm font-bold ${
                 player.isMe
@@ -56,7 +55,6 @@ export default function WebNearbyPlayers({ players }: WebNearbyPlayersProps) {
               )}
             </div>
 
-            {/* Нэр */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1.5">
                 <p className="text-sm font-semibold text-[#222] truncate">
@@ -64,13 +62,12 @@ export default function WebNearbyPlayers({ players }: WebNearbyPlayersProps) {
                 </p>
                 {player.isMe && (
                   <span className="bg-[#E8940A] text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
-                    You
+                    Та
                   </span>
                 )}
               </div>
             </div>
 
-            {/* XP */}
             <div className="text-right shrink-0">
               <p className="text-sm font-bold text-[#222]">
                 {player.xp.toLocaleString()}
