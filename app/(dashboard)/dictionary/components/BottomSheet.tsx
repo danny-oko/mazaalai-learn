@@ -1,0 +1,96 @@
+"use client";
+
+import { ReactNode, useEffect, useRef, useState } from "react";
+
+export const BottomSheet = ({
+  isOpen,
+  onClose,
+  children,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  children: ReactNode;
+}) => {
+  // Swipe down эхэлсэн Y position
+  const startY = useRef<number | null>(null);
+
+  // Sheet-ийг доош drag хийх хэмжээ
+  const [dragY, setDragY] = useState(0);
+
+  // Bottom sheet open үед body scroll lock
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? "hidden" : "";
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    startY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (startY.current === null) return;
+
+    const diff = e.touches[0].clientY - startY.current;
+
+    // Зөвхөн доош drag хийхэд sheet хөдөлнө
+    if (diff > 0) {
+      setDragY(diff);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    // 100px-ээс их доош татвал хаана
+    if (dragY > 100) {
+      onClose();
+    }
+
+    setDragY(0);
+    startY.current = null;
+  };
+
+  return (
+    <>
+      {/* Overlay */}
+      <div
+        onClick={onClose}
+        className={[
+          "fixed inset-0 z-40 bg-black/40 transition-opacity duration-300 xl:hidden",
+          isOpen ? "opacity-100" : "pointer-events-none opacity-0",
+        ].join(" ")}
+      />
+
+      {/* Bottom sheet */}
+      <div
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        style={{
+          transform: isOpen ? `translateY(${dragY}px)` : "translateY(100%)",
+        }}
+        className={[
+          "fixed inset-x-0 bottom-0 z-50 xl:hidden",
+          "max-h-[85vh] overflow-y-auto rounded-t-[32px]",
+          "bg-[#FAF7F1] p-4 shadow-[0_-20px_60px_rgba(0,0,0,0.25)]",
+          "transition-transform duration-300",
+        ].join(" ")}
+      >
+        {/* Drag handle */}
+        <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-[#D6D0C7]" />
+
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          className="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full bg-white shadow"
+          aria-label="Close bottom sheet"
+        >
+          ✕
+        </button>
+
+        {children}
+      </div>
+    </>
+  );
+};

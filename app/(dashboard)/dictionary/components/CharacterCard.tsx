@@ -4,6 +4,7 @@ export interface Form {
   type: "INITIAL" | "MEDIAL" | "FINAL" | "ISOLATE";
   glyph: string;
   imgUrl?: string;
+  strokePath?: string;
 }
 
 export interface Character {
@@ -21,44 +22,64 @@ interface CharacterCardProps {
   character: Character;
   onSelect: (character: Character) => void;
   isSelected?: boolean;
+  compact?: boolean;
 }
 
-export default function CharacterCard({
+export const CharacterCard = ({
   character,
   onSelect,
   isSelected,
-}: CharacterCardProps) {
-  const isolateForm = character.forms.find((f) => f.type === "ISOLATE");
-  const displayGlyph = isolateForm?.glyph ?? character.forms[0]?.glyph ?? "?";
+  compact = false,
+}: CharacterCardProps) => {
+  // ISOLATE form байвал card дээр тэрийг харуулна
+  const isolateForm = character.forms.find((form) => form.type === "ISOLATE");
+  const glyph = isolateForm?.glyph ?? character.forms[0]?.glyph ?? "?";
 
   return (
     <button
       onClick={() => onSelect(character)}
-      aria-label={`${character.name} character`}
       className={[
-        "aspect-square flex flex-col items-center justify-center gap-1.5",
-        "rounded-xl border-2 cursor-pointer transition-all duration-150 shadow-sm",
+        "relative flex aspect-square w-full flex-col items-center justify-center",
+        "rounded-[28px] border transition-all duration-200",
+
+        // Desktop compact үед card height багасна
+        compact
+          ? "min-h-[115px]"
+          : "min-h-[145px] sm:min-h-[165px] md:min-h-[175px]",
+
         isSelected
-          ? "bg-[#E8920A] border-[#E8920A]"
-          : "bg-[#FDFAF5] border-[#D9D0BC] hover:border-[#E8920A] hover:-translate-y-0.5 hover:shadow-md",
+          ? [
+              "border-[#003D27] bg-[#003D27] text-white",
+              "shadow-[0_14px_28px_rgba(0,61,39,0.22)]",
+              "ring-4 ring-[#003D27] ring-offset-4 ring-offset-white",
+            ].join(" ")
+          : [
+              "border-[#EEEAE3] bg-[#F7F5F1] text-[#003D27]",
+              "shadow-[inset_0_1px_0_rgba(255,255,255,0.9)]",
+              "hover:-translate-y-1 hover:border-[#D8D0C5] hover:shadow-xl",
+            ].join(" "),
       ].join(" ")}
     >
-      <div
+      {/* Main Mongolian glyph */}
+      <span
         className={[
-          "text-3xl leading-none [writing-mode:vertical-lr]",
-          isSelected ? "text-[#F5F0E8]" : "text-[#1B4332]",
+          "font-semibold leading-none [writing-mode:vertical-lr]",
+          compact ? "text-[36px]" : "text-[52px] md:text-[60px]",
         ].join(" ")}
       >
-        {displayGlyph}
-      </div>
-      <div
+        {glyph}
+      </span>
+
+      {/* Latin label */}
+      <span
         className={[
-          "text-[11px] font-medium",
-          isSelected ? "text-white/60" : "text-[#6B6B5E]",
+          "font-medium tracking-wide",
+          compact ? "mt-4 text-xs" : "mt-7 text-sm",
+          isSelected ? "text-white/85" : "text-[#5F6963]",
         ].join(" ")}
       >
-        {character.latinForm ?? character.name}
-      </div>
+        {character.latinForm?.toUpperCase() ?? character.name}
+      </span>
     </button>
   );
-}
+};
