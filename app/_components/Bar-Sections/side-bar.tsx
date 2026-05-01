@@ -30,7 +30,7 @@ export const SideBar = ({ menuLabels, menuPaths }: HeaderClientProps) => {
 
   return (
     <aside
-      className="fixed top-0 left-0 z-40 hidden h-full flex-col bg-[#FEFAE8] shadow-2xl md:flex md:w-20 lg:w-[256px]"
+      className="fixed top-0 left-0 z-40 hidden h-full flex-col shadow-2xl md:flex md:w-20 lg:w-[256px]"
       aria-label="Main navigation"
     >
       <div className="flex h-[60px] items-center justify-center border-b border-[#E8DFC8] px-5 lg:justify-between">

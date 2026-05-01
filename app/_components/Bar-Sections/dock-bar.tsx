@@ -28,7 +28,7 @@ export const DockBar = ({ menuLabels, menuPaths }: DockBarProps) => {
       className="fixed bottom-0 z-50 w-full p-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:hidden"
       aria-label="Mobile navigation"
     >
-      <div className="flex items-center justify-around gap-1 rounded-full bg-[#FEFAE8] p-3 shadow-xl backdrop-blur-md">
+      <div className="flex items-center justify-around gap-1 rounded-full p-3 shadow-xl backdrop-blur-md">
         {menuLabels.map((label) => {
           const isActive = active === label;
 

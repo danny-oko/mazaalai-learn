@@ -17,7 +17,7 @@ export function LessonStatusScreen({
 }: Props) {
   return (
     <div
-      className={`flex items-center justify-center min-h-screen bg-[#FEFAE8] px-5 font-['Plus_Jakarta_Sans']`}
+      className={`flex items-center justify-center min-h-screen px-5 font-['Plus_Jakarta_Sans']`}
     >
       <div className="w-full max-w-sm text-center flex justify-center">
         <p
