@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { ClerkProvider } from "@clerk/nextjs";
 
 import { ConditionalBars } from "./_components/Bar-Sections/conditional-bars";
-
-import { BarSections } from "./_components/Bar-Sections/main-bars";
 import localFont from "next/font/local";
 
 const mongolFont = localFont({
@@ -36,8 +35,10 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${mongolFont.variable} h-full antialiased`}
     >
       <body className="flex h-full min-h-0 flex-row overflow-hidden">
-        <ConditionalBars />
-        <main className="min-h-0 min-w-0 flex-1 overflow-y-auto">{children}</main>
+        <ClerkProvider>
+          <ConditionalBars />
+          <main className="min-h-0 min-w-0 flex-1 overflow-y-auto">{children}</main>
+        </ClerkProvider>
       </body>
     </html>
   );
