@@ -55,9 +55,11 @@ export function LessonChoiceGrid({
   }, [matchData, taskType]);
 
   useEffect(() => {
-    setActiveLeftId(null);
-    setMatches({});
-    if (taskType === "MATCH") onSelect("");
+    (async () => {
+      setActiveLeftId(null);
+      setMatches({});
+      if (taskType === "MATCH") onSelect("");
+    })();
   }, [matchResetKey, onSelect, taskType]);
 
   useEffect(() => {
