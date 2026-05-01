@@ -1,7 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import { LessonContent, Task } from "./lesson-types";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  LessonContent,
+  MatchOptions,
+  McOptions,
+  Task,
+  TaskOption,
+} from "./lesson-types";
 import { LessonReviewStats } from "./lesson-review-types";
 
 type Phase = "teaching" | "tasks";
@@ -19,6 +25,37 @@ interface State {
   isFailed: boolean;
 }
 
+export interface LessonChoice {
+  value: string;
+  label: string;
+}
+
+export interface MatchRenderItem {
+  id: string;
+  text: string;
+}
+
+export interface MatchRenderData {
+  leftSide: MatchRenderItem[];
+  rightSide: MatchRenderItem[];
+  pairs: { left: string; right: string }[];
+}
+
+function sanitizeChoices(
+  items: Array<{
+    value: unknown;
+    label?: unknown;
+  }>,
+): LessonChoice[] {
+  return items
+    .map((item) => {
+      const value = toText(item.value);
+      const label = toText(item.label ?? item.value);
+      return { value, label };
+    })
+    .filter((item) => item.value);
+}
+
 function shuffle<T>(arr: T[]): T[] {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -26,6 +63,135 @@ function shuffle<T>(arr: T[]): T[] {
     [a[i], a[j]] = [a[j], a[i]];
   }
   return a;
+}
+
+function isMcOptions(value: unknown): value is McOptions {
+  return (
+    !!value &&
+    typeof value === "object" &&
+    "choices" in value &&
+    !!(value as { choices?: unknown }).choices
+  );
+}
+
+function isMatchOptions(value: unknown): value is MatchOptions {
+  return (
+    !!value &&
+    typeof value === "object" &&
+    "leftSide" in value &&
+    "rightSide" in value &&
+    "pairs" in value
+  );
+}
+
+function toText(value: unknown): string {
+  if (typeof value === "string") return value;
+  if (typeof value === "number" || typeof value === "boolean")
+    return String(value);
+  if (value && typeof value === "object") {
+    const record = value as Record<string, unknown>;
+    if (typeof record.text === "string") return record.text;
+    if (typeof record.label === "string") return record.label;
+    if (typeof record.value === "string") return record.value;
+    if (typeof record.id === "string") return record.id;
+  }
+  return "";
+}
+
+function extractMcChoices(value: unknown): Array<{
+  value: unknown;
+  label?: unknown;
+}> {
+  if (!value || typeof value !== "object") return [];
+  const rawChoices = (value as { choices?: unknown }).choices;
+
+  if (Array.isArray(rawChoices)) {
+    return rawChoices.map((choice) => {
+      if (typeof choice === "string") {
+        return { value: choice, label: choice };
+      }
+      const record = choice as Record<string, unknown>;
+      const text = toText(record.text ?? record.label ?? record.value ?? record.id);
+      return { value: text, label: text };
+    });
+  }
+
+  if (rawChoices && typeof rawChoices === "object") {
+    return Object.values(rawChoices as Record<string, unknown>).map(
+      (choice) => {
+        if (typeof choice === "string") {
+          return { value: choice, label: choice };
+        }
+        const record = choice as Record<string, unknown>;
+        const text = toText(record.text ?? record.label ?? record.value ?? record.id);
+        return { value: text, label: text };
+      },
+    );
+  }
+
+  if (typeof rawChoices === "string") {
+    return [{ value: rawChoices, label: rawChoices }];
+  }
+
+  return [];
+}
+
+function parseTaskOptions(options: unknown): unknown {
+  if (typeof options !== "string") return options;
+  try {
+    return JSON.parse(options);
+  } catch {
+    return options;
+  }
+}
+
+function extractMatchSideItems(
+  side: unknown,
+): Array<{ id: string; text: string }> {
+  if (!Array.isArray(side)) return [];
+  return side
+    .map((item, index) => {
+      if (typeof item === "string") {
+        return { id: `${index}`, text: item };
+      }
+      if (item && typeof item === "object") {
+        const record = item as Record<string, unknown>;
+        const id = toText(record.id ?? index);
+        const text = toText(
+          record.text ?? record.label ?? record.value ?? record.id,
+        );
+        return { id, text };
+      }
+      return { id: `${index}`, text: "" };
+    })
+    .filter((item) => item.text);
+}
+
+function normalizeMatchData(options: unknown): MatchRenderData | null {
+  if (!isMatchOptions(options)) return null;
+  const leftSide = extractMatchSideItems(options.leftSide);
+  const rightSide = extractMatchSideItems(options.rightSide);
+  const pairs = Array.isArray(options.pairs)
+    ? options.pairs
+        .map((pair) => ({ left: toText(pair.left), right: toText(pair.right) }))
+        .filter((pair) => pair.left && pair.right)
+    : [];
+  return { leftSide, rightSide, pairs };
+}
+
+function isMatchSelectionCorrect(task: Task, selected: string | null): boolean {
+  if (task.type !== "MATCH" || !selected) return false;
+  const options = parseTaskOptions(task.options);
+  const matchData = normalizeMatchData(options);
+  if (!matchData || !matchData.pairs.length) return false;
+  try {
+    const parsed = JSON.parse(selected) as Record<string, string>;
+    const selectedPairs = Object.entries(parsed);
+    if (selectedPairs.length !== matchData.pairs.length) return false;
+    return matchData.pairs.every((pair) => parsed[pair.left] === pair.right);
+  } catch {
+    return false;
+  }
 }
 
 async function saveProgress(
@@ -109,25 +275,96 @@ export function useLessonGame(lessonId: string, userId: string) {
 
   const currentContent = contents[contentIndex] ?? null;
   const currentTask = tasks[taskIndex] ?? null;
+  const currentOptions = useMemo(
+    () => (currentTask ? parseTaskOptions(currentTask.options) : null),
+    [currentTask],
+  );
+  const matchData = useMemo(
+    () =>
+      currentTask?.type === "MATCH" ? normalizeMatchData(currentOptions) : null,
+    [currentOptions, currentTask?.type],
+  );
 
   const totalSteps = contents.length + tasks.length;
   const completedSteps =
     phase === "teaching" ? contentIndex : contents.length + taskIndex;
   const progress = totalSteps > 0 ? (completedSteps / totalSteps) * 100 : 0;
 
-  const choices: string[] = useMemo(() => {
+  const choices: LessonChoice[] = useMemo(() => {
     if (!currentTask) return [];
-    if (currentTask.options?.length) return shuffle(currentTask.options);
-    const others = tasks
-      .filter((t) => t.id !== currentTask.id)
-      .map((t) => t.correctAnswer)
-      .slice(0, 3);
-    return shuffle([...others, currentTask.correctAnswer]);
-  }, [currentTask, tasks]);
+    const parsedOptions = currentOptions;
+    if (Array.isArray(parsedOptions) && parsedOptions.length) {
+      const normalized = sanitizeChoices(
+        parsedOptions.map((option) => {
+          if (typeof option === "string") {
+            return { value: option, label: option };
+          }
+          const item = option as TaskOption & {
+            label?: string;
+            value?: string;
+            id?: string;
+          };
+          const textValue = toText(
+            item.text ?? item.label ?? item.value ?? item.id,
+          );
+          return {
+            value: textValue,
+            label: textValue,
+          };
+        }),
+      );
+      return shuffle(normalized);
+    }
+    if (isMcOptions(parsedOptions)) {
+      const normalized = sanitizeChoices(extractMcChoices(parsedOptions));
+      return shuffle(normalized);
+    }
+    if (currentTask.type === "MATCH" && isMatchOptions(parsedOptions)) {
+      const leftChoices = extractMatchSideItems(parsedOptions.leftSide).map(
+        (item) => ({
+          value: `L:${item.id}`,
+          label: item.text,
+        }),
+      );
+      const rightChoices = extractMatchSideItems(parsedOptions.rightSide).map(
+        (item) => ({
+          value: `R:${item.id}`,
+          label: item.text,
+        }),
+      );
+      const matchChoices = sanitizeChoices(
+        [...leftChoices, ...rightChoices].map((item) => ({
+          ...item,
+          label: item.value.startsWith("L:")
+            ? `Left: ${item.label}`
+            : `Right: ${item.label}`,
+        })),
+      );
+      return shuffle(matchChoices);
+    }
+    const others = sanitizeChoices(
+      tasks
+        .filter((t) => t.id !== currentTask.id)
+        .map((t) => ({
+          value: t.correctAnswer,
+          label: t.correctAnswer,
+        }))
+        .slice(0, 3),
+    );
+    return shuffle(
+      sanitizeChoices([
+        ...others,
+        {
+          value: currentTask.correctAnswer,
+          label: currentTask.correctAnswer,
+        },
+      ]),
+    );
+  }, [currentTask, currentOptions, tasks]);
 
-  function setSelected(val: string | null) {
+  const setSelected = useCallback((val: string | null) => {
     setState((s) => ({ ...s, selected: val }));
-  }
+  }, []);
 
   function advanceContent() {
     setState((s) => {
@@ -144,7 +381,11 @@ export function useLessonGame(lessonId: string, userId: string) {
     setState((s) => {
       if (!currentTask) return s;
       totalRef.current += 1;
-      const isCorrect = !skip && s.selected === currentTask.correctAnswer;
+      const isCorrect =
+        !skip &&
+        (currentTask.type === "MATCH"
+          ? isMatchSelectionCorrect(currentTask, s.selected)
+          : s.selected === currentTask.correctAnswer);
       if (isCorrect) correctRef.current += 1;
       const nextHearts =
         !skip && !isCorrect ? Math.max(0, s.hearts - 1) : s.hearts;
@@ -195,6 +436,7 @@ export function useLessonGame(lessonId: string, userId: string) {
     phase,
     currentContent,
     currentTask,
+    matchData,
     choices,
     selected,
     setSelected,

@@ -17,11 +17,11 @@ export function LessonStatusScreen({
 }: Props) {
   return (
     <div
-      className={`flex items-center justify-center min-h-screen bg-[#111827] px-5 font-['Plus_Jakarta_Sans']`}
+      className={`flex items-center justify-center min-h-screen bg-[#FEFAE8] px-5 font-['Plus_Jakarta_Sans']`}
     >
       <div className="w-full max-w-sm text-center flex justify-center">
         <p
-          className={`text-lg font-black text-white ${animated ? "animate-pulse" : ""}`}
+          className={`text-lg font-black text-black ${animated ? "animate-pulse" : ""}`}
         >
           <img src="/bear.png" alt="Mazaalai Learn" className="animate-spin" />
           {message}

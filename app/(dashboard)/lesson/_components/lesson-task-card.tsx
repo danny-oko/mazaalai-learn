@@ -40,7 +40,6 @@ export function LessonTaskCard({ task }: LessonTaskCardProps) {
       <h2 className="text-xl sm:text-2xl font-black text-black">
         {task.question}
       </h2>
-      <div className="h-px bg-[#1F2937]" />
     </div>
   );
 }
