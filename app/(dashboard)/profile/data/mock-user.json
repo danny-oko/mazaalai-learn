@@ -74,7 +74,12 @@
     { "id": "badge-4", "label": "Champion", "icon": "🏆", "unlocked": false },
     { "id": "badge-5", "label": "Eagle Eye", "icon": "🦅", "unlocked": false },
     { "id": "badge-6", "label": "Diamond", "icon": "💎", "unlocked": false },
-    { "id": "badge-7", "label": "Globetrotter", "icon": "🌍", "unlocked": false },
+    {
+      "id": "badge-7",
+      "label": "Globetrotter",
+      "icon": "🌍",
+      "unlocked": false
+    },
     { "id": "badge-8", "label": "Dragon", "icon": "🐉", "unlocked": false }
   ],
   "settings": [
@@ -111,5 +116,16 @@
       { "rank": 2, "name": "Delger", "xp": 980 },
       { "rank": 3, "name": "Otgon", "xp": 720 }
     ]
-  }
+  },
+
+  "nearbyPlayers": [
+    { "rank": 1, "name": "Batu", "xp": 1240, "isMe": true },
+    { "rank": 2, "name": "Delger", "xp": 980, "xpChange": -260 },
+    { "rank": 3, "name": "Otgon", "xp": 720, "xpChange": -520 }
+  ],
+  "topPlayers": [
+    { "rank": 1, "name": "Batu", "xp": 1240, "streak": 12 },
+    { "rank": 2, "name": "Delger", "xp": 980, "streak": 5 },
+    { "rank": 3, "name": "Otgon", "xp": 720, "streak": 3 }
+  ]
 }
