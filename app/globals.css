@@ -135,8 +135,9 @@
     min-height: 100vh;
   }
 
-  .light body {
-    background: #f8f4e3;
+  html:not(.dark) body {
+    background-color: #fefae8;
+    min-height: 100vh;
   }
 }
 
@@ -153,4 +154,12 @@
   -webkit-writing-mode: vertical-lr;
   text-orientation: mixed;
   text-rendering: optimizeLegibility;
+}
+
+.font-dosis {
+  font-family: var(--font-dosis);
+}
+
+.font-balsamiq {
+  font-family: var(--font-balsamiq);
 }

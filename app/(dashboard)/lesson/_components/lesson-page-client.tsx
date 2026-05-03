@@ -76,7 +76,7 @@ export function LessonPageClient({
   }
 
   return (
-    <div className="min-h-screen bg-[#FEFAE8] flex flex-col font-['Plus_Jakarta_Sans']">
+    <div className="min-h-screen flex flex-col font-['Plus_Jakarta_Sans']">
       <div className="w-full flex flex-1 flex-col">
         <LessonTopBar
           progress={progress}
