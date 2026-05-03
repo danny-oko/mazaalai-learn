@@ -1,13 +1,14 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import "@fontsource/plus-jakarta-sans";
 import type { MenuLabel } from "./main-bars";
 
 const menuIcons: Record<MenuLabel, string> = {
-  Map: "./house.png",
-  Dictionary: "./dictionary.png",
-  Leaderboard: "./winner.png",
+  Map: "https://d35aaqx5ub95lt.cloudfront.net/vendor/784035717e2ff1d448c0f6cc4efc89fb.svg",
+  Dictionary:
+    "https://d35aaqx5ub95lt.cloudfront.net/vendor/80a60f598d6a6b0493aeb4d7b93fc0e3.svg",
+  Leaderboard:
+    "https://d35aaqx5ub95lt.cloudfront.net/vendor/ca9178510134b4b0893dbac30b6670aa.svg",
   Profile: "./chicken.png",
 };
 
@@ -33,43 +34,42 @@ export const SideBar = ({ menuLabels, menuPaths }: HeaderClientProps) => {
       className="fixed top-0 left-0 z-40 hidden h-full flex-col shadow-2xl md:flex md:w-20 lg:w-[256px]"
       aria-label="Main navigation"
     >
-      <div className="flex h-[60px] items-center justify-center border-b border-[#E8DFC8] px-5 lg:justify-between">
+      <div className="flex h-[60px] items-center justify-center px-2 lg:justify-start lg:px-5">
         <img
-          src="./bear.png"
+          src="https://d35aaqx5ub95lt.cloudfront.net/vendor/0cecd302cf0bcd0f73d51768feff75fe.svg"
           alt="Mazaalai Learn"
-          className="block object-contain md:block lg:hidden w-50 h-50"
+          className="block h-8 w-auto object-contain md:h-9 lg:hidden"
         />
-        <h2 className="font-bold text-[#0F5238] text-lg font-['Plus_Jakarta_Sans'] md:hidden lg:block">
-          Mazaalai Learn
-        </h2>
+        <img
+          src="https://d35aaqx5ub95lt.cloudfront.net/vendor/70a4be81077a8037698067f583816ff9.svg"
+          alt="Mazaalai Learn"
+          className="hidden h-9 w-auto object-contain lg:block"
+        />
       </div>
 
-      <nav className="flex flex-1 flex-col gap-1 p-3 lg:p-4">
+      <nav className="flex flex-1 flex-col gap-3 md:px-1 lg:p-4">
         {menuLabels.map((label) => {
-          const Icon = menuIcons[label];
           const isActive = active === label;
           return (
             <button
               key={label}
               onClick={() => handleNav(label)}
-              className={`flex items-center justify-center rounded-xl px-3 py-3 font-bold text-[16px] lg:justify-start lg:gap-5 lg:px-4
-              transition-all duration-150 font-['Plus_Jakarta_Sans']
+              className={`flex w-full items-center justify-center rounded-xl py-2 text-[16px] md:px-0 lg:justify-start lg:gap-5 lg:px-4
+              transition-all duration-150 font-balsamiq border-2
               ${
                 isActive
-                  ? "bg-[#0F5238] text-white shadow-md"
-                  : "text-[#0F5238] hover:bg-[#F2EEDD]"
+                  ? "bg-[#84d8ff]/50 text-[#1cb0f6] border-[#84d8ff]"
+                  : "text-[#777777] hover:bg-[#F2EEDD] border-transparent"
               }`}
             >
               <img
                 src={menuIcons[label]}
                 alt={label}
-                width={25}
-                height={25}
-                className={`transition-all duration-200 ${
-                  isActive ? "opacity-100" : "opacity-100"
-                }`}
+                width={35}
+                height={35}
+                className="h-7 w-7 object-contain transition-all duration-200 md:h-8 md:w-8 lg:h-9 lg:w-9"
               />
-              <div className="md:hidden lg:block uppercase text-[12px] font-extrabold tracking-wider">
+              <div className="md:hidden lg:block uppercase text-[14px] font-extrabold tracking-wider">
                 {label}
               </div>
             </button>

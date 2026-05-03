@@ -55,9 +55,11 @@ export function LessonChoiceGrid({
   }, [matchData, taskType]);
 
   useEffect(() => {
-    setActiveLeftId(null);
-    setMatches({});
-    if (taskType === "MATCH") onSelect("");
+    (async () => {
+      setActiveLeftId(null);
+      setMatches({});
+      if (taskType === "MATCH") onSelect("");
+    })();
   }, [matchResetKey, onSelect, taskType]);
 
   useEffect(() => {
@@ -106,7 +108,7 @@ export function LessonChoiceGrid({
                 onClick={() => setActiveLeftId(item.id)}
                 className="w-full rounded-2xl border-2 px-4 py-3 text-left text-sm font-bold transition-all"
                 style={{
-                  background: "#1A202C",
+                  background: "#473108",
                   borderColor:
                     matchedColor ?? (isActive ? "#58CC02" : "#374151"),
                   color: matchedColor ?? (isActive ? "#58CC02" : "#FFFFFF"),
@@ -152,7 +154,7 @@ export function LessonChoiceGrid({
                 onClick={() => handleRightSelect(item.id)}
                 className="w-full rounded-2xl border-2 px-4 py-3 text-left text-sm font-bold transition-all"
                 style={{
-                  background: "#1A202C",
+                  background: "#473108",
                   borderColor: isTaken ? color : "#374151",
                   color: isTaken ? color : "#FFFFFF",
                   boxShadow: isTaken

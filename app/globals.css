@@ -155,3 +155,11 @@
   text-orientation: mixed;
   text-rendering: optimizeLegibility;
 }
+
+.font-dosis {
+  font-family: var(--font-dosis);
+}
+
+.font-balsamiq {
+  font-family: var(--font-balsamiq);
+}
