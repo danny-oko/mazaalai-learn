@@ -28,7 +28,7 @@ export default function TabToggle({
           active === "weekly" ? "bg-[#E8940A] text-white" : "text-[#888]"
         }`}
       >
-        Weekly
+        Долоо хоног
       </button>
       <button
         onClick={() => handleSelect("alltime")}
@@ -36,7 +36,7 @@ export default function TabToggle({
           active === "alltime" ? "bg-[#E8940A] text-white" : "text-[#888]"
         }`}
       >
-        All-time
+        Бүх цаг үеийн
       </button>
     </div>
   );

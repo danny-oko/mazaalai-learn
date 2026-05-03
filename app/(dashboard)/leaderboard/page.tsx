@@ -1,4 +1,3 @@
-import BottomNav from "./_components/BottomNav";
 import CtaBanner from "./_components/CtaBanner";
 import LeaderboardHeader from "./_components/LeaderboardHeader";
 import LeaderboardList from "./_components/LeaderboardList";
@@ -17,9 +16,8 @@ import WebThisWeekCard from "./_components/WebThisWeekCard";
 export default function RankPage() {
   return (
     <div className="min-h-screen bg-[#F4EFE8] pb-28 md:pb-10 md:pl-60 lg:pl-70 xl:pl-100">
-      {/* УТАС — md-с дээш нуугдана */}
       <div className="md:hidden flex flex-col">
-        <LeaderboardHeader title={"Bichig\nten"} streak={12} />
+        <LeaderboardHeader title={"Мазаалай"} streak={12} />
         <TabToggle />
         <PodiumSection
           users={[
@@ -67,8 +65,7 @@ export default function RankPage() {
         />
       </div>
 
-      {/* ВЭБ — md-с доош нуугдана */}
-      <div className="hidden md:flex flex-col gap-4 px-8 pt-8">
+      <div className="hidden md:flex flex-col gap-4 px-8 pt-8 max-w-6xl mx-auto w-full">
         <WebLeaderboardHeader
           name="Batu Munkh"
           username="nomad_batu"
@@ -85,10 +82,8 @@ export default function RankPage() {
         />
         <WebTabToggle />
         <WebLeagueFilter />
-        {/* 2 багана */}
-        <div className="flex gap-6 items-start">
-          {/* Зүүн багана */}
 
+        <div className="flex gap-6 items-start">
           <div className="flex flex-col gap-4 flex-1">
             <WebPodiumSection
               users={[
@@ -154,35 +149,35 @@ export default function RankPage() {
             />
           </div>
 
-          {/* Баруун багана */}
-
           <div className="flex flex-col gap-4 w-80 shrink-0">
-            <WebStandingCard
-              league="Silver Steppe League"
-              rank={1}
-              total={24}
-              promotionPercent={82}
-              xpToPromote={260}
-            />
-            <WebThisWeekCard
-              totalXp={1240}
-              xpChange={320}
-              dayStreak={12}
-              isPersonalBest={true}
-              xpToday={47}
-              isAboveAvg={true}
-              daysActive={5}
-              totalDays={7}
-              isGoodPace={true}
-            />
-            <WebNearbyPlayers
-              players={[
-                { rank: 1, name: "Batu", xp: 1240, isMe: true },
-                { rank: 2, name: "Delger", xp: 980, xpChange: -260 },
-                { rank: 3, name: "Otgon", xp: 720, xpChange: -520 },
-              ]}
-            />
-            <WebLeaguePath />
+            <div className="mx-auto w-full max-w-[1220px] px-4 pt-5 md:px-6 md:pt-8">
+              <WebStandingCard
+                league="Silver Steppe League"
+                rank={1}
+                total={24}
+                promotionPercent={82}
+                xpToPromote={260}
+              />
+              <WebThisWeekCard
+                totalXp={1240}
+                xpChange={320}
+                dayStreak={12}
+                isPersonalBest={true}
+                xpToday={47}
+                isAboveAvg={true}
+                daysActive={5}
+                totalDays={7}
+                isGoodPace={true}
+              />
+              <WebNearbyPlayers
+                players={[
+                  { rank: 1, name: "Batu", xp: 1240, isMe: true },
+                  { rank: 2, name: "Delger", xp: 980, xpChange: -260 },
+                  { rank: 3, name: "Otgon", xp: 720, xpChange: -520 },
+                ]}
+              />
+              <WebLeaguePath />
+            </div>
           </div>
         </div>
       </div>
