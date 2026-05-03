@@ -35,6 +35,15 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Mazaalai Learn",
   description: "Эх хэл бол үндэсний дархлаа юм",
+  icons: {
+    icon: "/bear.png", // Standard favicon
+    shortcut: "/bear.png", // Shortcut icon
+    apple: "/bear.png", // For iOS devices
+    other: {
+      rel: "apple-touch-icon-precomposed",
+      url: "/apple-touch-icon-precomposed.png",
+    },
+  },
 };
 
 export default function RootLayout({
@@ -46,12 +55,10 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${mongolFont.variable} ${balsamiq.variable} h-full antialiased`}
     >
       <body className="flex h-full min-h-0 flex-row overflow-hidden">
-        <ClerkProvider>
-          <ConditionalBars />
-          <main className="min-h-0 min-w-0 flex-1 overflow-y-auto">
-            {children}
-          </main>
-        </ClerkProvider>
+        <ConditionalBars />
+        <main className="min-h-0 min-w-0 flex-1 overflow-y-auto">
+          {children}
+        </main>
       </body>
     </html>
   );

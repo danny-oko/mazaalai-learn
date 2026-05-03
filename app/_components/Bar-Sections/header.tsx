@@ -18,50 +18,15 @@ export const Header = ({
   const isStreakLost = xp === 0;
 
   return (
-    <div className="md:fixed right-20 top-4 z-100 pt-[env(safe-area-inset-top)]">
-      <div className="max-w-lg">
-        <div className="flex items-center px-4 py-3 font-['Plus_Jakarta_Sans'] text-[#0F5238]">
-          <div className="flex shrink-0 items-center gap-25 sm:gap-6">
-            <div
-              className={`flex items-center gap-3 ${
-                isOutOfHearts ? "text-[#A3A3A3]" : "text-[#FF4B4B]"
-              }`}
-            >
-              {isOutOfHearts ? (
-                <img
-                  src="https://d35aaqx5ub95lt.cloudfront.net/images/hearts/2bd002fdb11664f869ead7bb84a2fc15.svg"
-                  alt="Gray Heart Icon"
-                  height={30}
-                  width={30}
-                />
-              ) : (
-                <img
-                  src="https://d35aaqx5ub95lt.cloudfront.net/images/hearts/7631e3ee734dd4fe7792626b59457fa4.svg"
-                  alt="Heart Icon"
-                  height={30}
-                  width={30}
-                />
-              )}
-              <span className="text-xs font-black sm:text-sm">
-                {safeHeartsRemaining}
-              </span>
-            </div>
-            <div className="flex items-center gap-3">
-              {isStreakLost ? (
-                <img
-                  src="https://d35aaqx5ub95lt.cloudfront.net/images/icons/65b8a029d7a148218f1ac98a198f8b42.svg"
-                  alt="Flame Icon"
-                  width={20}
-                  height={20}
-                />
-              ) : (
-                <img
-                  src="https://d35aaqx5ub95lt.cloudfront.net/images/icons/398e4298a3b39ce566050e5c041949ef.svg"
-                  alt="Flame Icon"
-                  width={20}
-                  height={20}
-                />
-              )}
+    <div className="fixed top-4 z-[100] flex w-full justify-center px-4 pt-[env(safe-area-inset-top)]">
+      <div className="w-full max-w-lg">
+        <div className="flex items-center justify-between rounded-full px-4 py-3 font-['Plus_Jakarta_Sans'] text-[#0F5238] shadow-xl sm:px-5">
+          <h1 className="truncate text-sm font-bold sm:text-base">
+            Mazaalai Learn
+          </h1>
+          <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+            <div className="flex items-center gap-1.5 rounded-full border border-[#E8DFC8] bg-[#F2EEDD] px-2 py-1.5 sm:px-3">
+              <Flame className="h-4 w-4 fill-orange-500 text-orange-500" />
               <span className="text-xs font-black sm:text-sm">{streak}</span>
             </div>
             <div className="flex items-center gap-1">

@@ -196,9 +196,9 @@ export function LessonChoiceGrid({
               onClick={() => onSelect(choice.value)}
               className="flex flex-col items-center justify-center rounded-2xl border-2 p-5 transition-all duration-100 active:scale-95"
               style={{
-                background: "#473108",
-                borderColor: sel ? "#E8920A" : "#374151",
-                boxShadow: sel ? "0 4px 10px #E8920A" : "0 4px 0 #1F2937",
+                background: "#FAD99B",
+                borderColor: sel ? "#E8920A" : "#FAD99B",
+                boxShadow: sel ? "0 4px 10px #E8920A" : "0 4px 0 #FAD99B",
                 color: sel ? "#E8920A" : "#FFFFFF",
               }}
             >
