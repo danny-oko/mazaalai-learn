@@ -1,12 +1,9 @@
-import React from "react";
-import AlphabetChart from "./components/AlphabetChart";
+import { AlphabetClient } from "./components/AlphabetClient";
+import alphabetData from "./components/alphabetData.json";
+import { Character } from "./components/CharacterCard";
 
-const Alphabet = () => {
-  return (
-    <div className="min-h-screen bg-[#F5F0E8] pb-28 md:pb-10 md:pl-60 lg:pl-70 xl:pl-100">
-      <AlphabetChart />
-    </div>
-  );
-};
+const characters = alphabetData as Character[];
 
-export default Alphabet;
+export default function Page() {
+  return <AlphabetClient characters={characters} />;
+}

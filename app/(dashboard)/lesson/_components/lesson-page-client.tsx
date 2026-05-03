@@ -4,13 +4,13 @@ import "@fontsource/plus-jakarta-sans";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { LessonCheckButton } from "./lesson-check-button";
-import { LessonChoiceGrid } from "./lesson-choice-grid";
 import { LessonContentCard } from "./lesson-content-card";
 import { LessonTaskCard } from "./lesson-task-card";
 import { LessonStatusScreen } from "./lesson-status-screen";
 import { LessonTopBar } from "./lesson-top-bar";
 import { useLessonGame } from "./use-lesson-game";
 import { LessonReviewScreen } from "./lesson-review-screen";
+import { LessonChoiceGrid } from "./lesson-choice-grid";
 
 export function LessonPageClient({
   lessonId,
@@ -25,6 +25,7 @@ export function LessonPageClient({
     phase,
     currentContent,
     currentTask,
+    matchData,
     choices,
     selected,
     setSelected,
@@ -37,7 +38,7 @@ export function LessonPageClient({
   } = useLessonGame(lessonId, userId);
   const [skipped, setSkipped] = useState(false);
 
-  if (loading) return <LessonStatusScreen message="Loading..." animated />;
+  if (loading) return <LessonStatusScreen message="LOADING..." animated />;
   if (isFailed)
     return (
       <LessonStatusScreen
@@ -61,7 +62,12 @@ export function LessonPageClient({
 
   function handleCheck() {
     checkTaskAnswer(false);
-    if (selected !== currentTask?.correctAnswer) setSkipped(true);
+    if (
+      currentTask?.type !== "MATCH" &&
+      selected !== currentTask?.correctAnswer
+    ) {
+      setSkipped(true);
+    }
   }
 
   function handleContinueAfterSkip() {
@@ -70,7 +76,7 @@ export function LessonPageClient({
   }
 
   return (
-    <div className="min-h-screen bg-[#111827] flex flex-col font-['Plus_Jakarta_Sans']">
+    <div className="min-h-screen flex flex-col font-['Plus_Jakarta_Sans']">
       <div className="w-full flex flex-1 flex-col">
         <LessonTopBar
           progress={progress}
@@ -86,6 +92,8 @@ export function LessonPageClient({
                 <>
                   <LessonTaskCard task={currentTask} />
                   <LessonChoiceGrid
+                    taskType={currentTask.type}
+                    matchData={matchData}
                     choices={choices}
                     selected={selected}
                     onSelect={setSelected}

@@ -1,7 +1,7 @@
 // LessonCards.tsx
 "use client";
 
-import { Lock, BookOpen, PenLine, Check } from "lucide-react";
+import { Lock, BookOpen, Check, Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -17,14 +17,6 @@ export type Lesson = {
 export const X = [47, 78, 47, 18, 47, 78, 47];
 export const ROW = 160;
 export const SW = 340;
-
-function getIcon(title: string) {
-  if (title.toLowerCase().includes("intro")) return Check;
-  if (title.toLowerCase().includes("vowel")) return BookOpen;
-  if (title.toLowerCase().includes("consonant")) return PenLine;
-  if (title.toLowerCase().includes("grammar")) return BookOpen;
-  return PenLine;
-}
 
 function assignStatuses(lessons: Lesson[], completedUpTo: number): Lesson[] {
   return lessons
@@ -84,7 +76,7 @@ export const LessonCards = ({
         const isLocked = l.status === "locked";
         const isDone = l.status === "done";
         const isActive = l.status === "active";
-        const Icon = getIcon(l.title);
+        const Icon = isLocked ? Lock : isDone ? Check : Star;
         const xPos = X[i % X.length];
 
         return (
@@ -111,7 +103,7 @@ export const LessonCards = ({
                   ? "#E8E5DC"
                   : isDone
                     ? "#539f7e"
-                    : "#0F5238",
+                    : "#58cc02",
                 border: isLocked ? "2px dashed #BFC9C1" : "none",
                 boxShadow: isDone
                   ? "0 0 0 6px #C8EDD9"
@@ -123,16 +115,17 @@ export const LessonCards = ({
               }}
             >
               <Icon
-                size={isActive ? 28 : 24}
+                size={isActive ? 40 : 24}
                 color={isLocked ? "#BFC9C1" : "#fff"}
                 strokeWidth={2}
+                fill={isLocked ? "#BFC9C1" : "#fff"}
               />
             </button>
 
             {isActive && (
               <div
-                className="mt-3 px-5 py-1.5 rounded-full text-[11px] font-bold tracking-widest uppercase text-white whitespace-nowrap"
-                style={{ background: "#0F5238" }}
+                className="mt-3 mx-auto max-w-[min(85vw,11rem)] rounded-2xl px-4 py-1.5 text-center text-[13px] font-bold uppercase leading-snug tracking-widest text-white wrap-break-word sm:max-w-none sm:whitespace-nowrap sm:rounded-full sm:px-5"
+                style={{ background: "#58cc02" }}
               >
                 {l.title}
               </div>
@@ -140,7 +133,7 @@ export const LessonCards = ({
 
             {!isActive && (
               <p
-                className="mt-2 text-[13px] font-bold bg-[#ECE8D8] rounded-2xl px-3 py-1 whitespace-nowrap"
+                className="mt-2 mx-auto max-w-[min(85vw,11rem)] rounded-2xl bg-[#ECE8D8] px-3 py-1.5 text-center text-[13px] font-bold leading-snug wrap-break-word sm:max-w-none sm:whitespace-nowrap"
                 style={{ color: isLocked ? "#BFC9C1" : "#0F5238" }}
               >
                 {l.title}

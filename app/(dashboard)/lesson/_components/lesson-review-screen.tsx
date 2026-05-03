@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { LessonReviewStats } from "./lesson-review-types";
+import { Flame, Heart, Star, Trophy } from "lucide-react";
 
 function AnimatedNumber({
   target,
@@ -52,7 +53,7 @@ function CircleProgress({ percent }: { percent: number }) {
         r={r}
         fill="none"
         stroke={
-          percent >= 80 ? "#58CC02" : percent >= 50 ? "#FBBF24" : "#FF4B4B"
+          percent >= 80 ? "#E8920A" : percent >= 50 ? "#FBBF24" : "#FF4B4B"
         }
         strokeWidth={stroke}
         strokeLinecap="round"
@@ -76,14 +77,14 @@ function StatCard({
   accent: string;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-1.5 bg-[#1F2937] rounded-2xl py-5 px-3 border border-[#374151]">
+    <div className="flex flex-col items-center justify-center gap-1.5 bg-[#FAD99A] rounded-2xl py-5 px-3 border border-[#E8920A]">
       <span
         className="text-[10px] font-black tracking-widest uppercase"
         style={{ color: accent }}
       >
         {label}
       </span>
-      <span className="text-2xl sm:text-3xl font-black text-white leading-none">
+      <span className="text-2xl sm:text-3xl font-black text-black leading-none">
         {value}
       </span>
     </div>
@@ -116,14 +117,20 @@ export function LessonReviewScreen({
   const isPerfect = heartsRemaining === 3 && accuracy === 100;
 
   return (
-    <div className="min-h-screen bg-[#111827] flex flex-col items-center justify-center px-4 py-10 font-['Plus_Jakarta_Sans']">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-10 font-['Plus_Jakarta_Sans']">
       <div className="w-full max-w-md flex flex-col items-center gap-8">
         {/* Header */}
         <div className="flex flex-col items-center gap-2 text-center">
           <div className="text-5xl mb-1">
-            {isPerfect ? "🏆" : accuracy >= 80 ? "⭐" : "💪"}
+            {isPerfect ? (
+              <Trophy className="h-20 w-20 text-yellow-400 fill-yellow-400 drop-shadow-[0_0_20px_rgba(250,204,21,0.4)]" />
+            ) : accuracy >= 80 ? (
+              <Star className="h-20 w-20 text-yellow-400 fill-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.3)]" />
+            ) : (
+              <Flame className="h-20 w-20 text-orange-500 fill-orange-500 drop-shadow-[0_0_15px_rgba(249,115,22,0.3)]" />
+            )}
           </div>
-          <h1 className="text-3xl font-black text-white">
+          <h1 className="text-3xl font-black text-black">
             {isPerfect
               ? "Perfect Lesson!"
               : accuracy >= 80
@@ -143,7 +150,7 @@ export function LessonReviewScreen({
         <div className="relative flex items-center justify-center">
           <CircleProgress percent={accuracy} />
           <div className="absolute flex flex-col items-center">
-            <span className="text-3xl font-black text-white leading-none">
+            <span className="text-3xl font-black text-black leading-none">
               <AnimatedNumber target={accuracy} />%
             </span>
             <span className="text-[10px] font-black tracking-widest uppercase text-[#6B7280]">
@@ -156,22 +163,22 @@ export function LessonReviewScreen({
         <div className="grid grid-cols-3 gap-3 w-full">
           <StatCard
             label="XP Earned"
-            accent="#FBBF24"
+            accent="#8c6606"
             value={
-              <>
+              <div className="flex items-center gap-2">
                 <AnimatedNumber target={xpEarned} />
-                <span className="text-base ml-0.5">✨</span>
-              </>
+                <Star className="h-7 w-7 fill-yellow-400 text-yellow-400" />
+              </div>
             }
           />
           <StatCard
             label="Hearts"
             accent="#FF4B4B"
             value={
-              <>
+              <div className="flex items-center gap-2">
                 <AnimatedNumber target={heartsRemaining} />
-                <span className="text-base ml-0.5">❤️</span>
-              </>
+                <Heart className="w-8 h-8 fill-[#FF4B4B] text-[#FF4B4B]" />
+              </div>
             }
           />
           <StatCard
@@ -182,12 +189,12 @@ export function LessonReviewScreen({
         </div>
 
         {/* Score bar */}
-        <div className="w-full bg-[#1F2937] rounded-2xl p-4 border border-[#374151] flex flex-col gap-3">
+        <div className="w-full bg-[#FAD99A] rounded-2xl p-4 border border-[#E8920A] flex flex-col gap-3">
           <div className="flex justify-between items-center">
             <span className="text-xs font-black tracking-widest uppercase text-[#6B7280]">
               Questions
             </span>
-            <span className="text-sm font-black text-white">
+            <span className="text-sm font-black text-black">
               {correctAnswers} / {totalQuestions} correct
             </span>
           </div>
@@ -209,33 +216,38 @@ export function LessonReviewScreen({
         </div>
 
         {/* XP breakdown */}
-        <div className="w-full bg-[#1F2937] rounded-2xl p-4 border border-[#374151] flex flex-col gap-2">
+        <div className="w-full bg-[#FAD99A] rounded-2xl p-4 border border-[#E8920A] flex flex-col gap-2">
           <span className="text-xs font-black tracking-widest uppercase text-[#6B7280]">
             XP Breakdown
           </span>
           <div className="flex justify-between text-sm font-semibold text-[#9CA3AF]">
             <span>Task rewards</span>
-            <span className="text-white font-black">
-              +{Math.max(0, xpEarned - heartsRemaining * 5)} ✨
+            <span className="text-black font-black flex items-center gap-2">
+              +{Math.max(0, xpEarned - heartsRemaining * 5)}
+              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
             </span>
           </div>
           <div className="flex justify-between text-sm font-semibold text-[#9CA3AF]">
             <span>Hearts bonus</span>
-            <span className="text-white font-black">
-              +{heartsRemaining * 5} ✨
+            <span className="text-black font-black flex items-center gap-2">
+              +{heartsRemaining * 5}
+              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
             </span>
           </div>
           <div className="h-px bg-[#374151]" />
-          <div className="flex justify-between text-sm font-black text-white">
+          <div className="flex justify-between text-sm font-black text-black">
             <span>Total</span>
-            <span className="text-[#FBBF24]">+{xpEarned} ✨</span>
+            <span className="text-[#FBBF24] flex items-center gap-2">
+              +{xpEarned}
+              <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+            </span>
           </div>
         </div>
 
         <button
           onClick={onContinue}
           className="w-full py-4 rounded-2xl font-black text-base tracking-widest uppercase text-white active:scale-95 transition-all"
-          style={{ background: "#58CC02", boxShadow: "0 4px 0 #3A8C01" }}
+          style={{ background: "#E8920A", boxShadow: "0 4px 10px #E8920A" }}
         >
           Continue
         </button>
