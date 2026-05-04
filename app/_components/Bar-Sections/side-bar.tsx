@@ -1,7 +1,6 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import "@fontsource/plus-jakarta-sans";
 import type { MenuLabel } from "./main-bars";
 
 const menuIcons: Record<MenuLabel, string> = {
@@ -30,34 +29,33 @@ export const SideBar = ({ menuLabels, menuPaths }: HeaderClientProps) => {
 
   return (
     <aside
-      className="fixed top-0 left-0 z-40 hidden h-full flex-col bg-[#FEFAE8] shadow-2xl md:flex md:w-20 lg:w-[256px]"
+      className="fixed left-0 top-0 z-40 hidden h-full flex-col border-r border-[#ead9bb] bg-[#FFF8E7] shadow-[12px_0_35px_rgba(122,89,48,0.12)] md:flex md:w-20 lg:w-56"
       aria-label="Main navigation"
     >
-      <div className="flex h-[60px] items-center justify-center border-b border-[#E8DFC8] px-5 lg:justify-between">
+      <div className="flex h-[60px] items-center justify-center border-b border-[#ead9bb] px-5 lg:justify-between">
         <img
           src="./bear.png"
           alt="Mazaalai Learn"
-          className="block object-contain md:block lg:hidden w-50 h-50"
+          className="block h-12 w-12 object-contain md:block lg:hidden"
         />
-        <h2 className="font-bold text-[#0F5238] text-lg font-['Plus_Jakarta_Sans'] md:hidden lg:block">
+        <h2 className="hidden font-balsamiq text-lg font-bold text-[#3b2f2f] lg:block">
           Mazaalai Learn
         </h2>
       </div>
 
       <nav className="flex flex-1 flex-col gap-1 p-3 lg:p-4">
         {menuLabels.map((label) => {
-          const Icon = menuIcons[label];
           const isActive = active === label;
           return (
             <button
               key={label}
+              type="button"
               onClick={() => handleNav(label)}
-              className={`flex items-center justify-center rounded-xl px-3 py-3 font-bold text-[16px] lg:justify-start lg:gap-5 lg:px-4
-              transition-all duration-150 font-['Plus_Jakarta_Sans']
+              className={`flex items-center justify-center rounded-xl px-3 py-3 font-balsamiq text-[18px] font-bold transition-all duration-150 lg:justify-start lg:gap-4 lg:px-4
               ${
                 isActive
-                  ? "bg-[#0F5238] text-white shadow-md"
-                  : "text-[#0F5238] hover:bg-[#F2EEDD]"
+                  ? "bg-[#e8920a] text-white shadow-[0_10px_24px_rgba(232,146,10,0.25)]"
+                  : "text-[#6b4d26] hover:bg-[#f8e7c7] hover:text-[#3b2f2f]"
               }`}
             >
               <img
@@ -69,7 +67,7 @@ export const SideBar = ({ menuLabels, menuPaths }: HeaderClientProps) => {
                   isActive ? "opacity-100" : "opacity-100"
                 }`}
               />
-              <div className="md:hidden lg:block uppercase text-[12px] font-extrabold tracking-wider">
+              <div className="hidden uppercase lg:block">
                 {label}
               </div>
             </button>

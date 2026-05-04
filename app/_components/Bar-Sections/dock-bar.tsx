@@ -28,19 +28,20 @@ export const DockBar = ({ menuLabels, menuPaths }: DockBarProps) => {
       className="fixed bottom-0 z-50 w-full p-4 pb-[max(1rem,env(safe-area-inset-bottom))] md:hidden"
       aria-label="Mobile navigation"
     >
-      <div className="flex items-center justify-around gap-1 rounded-full bg-[#FEFAE8] p-3 shadow-xl backdrop-blur-md">
+      <div className="flex items-center justify-around gap-1 rounded-full border border-[#ead9bb] bg-[#FFF8E7]/95 p-3 shadow-[0_18px_45px_rgba(122,89,48,0.18)] backdrop-blur-md">
         {menuLabels.map((label) => {
           const isActive = active === label;
 
           return (
             <button
               key={label}
+              type="button"
               onClick={() => router.push(menuPaths[label])}
-              className={`flex flex-col items-center gap-1 px-2 py-2 transition-all duration-200 font-['Plus_Jakarta_Sans'] rounded-4xl w-[60px] h-[60px] justify-center
+              className={`flex h-[60px] w-[60px] flex-col items-center justify-center gap-1 rounded-4xl px-2 py-2 font-balsamiq transition-all duration-200
                 ${
                   isActive
-                    ? "bg-[#0F5238]/20 shadow-md border border-[#0F5238]"
-                    : "hover:bg-[#F2EEDD]"
+                    ? "border border-[#e8920a] bg-[#fff2d6] shadow-md"
+                    : "hover:bg-[#f8e7c7]"
                 }`}
             >
               <img

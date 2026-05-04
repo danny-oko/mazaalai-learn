@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Character, Form } from "./CharacterCard";
+import { Character, Form } from "./LetterCard";
 import StrokeAnimation from "./StrokeAnimation";
 
 const FORM_LABELS: Record<string, string> = {
@@ -46,11 +46,10 @@ export const CharacterDetail = ({
   return (
     <div
       className={[
-        "rounded-[32px] bg-white shadow-[0_20px_60px_rgba(35,31,25,0.08)]",
+        "rounded-2xl border border-[#ead9bb] bg-white text-[#3b2f2f] shadow-[0_18px_45px_rgba(122,89,48,0.12)]",
         compact ? "h-full p-5" : "p-6 md:p-8",
       ].join(" ")}
     >
-      {/* Header */}
       <div
         className={
           compact
@@ -61,33 +60,32 @@ export const CharacterDetail = ({
         <div>
           <h2
             className={[
-              "font-black text-[#003D27]",
+              "font-balsamiq font-bold text-[#3b2f2f]",
               compact ? "text-3xl" : "text-4xl",
             ].join(" ")}
           >
             {character.name}
           </h2>
 
-          <p className="mt-1 text-sm text-[#6F746F]">
+          <p className="mt-1 font-balsamiq text-sm font-bold text-[#7a5930]">
             /{character.latinForm}/ phoneme
           </p>
         </div>
 
-        {/* Play button */}
         <button
+          type="button"
           onClick={() => {
             setPlay(false);
-            setTimeout(() => setPlay(true), 10); // restart animation
+            setTimeout(() => setPlay(true), 10);
           }}
-          className="rounded-full bg-[#00865A] px-5 py-2 text-sm font-bold text-white shadow"
+          className="rounded-full bg-[#e8920a] px-5 py-2 font-balsamiq text-sm font-bold text-white shadow transition hover:bg-[#c97806] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e8920a] focus-visible:ring-offset-2"
         >
-          ⊙ Play
+          Play
         </button>
       </div>
 
-      {/* Forms */}
       <section className={compact ? "mb-5" : "mb-8"}>
-        <h3 className="mb-4 text-xs font-bold uppercase text-[#777C77]">
+        <h3 className="mb-4 font-balsamiq text-xs font-bold uppercase text-[#7a5930]">
           Forms Visualization
         </h3>
 
@@ -98,24 +96,25 @@ export const CharacterDetail = ({
             return (
               <button
                 key={form.type}
+                type="button"
                 onClick={() => setSelectedFormType(form.type)}
-                className="flex flex-col items-center gap-2"
+                className="flex flex-col items-center gap-2 font-balsamiq font-bold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#e8920a] focus-visible:ring-offset-2"
               >
                 <div
                   className={[
                     "flex items-center justify-center rounded-full border-2",
                     compact ? "h-16 w-16" : "h-20 w-20",
                     active
-                      ? "bg-[#DDF9EA] border-[#A9E5CB]"
-                      : "bg-[#F7F5F1] border-[#EEEAE3]",
+                      ? "border-[#e8920a] bg-[#fff2d6]"
+                      : "border-[#ead9bb] bg-[#fffdf7]",
                   ].join(" ")}
                 >
-                  <span className="[writing-mode:vertical-lr] text-2xl text-[#003D27]">
+                  <span className="mongol-script text-2xl text-[#3b2f2f]">
                     {form.glyph}
                   </span>
                 </div>
 
-                <span className={active ? "text-[#00865A]" : "text-[#8A8E8A]"}>
+                <span className={active ? "text-[#c97806]" : "text-[#7a5930]"}>
                   {FORM_LABELS[form.type]}
                 </span>
               </button>
@@ -124,15 +123,16 @@ export const CharacterDetail = ({
         </div>
       </section>
 
-      {/* 🔥 Stroke Animation хэсэг */}
       <section
         className={[
-          "rounded-[26px] border border-[#EEEAE3] bg-[#F7F5F1]",
+          "rounded-2xl border border-[#ead9bb] bg-[#fffdf7]",
           compact ? "mb-5 p-4" : "mb-8 p-6",
         ].join(" ")}
       >
         <div className="mb-4 flex items-center justify-between">
-          <h3 className="text-sm font-bold">Stroke Order</h3>
+          <h3 className="font-balsamiq text-sm font-bold text-[#3b2f2f]">
+            Stroke Order
+          </h3>
         </div>
 
         <div
@@ -145,21 +145,22 @@ export const CharacterDetail = ({
           {character.forms[0]?.strokePath ? (
             <StrokeAnimation path={character.forms[0].strokePath} play={play} />
           ) : (
-            <span className="text-gray-400 text-sm">No stroke data</span>
+            <span className="text-sm text-[#a98958]">No stroke data</span>
           )}
         </div>
       </section>
 
-      {/* Form descriptions */}
       <section className="space-y-2">
         {forms.map((form) => (
           <div
             key={form.type}
-            className="flex items-center justify-between rounded-xl border p-3"
+            className="flex items-center justify-between rounded-xl border border-[#ead9bb] bg-[#fffdf7] p-3"
           >
             <div>
-              <h4 className="font-bold">{FORM_LABELS[form.type]} Form</h4>
-              <p className="text-sm text-gray-500">
+              <h4 className="font-balsamiq font-bold text-[#3b2f2f]">
+                {FORM_LABELS[form.type]} Form
+              </h4>
+              <p className="text-sm text-[#7a5930]">
                 {FORM_DESCRIPTIONS[form.type]}
               </p>
             </div>

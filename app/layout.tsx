@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Balsamiq_Sans, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 
@@ -11,9 +11,10 @@ const mongolFont = localFont({
   variable: "--font-mongol",
 });
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const balsamiq = Balsamiq_Sans({
+  variable: "--font-balsamiq",
   subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 const geistMono = Geist_Mono({
@@ -32,12 +33,14 @@ export default function RootLayout({
   return (
     <html
       lang="mn"
-      className={`${geistSans.variable} ${geistMono.variable} ${mongolFont.variable} h-full antialiased`}
+      className={`${balsamiq.variable} ${geistMono.variable} ${mongolFont.variable} h-full antialiased`}
     >
-      <body className="flex h-full min-h-0 flex-row overflow-hidden">
+      <body className="flex h-full min-h-0 flex-row overflow-hidden bg-[#FFF8E7] font-balsamiq text-[#3b2f2f]">
         <ClerkProvider>
           <ConditionalBars />
-          <main className="min-h-0 min-w-0 flex-1 overflow-y-auto">{children}</main>
+          <main className="min-h-0 min-w-0 flex-1 overflow-y-auto md:pl-20 lg:pl-56">
+            {children}
+          </main>
         </ClerkProvider>
       </body>
     </html>

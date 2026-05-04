@@ -16,7 +16,7 @@ import WebThisWeekCard from "./_components/WebThisWeekCard";
 
 export default function RankPage() {
   return (
-    <div className="min-h-screen bg-[#F4EFE8] pb-28 md:pb-10 md:pl-60 lg:pl-70 xl:pl-100">
+    <div className="min-h-screen bg-[#FFF8E7] pb-28 text-[#3b2f2f] md:pb-10">
       {/* УТАС — md-с дээш нуугдана */}
       <div className="md:hidden flex flex-col">
         <LeaderboardHeader title={"Bichig\nten"} streak={12} />
@@ -68,7 +68,7 @@ export default function RankPage() {
       </div>
 
       {/* ВЭБ — md-с доош нуугдана */}
-      <div className="hidden md:flex flex-col gap-4 px-8 pt-8">
+      <div className="mx-auto hidden w-full max-w-6xl flex-col gap-4 px-6 pt-8 md:flex lg:px-8">
         <WebLeaderboardHeader
           name="Batu Munkh"
           username="nomad_batu"
