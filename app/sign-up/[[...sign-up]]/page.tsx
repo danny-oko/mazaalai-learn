@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@clerk/nextjs";
 import { useSignUp } from "@clerk/nextjs/legacy";
 
 import { AuthHeader } from "@/components/auth/AuthHeader";
@@ -21,9 +22,27 @@ import {
   signUpPasswordSchema,
 } from "@/lib/validators/auth";
 
+const HOME_ROUTE = "/home";
+
 export default function SignUpPage() {
+  const { isSignedIn, isLoaded: sessionLoaded } = useAuth();
   const { isLoaded, signUp } = useSignUp();
   const router = useRouter();
+
+  useEffect(() => {
+    if (!sessionLoaded || !isSignedIn) return;
+    router.replace(HOME_ROUTE);
+  }, [sessionLoaded, isSignedIn, router]);
+
+  useEffect(() => {
+    const onPageShow = (e: PageTransitionEvent) => {
+      if (!e.persisted) return;
+      if (!sessionLoaded || !isSignedIn) return;
+      router.replace(HOME_ROUTE);
+    };
+    window.addEventListener("pageshow", onPageShow);
+    return () => window.removeEventListener("pageshow", onPageShow);
+  }, [sessionLoaded, isSignedIn, router]);
   const [step, setStep] = useState(1);
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
@@ -136,20 +155,6 @@ export default function SignUpPage() {
     }
   };
 
-  const onGoogleSignUp = async () => {
-    if (!isLoaded || !signUp) return;
-    setError(null);
-    try {
-      await signUp.authenticateWithRedirect({
-        strategy: "oauth_google",
-        redirectUrl: "/sign-up",
-        redirectUrlComplete: "/sign-in",
-      });
-    } catch (err: unknown) {
-      setError(getClerkErrorMessage(err, "Could not start Google sign-up."));
-    }
-  };
-
   return (
     <AuthShell>
       <AuthHeader />
@@ -164,7 +169,6 @@ export default function SignUpPage() {
             onChangeFullName={setFullName}
             onChangeUsername={setUsername}
             onChangeEmail={setEmail}
-            onGoogle={onGoogleSignUp}
           />
         )}
 

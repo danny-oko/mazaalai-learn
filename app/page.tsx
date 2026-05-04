@@ -1,5 +1,6 @@
-import { redirect } from 'next/navigation'
+import { redirect } from "next/navigation";
 
-export default async function EntryPage() {
-  redirect('/sign-in')
+/** Everyone hits `/sign-in` first; middleware sends signed-in users to `/home`. */
+export default function EntryPage() {
+  redirect("/sign-in");
 }
