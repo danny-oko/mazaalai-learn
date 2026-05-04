@@ -135,8 +135,9 @@
     min-height: 100vh;
   }
 
-  .light body {
-    background: #f8f4e3;
+  html:not(.dark) body {
+    background-color: #fefae8;
+    min-height: 100vh;
   }
 }
 

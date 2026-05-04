@@ -18,7 +18,6 @@ function ListItem({ user }: { user: LeaderboardUser }) {
         user.isMe ? "bg-[#E8940A]" : "bg-white border border-[#E8D9C0]"
       }`}
     >
-      {/* Дугаар */}
       <span
         className={`text-base font-semibold w-5 shrink-0 ${
           user.isMe ? "text-[#FFF8EE]" : "text-[#888]"
@@ -27,7 +26,6 @@ function ListItem({ user }: { user: LeaderboardUser }) {
         {user.rank}
       </span>
 
-      {/* Avatar */}
       <div
         className={`w-10 h-10 rounded-full shrink-0 flex items-center justify-center overflow-hidden ${
           user.isMe ? "bg-[#C47F17] border-2 border-white" : "bg-[#D3C4A8]"
@@ -48,7 +46,6 @@ function ListItem({ user }: { user: LeaderboardUser }) {
         )}
       </div>
 
-      {/* Нэр + цол */}
       <div className="flex-1 min-w-0">
         <p
           className={`text-sm font-semibold truncate ${user.isMe ? "text-white" : "text-[#222]"}`}
@@ -62,7 +59,6 @@ function ListItem({ user }: { user: LeaderboardUser }) {
         </p>
       </div>
 
-      {/* XP */}
       <div className="text-right shrink-0">
         <p
           className={`text-sm font-bold ${user.isMe ? "text-white" : "text-[#E8940A]"}`}

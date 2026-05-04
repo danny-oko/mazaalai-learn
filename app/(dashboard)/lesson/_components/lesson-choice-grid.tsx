@@ -199,7 +199,7 @@ export function LessonChoiceGrid({
                 background: "#FAD99B",
                 borderColor: sel ? "#E8920A" : "#FAD99B",
                 boxShadow: sel ? "0 4px 10px #E8920A" : "0 4px 0 #FAD99B",
-                color: sel ? "#E8920A" : "#000000",
+                color: sel ? "#E8920A" : "#FFFFFF",
               }}
             >
               <span className="text-lg font-black">{choice.label}</span>

@@ -5,10 +5,10 @@ import { useState } from "react";
 type Tab = "weekly" | "monthly" | "alltime" | "friends";
 
 const TABS: { label: string; value: Tab }[] = [
-  { label: "Weekly", value: "weekly" },
-  { label: "Monthly", value: "monthly" },
-  { label: "All Time", value: "alltime" },
-  { label: "Friends", value: "friends" },
+  { label: "7 хоног бүр", value: "weekly" },
+  { label: "Сар бүр", value: "monthly" },
+  { label: "Бүх цаг үед", value: "alltime" },
+  { label: "Найзууд", value: "friends" },
 ];
 
 interface WebTabToggleProps {

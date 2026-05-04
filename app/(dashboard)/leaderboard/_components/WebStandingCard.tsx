@@ -16,25 +16,22 @@ export default function WebStandingCard({
   return (
     <div className="bg-[#1B2A4A] rounded-2xl p-5 text-white">
       <p className="text-xs text-gray-400 uppercase tracking-wide mb-3">
-        Your Standing
+        Таны байр
       </p>
 
-      {/* League badge */}
       <div className="inline-flex items-center gap-1.5 bg-[#2A3F6A] px-3 py-1 rounded-full mb-4">
         <span className="text-sm">⭐</span>
         <span className="text-sm font-medium text-gray-200">{league}</span>
       </div>
 
-      {/* Rank */}
       <div className="flex items-baseline gap-2 mb-1">
         <span className="text-5xl font-bold text-white">#{rank}</span>
         <span className="text-lg text-gray-400">of {total}</span>
       </div>
 
-      {/* Progress bar */}
       <div className="mt-4">
         <div className="flex justify-between text-xs text-gray-400 mb-1.5">
-          <span>Promotion to Gold Steppe</span>
+          <span>Gold Steppe багт дэвших</span>
           <span className="text-[#E8940A] font-semibold">
             {promotionPercent}%
           </span>
@@ -46,11 +43,10 @@ export default function WebStandingCard({
           />
         </div>
         <p className="text-xs text-gray-400 mt-1.5">
-          {xpToPromote} XP more to unlock Gold league
+          {xpToPromote} Gold league-ийг нээхийн тулд илүү их XP хэрэгтэй
         </p>
       </div>
 
-      {/* Promote / Demote info */}
       <div className="mt-4 pt-4 border-t border-[#2A3F6A] flex justify-between text-xs text-gray-400">
         <span>🟢 Top 5 = Promote</span>
         <span>🔴 Bottom 3 = Demote</span>
