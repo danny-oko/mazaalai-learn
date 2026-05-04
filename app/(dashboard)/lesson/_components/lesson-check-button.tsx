@@ -96,8 +96,8 @@ export function LessonCheckButton({
           disabled={disabled}
           className="w-full sm:w-[300px] py-3.5 px-7 rounded-2xl font-black text-sm tracking-widest uppercase transition-all active:scale-95"
           style={{
-            background: disabled ? "#374151" : "#2F8B6F",
-            boxShadow: disabled ? "0 4px 0 #1F2937" : "0 4px 10px #2F8B6F",
+            background: disabled ? "#473108" : "#E8920A",
+            boxShadow: disabled ? "0 4px 0 #473108" : "0 4px 10px #E8920A",
             cursor: disabled ? "not-allowed" : "pointer",
             color: disabled ? "#6B7280" : "#FFFFFF",
           }}
@@ -108,3 +108,5 @@ export function LessonCheckButton({
     </div>
   );
 }
+
+//

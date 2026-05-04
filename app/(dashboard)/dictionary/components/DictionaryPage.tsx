@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { BottomSheet } from "./BottomSheet";
 import { CharacterDetail } from "./CharacterDetail";
 import { LetterGrid } from "./LetterGrid";
-import { Character } from "./LetterCard";
+import { Character } from "./CharacterCard";
 
 type Filter = "ALL" | "VOWEL" | "CONSONANT";
 
@@ -118,6 +118,8 @@ export const DictionaryPage = ({ characters }: { characters: Character[] }) => {
                 characters={filteredCharacters}
                 selectedCharacter={selectedCharacter}
                 onSelect={handleMobileSelect}
+                filter={filter}
+                onFilterChange={setFilter}
               />
             </div>
 
@@ -125,7 +127,9 @@ export const DictionaryPage = ({ characters }: { characters: Character[] }) => {
               <LetterGrid
                 characters={filteredCharacters}
                 selectedCharacter={selectedCharacter}
-                onSelect={(character) => setSelectedCharacterId(character.id)}
+                onSelect={handleMobileSelect}
+                filter={filter}
+                onFilterChange={setFilter}
               />
             </div>
           </section>

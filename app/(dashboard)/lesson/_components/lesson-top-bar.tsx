@@ -26,10 +26,17 @@ export function LessonTopBar({ progress, hearts, onBack }: LessonTopBarProps) {
           />
         </div>
         <div className="flex items-center gap-1.5">
-          <Heart className="w-5 h-5 fill-[#FF4B4B] text-[#FF4B4B]" />
+          <img
+            src="https://d35aaqx5ub95lt.cloudfront.net/images/hearts/7631e3ee734dd4fe7792626b59457fa4.svg"
+            alt="Heart Icon"
+            height={30}
+            width={30}
+          />
           <span className="font-black text-base text-[#FF4B4B]">{hearts}</span>
         </div>
       </div>
     </div>
   );
 }
+
+//

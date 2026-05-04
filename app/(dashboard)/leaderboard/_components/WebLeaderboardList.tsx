@@ -31,12 +31,10 @@ function WebListItem({
           : "bg-white border border-[#E8D9C0]"
       }`}
     >
-      {/* Дугаар */}
       <span className="text-sm font-semibold text-[#888] w-5 shrink-0">
         {user.rank}
       </span>
 
-      {/* Avatar */}
       <div
         className={`w-9 h-9 rounded-full shrink-0 flex items-center justify-center text-sm font-bold ${
           user.isMe ? "bg-[#E8940A] text-white" : "bg-[#D3C4A8] text-[#7a6a50]"
@@ -53,7 +51,6 @@ function WebListItem({
         )}
       </div>
 
-      {/* Нэр + цол */}
       <div className="w-36 shrink-0">
         <div className="flex items-center gap-1.5">
           <p className="text-sm font-semibold text-[#222] truncate">
@@ -61,7 +58,7 @@ function WebListItem({
           </p>
           {user.isNew && (
             <span className="bg-green-100 text-green-600 text-[9px] font-bold px-1.5 py-0.5 rounded-full">
-              NEW
+              ШИНЭ
             </span>
           )}
         </div>
@@ -70,7 +67,6 @@ function WebListItem({
         </p>
       </div>
 
-      {/* Progress bar */}
       <div className="flex-1">
         <div className="w-full bg-[#F4EFE8] rounded-full h-2">
           <div
@@ -80,7 +76,6 @@ function WebListItem({
         </div>
       </div>
 
-      {/* XP + өөрчлөлт */}
       <div className="text-right shrink-0 w-20">
         <p className="text-sm font-bold text-[#E8940A]">
           {user.xp.toLocaleString()} XP

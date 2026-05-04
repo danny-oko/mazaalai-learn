@@ -108,7 +108,7 @@ export function LessonChoiceGrid({
                 onClick={() => setActiveLeftId(item.id)}
                 className="w-full rounded-2xl border-2 px-4 py-3 text-left text-sm font-bold transition-all"
                 style={{
-                  background: "#1A202C",
+                  background: "#473108",
                   borderColor:
                     matchedColor ?? (isActive ? "#58CC02" : "#374151"),
                   color: matchedColor ?? (isActive ? "#58CC02" : "#FFFFFF"),
@@ -154,7 +154,7 @@ export function LessonChoiceGrid({
                 onClick={() => handleRightSelect(item.id)}
                 className="w-full rounded-2xl border-2 px-4 py-3 text-left text-sm font-bold transition-all"
                 style={{
-                  background: "#1A202C",
+                  background: "#473108",
                   borderColor: isTaken ? color : "#374151",
                   color: isTaken ? color : "#FFFFFF",
                   boxShadow: isTaken
@@ -196,9 +196,9 @@ export function LessonChoiceGrid({
               onClick={() => onSelect(choice.value)}
               className="flex flex-col items-center justify-center rounded-2xl border-2 p-5 transition-all duration-100 active:scale-95"
               style={{
-                background: "#1A202C",
-                borderColor: sel ? "#E8920A" : "#374151",
-                boxShadow: sel ? "0 4px 10px #E8920A" : "0 4px 0 #1F2937",
+                background: "#FAD99B",
+                borderColor: sel ? "#E8920A" : "#FAD99B",
+                boxShadow: sel ? "0 4px 10px #E8920A" : "0 4px 0 #FAD99B",
                 color: sel ? "#E8920A" : "#FFFFFF",
               }}
             >
@@ -210,3 +210,5 @@ export function LessonChoiceGrid({
     </div>
   );
 }
+
+//

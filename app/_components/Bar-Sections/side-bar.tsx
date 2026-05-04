@@ -4,9 +4,11 @@ import { usePathname, useRouter } from "next/navigation";
 import type { MenuLabel } from "./main-bars";
 
 const menuIcons: Record<MenuLabel, string> = {
-  Map: "./house.png",
-  Dictionary: "./dictionary.png",
-  Leaderboard: "./winner.png",
+  Map: "https://d35aaqx5ub95lt.cloudfront.net/vendor/784035717e2ff1d448c0f6cc4efc89fb.svg",
+  Dictionary:
+    "https://d35aaqx5ub95lt.cloudfront.net/vendor/80a60f598d6a6b0493aeb4d7b93fc0e3.svg",
+  Leaderboard:
+    "https://d35aaqx5ub95lt.cloudfront.net/vendor/ca9178510134b4b0893dbac30b6670aa.svg",
   Profile: "./chicken.png",
 };
 
@@ -29,21 +31,23 @@ export const SideBar = ({ menuLabels, menuPaths }: HeaderClientProps) => {
 
   return (
     <aside
-      className="fixed left-0 top-0 z-40 hidden h-full flex-col border-r border-[#ead9bb] bg-[#FFF8E7] shadow-[12px_0_35px_rgba(122,89,48,0.12)] md:flex md:w-20 lg:w-56"
+      className="fixed top-0 left-0 z-40 hidden h-full flex-col shadow-2xl md:flex md:w-20 lg:w-[256px]"
       aria-label="Main navigation"
     >
-      <div className="flex h-[60px] items-center justify-center border-b border-[#ead9bb] px-5 lg:justify-between">
+      <div className="flex h-[60px] items-center justify-center px-2 lg:justify-start lg:px-5">
         <img
-          src="./bear.png"
+          src="https://d35aaqx5ub95lt.cloudfront.net/vendor/0cecd302cf0bcd0f73d51768feff75fe.svg"
           alt="Mazaalai Learn"
-          className="block h-12 w-12 object-contain md:block lg:hidden"
+          className="block h-8 w-auto object-contain md:h-9 lg:hidden"
         />
-        <h2 className="hidden font-balsamiq text-lg font-bold text-[#3b2f2f] lg:block">
-          Mazaalai Learn
-        </h2>
+        <img
+          src="https://d35aaqx5ub95lt.cloudfront.net/vendor/70a4be81077a8037698067f583816ff9.svg"
+          alt="Mazaalai Learn"
+          className="hidden h-9 w-auto object-contain lg:block"
+        />
       </div>
 
-      <nav className="flex flex-1 flex-col gap-1 p-3 lg:p-4">
+      <nav className="flex flex-1 flex-col gap-3 md:px-1 lg:p-4">
         {menuLabels.map((label) => {
           const isActive = active === label;
           return (
@@ -51,23 +55,22 @@ export const SideBar = ({ menuLabels, menuPaths }: HeaderClientProps) => {
               key={label}
               type="button"
               onClick={() => handleNav(label)}
-              className={`flex items-center justify-center rounded-xl px-3 py-3 font-balsamiq text-[18px] font-bold transition-all duration-150 lg:justify-start lg:gap-4 lg:px-4
+              className={`flex w-full items-center justify-center rounded-xl py-2 text-[16px] md:px-0 lg:justify-start lg:gap-5 lg:px-4
+              transition-all duration-150 font-balsamiq border-2
               ${
                 isActive
-                  ? "bg-[#e8920a] text-white shadow-[0_10px_24px_rgba(232,146,10,0.25)]"
-                  : "text-[#6b4d26] hover:bg-[#f8e7c7] hover:text-[#3b2f2f]"
+                  ? "bg-[#84d8ff]/50 text-[#1cb0f6] border-[#84d8ff]"
+                  : "text-[#777777] hover:bg-[#F2EEDD] border-transparent"
               }`}
             >
               <img
                 src={menuIcons[label]}
                 alt={label}
-                width={25}
-                height={25}
-                className={`transition-all duration-200 ${
-                  isActive ? "opacity-100" : "opacity-100"
-                }`}
+                width={35}
+                height={35}
+                className="h-7 w-7 object-contain transition-all duration-200 md:h-8 md:w-8 lg:h-9 lg:w-9"
               />
-              <div className="hidden uppercase lg:block">
+              <div className="md:hidden lg:block uppercase text-[14px] font-extrabold tracking-wider">
                 {label}
               </div>
             </button>
