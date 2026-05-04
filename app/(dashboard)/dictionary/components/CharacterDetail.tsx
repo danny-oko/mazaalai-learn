@@ -40,7 +40,7 @@ export const CharacterDetail = ({
     forms[1] ??
     forms[0];
 
-  // 🔥 Stroke animation state
+  //  Stroke animation state
   const [play, setPlay] = useState(false);
 
   return (
@@ -141,7 +141,7 @@ export const CharacterDetail = ({
             compact ? "h-32" : "h-48",
           ].join(" ")}
         >
-          {/* 🔥 Dynamic SVG animation */}
+          {/*  Dynamic SVG animation */}
           {character.forms[0]?.strokePath ? (
             <StrokeAnimation path={character.forms[0].strokePath} play={play} />
           ) : (
