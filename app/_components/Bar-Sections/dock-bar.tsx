@@ -37,6 +37,7 @@ export const DockBar = ({ menuLabels, menuPaths }: DockBarProps) => {
           return (
             <button
               key={label}
+              type="button"
               onClick={() => router.push(menuPaths[label])}
               className={`flex flex-col items-center gap-1 px-2 py-2 transition-all duration-200 font-['Plus_Jakarta_Sans'] rounded-4xl w-[60px] h-[60px] justify-center
                 border 

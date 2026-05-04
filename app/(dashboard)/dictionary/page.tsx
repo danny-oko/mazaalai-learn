@@ -1,9 +1,9 @@
-import { AlphabetClient } from "./components/AlphabetClient";
+import { DictionaryPage } from "./components/DictionaryPage";
 import alphabetData from "./components/alphabetData.json";
-import { Character } from "./components/CharacterCard";
+import { Character } from "./components/LetterCard";
 
 const characters = alphabetData as Character[];
 
 export default function Page() {
-  return <AlphabetClient characters={characters} />;
+  return <DictionaryPage characters={characters} />;
 }

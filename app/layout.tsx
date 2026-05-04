@@ -25,6 +25,7 @@ const balsamiq = Balsamiq_Sans({
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 const geistMono = Geist_Mono({

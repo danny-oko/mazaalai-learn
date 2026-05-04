@@ -1,4 +1,3 @@
-import "@fontsource/plus-jakarta-sans";
 import { Header } from "@/app/_components/Bar-Sections/header";
 import { HomePath } from "./_components/home-page-client";
 

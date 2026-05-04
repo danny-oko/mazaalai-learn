@@ -15,7 +15,7 @@ export default function ProfilePage() {
   const currentUser = mockUser as ProfileUser;
 
   return (
-    <div className="min-h-screen bg-[#f4efe5] pb-24 md:pb-10 md:pl-26 md:pr-6 lg:pl-70">
+    <div className="min-h-screen bg-[#FFF8E7] pb-24 text-[#3b2f2f] md:pb-10">
       {/* Block-level shell so mx-auto centers reliably; inner flex only for vertical gaps */}
       <div className="mx-auto w-full max-w-[1220px] px-4 pt-5 md:px-6 md:pt-8">
         <div className="flex flex-col gap-4 md:gap-5">
