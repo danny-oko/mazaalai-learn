@@ -88,24 +88,39 @@ model UserLessonProgress {
   @@map("user_lesson_progress")
 }
 
-model SpeechTargets {
-  id           String           @id @default(uuid())
-  createdAt    DateTime         @default(now())
-  expectedText String
+// schema.prisma
+
+model SpeechTarget {
+  id           String          @id @default(uuid())
+  createdAt    DateTime        @default(now())
   title        String
+  expectedText String
   wordsCount   Int
-  attempts     SpeechAttempts[]
+  attempts     SpeechAttempt[]
+
+  @@map("speech_targets")
 }
 
-model SpeechAttempts {
-  id              String        @id @default(uuid())
-  createdAt       DateTime      @default(now())
-  targetId        String
+model SpeechAttempt {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+
+  targetId String
+  target   SpeechTarget @relation(fields: [targetId], references: [id])
+  userId   String
+  user     User         @relation(fields: [userId], references: [id])
+
   transcribedText String
-  userId          String
-  wordsRead       Int
-  target          SpeechTargets @relation(fields: [targetId], references: [id])
-  user            User          @relation(fields: [userId], references: [id])
+  durationSec     Int
+
+  mistakes       Int
+  accuracy       Float
+  wordsRead      Int
+  charactersRead Int
+  wpm            Int
+  cpm            Int
+
+  @@map("speech_attempts")
 }
 
 enum LessonStatus {
