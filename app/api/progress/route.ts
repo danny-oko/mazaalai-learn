@@ -1,10 +1,24 @@
 import prisma from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
 import { NextRequest, NextResponse } from "next/server";
 
 // GET /api/progress?userId=xxx
 export const GET = async (req: NextRequest) => {
-  const userId = req.nextUrl.searchParams.get("userId");
-  if (!userId) return NextResponse.json({ message: "userId required" }, { status: 400 });
+  const lessonId = req.nextUrl.searchParams.get("lessonId");
+  const userIdFromQuery = req.nextUrl.searchParams.get("userId");
+  const { userId: clerkUserId } = await auth();
+  const userId = userIdFromQuery ?? clerkUserId;
+
+  if (!userId)
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+
+  if (lessonId) {
+    const progress = await prisma.userLessonProgress.findUnique({
+      where: { userId_lessonId: { userId, lessonId } },
+    });
+    return NextResponse.json(progress);
+  }
+
   const progress = await prisma.userLessonProgress.findMany({
     where: { userId },
     include: { lesson: true },
@@ -14,14 +28,61 @@ export const GET = async (req: NextRequest) => {
 
 // POST /api/progress
 export const POST = async (req: NextRequest) => {
-  const { userId, lessonId, status } = await req.json();
+  const body = await req.json();
+  const { userId: clerkUserId } = await auth();
+  const userId = body.userId ?? clerkUserId;
+  const { lessonId, status } = body;
+  const mistakeCount = Number(body.heartsRemaining ?? body.mistakeCount ?? 3);
+  const xpEarned = Number(body.xpEarned ?? 0);
+
   if (!userId || !lessonId) {
     return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
   }
+
+  const user = await prisma.user.findUnique({ where: { id: userId } });
+  if (!user) {
+    return NextResponse.json({ message: "User not found" }, { status: 404 });
+  }
+
+  const existing = await prisma.userLessonProgress.findUnique({
+    where: { userId_lessonId: { userId, lessonId } },
+    select: { xpEarned: true, status: true, completedAt: true },
+  });
+
+  const nextStatus =
+    existing?.status === "COMPLETED" && status !== "COMPLETED"
+      ? "COMPLETED"
+      : (status ?? existing?.status ?? "LOCKED");
+  const nextCompletedAt =
+    nextStatus === "COMPLETED"
+      ? existing?.completedAt ?? new Date()
+      : existing?.completedAt ?? null;
+
   const progress = await prisma.userLessonProgress.upsert({
     where: { userId_lessonId: { userId, lessonId } },
-    update: { status, completedAt: status === "COMPLETED" ? new Date() : null },
-    create: { userId, lessonId, status: status ?? "LOCKED" },
+    update: {
+      status: nextStatus,
+      mistakeCount,
+      xpEarned,
+      completedAt: nextCompletedAt,
+    },
+    create: {
+      userId,
+      lessonId,
+      status: status ?? "LOCKED",
+      mistakeCount,
+      xpEarned,
+      completedAt: status === "COMPLETED" ? new Date() : null,
+    },
   });
+
+  const xpDelta = Math.max(0, xpEarned - (existing?.xpEarned ?? 0));
+  if (xpDelta > 0) {
+    await prisma.user.update({
+      where: { id: userId },
+      data: { totalXp: { increment: xpDelta } },
+    });
+  }
+
   return NextResponse.json(progress, { status: 201 });
 };

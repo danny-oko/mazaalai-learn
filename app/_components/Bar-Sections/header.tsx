@@ -1,7 +1,5 @@
-import { Flame, Heart } from "lucide-react";
-
 type HeaderProps = {
-  mistakeCount?: number;
+  heartsRemaining?: number;
   streak: number;
   xp: number;
 };
@@ -9,11 +7,11 @@ type HeaderProps = {
 const MAX_HEARTS = 3;
 
 export const Header = ({
-  mistakeCount = MAX_HEARTS,
+  heartsRemaining = MAX_HEARTS,
   streak,
   xp,
 }: HeaderProps) => {
-  const safeHeartsRemaining = Math.max(0, Math.min(mistakeCount, MAX_HEARTS));
+  const safeHeartsRemaining = Math.max(0, Math.min(heartsRemaining, MAX_HEARTS));
   const isOutOfHearts = safeHeartsRemaining === 0;
   const isStreakLost = xp === 0;
 

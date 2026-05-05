@@ -192,6 +192,7 @@ async function saveProgress(
   userId: string,
   heartsRemaining: number,
   xpEarned: number,
+  status: "COMPLETED" | "IN_PROGRESS" = "COMPLETED",
 ) {
   try {
     await fetch("/api/progress", {
@@ -202,7 +203,7 @@ async function saveProgress(
         userId,
         heartsRemaining,
         xpEarned,
-        status: "COMPLETED",
+        status,
       }),
     });
   } catch {}
@@ -234,19 +235,27 @@ export function useLessonGame(lessonId: string, userId: string) {
       fetch(`/api/progress?lessonId=${lessonId}&userId=${userId}`).then((r) =>
         r.ok ? r.json() : null,
       ),
+      fetch(`/api/progress?userId=${userId}`).then((r) => (r.ok ? r.json() : [])),
     ])
       .then(
-        ([contents, tasks, progress]: [
+        ([contents, tasks, progress, allProgress]: [
           LessonContent[],
           Task[],
           { mistakeCount: number } | null,
+          Array<{ mistakeCount: number }>,
         ]) => {
+          const savedHeartsAcrossLessons =
+            Array.isArray(allProgress) && allProgress.length > 0
+              ? Math.min(...allProgress.map((item) => item.mistakeCount))
+              : null;
+          const heartsFromProgress =
+            progress?.mistakeCount ?? savedHeartsAcrossLessons ?? 3;
           startRef.current = Date.now();
           setState((s) => ({
             ...s,
             contents: contents.sort((a, b) => a.order - b.order),
             tasks: tasks.sort((a, b) => a.order - b.order),
-            hearts: progress?.mistakeCount ?? 3,
+            hearts: Math.max(0, Math.min(3, heartsFromProgress)),
             loading: false,
           }));
         },
@@ -358,7 +367,8 @@ export function useLessonGame(lessonId: string, userId: string) {
   function checkTaskAnswer(skip = false) {
     setState((s) => {
       if (!currentTask) return s;
-      totalRef.current += 1;
+      const shouldCountForReview = currentTask.type !== "MATCH";
+      if (shouldCountForReview) totalRef.current += 1;
 
       const isCorrect =
         !skip &&
@@ -366,7 +376,7 @@ export function useLessonGame(lessonId: string, userId: string) {
           ? isMatchSelectionCorrect(currentTask, s.selected)
           : s.selected === currentTask.correctAnswer);
 
-      if (isCorrect) correctRef.current += 1;
+      if (isCorrect && shouldCountForReview) correctRef.current += 1;
 
       if (currentTask.type === "MATCH" && !skip && !isCorrect)
         return { ...s, matchFeedback: "incorrect" };
@@ -375,8 +385,15 @@ export function useLessonGame(lessonId: string, userId: string) {
 
       const nextHearts =
         !skip && !isCorrect ? Math.max(0, s.hearts - 1) : s.hearts;
-      if (nextHearts === 0)
+      if (nextHearts === 0) {
+        saveProgress(
+          lessonId,
+          userId,
+          0,
+          calcXp(s.tasks, correctRef.current),
+        );
         return { ...s, hearts: 0, selected: null, isFailed: true };
+      }
       if (!skip && !isCorrect)
         return { ...s, hearts: nextHearts, selected: null };
 
@@ -455,6 +472,23 @@ export function useLessonGame(lessonId: string, userId: string) {
     return Math.round(total * (tasks.length > 0 ? correct / tasks.length : 1));
   }
 
+  async function refillHeartsForFirstWeek() {
+    const refillHearts = 3;
+    setState((s) => ({
+      ...s,
+      hearts: refillHearts,
+      isFailed: false,
+      selected: null,
+    }));
+    await saveProgress(
+      lessonId,
+      userId,
+      refillHearts,
+      calcXp(tasks, correctRef.current),
+      "IN_PROGRESS",
+    );
+  }
+
   return {
     loading,
     phase,
@@ -473,5 +507,6 @@ export function useLessonGame(lessonId: string, userId: string) {
     checkTaskAnswer,
     clearMatchFeedback,
     advanceMatchTask,
+    refillHeartsForFirstWeek,
   };
 }
