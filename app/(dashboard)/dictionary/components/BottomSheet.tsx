@@ -72,18 +72,17 @@ export const BottomSheet = ({
         }}
         className={[
           "fixed inset-x-0 bottom-0 z-50 xl:hidden",
-          "max-h-[85vh] overflow-y-auto rounded-t-[32px]",
-          "bg-[#FAF7F1] p-4 shadow-[0_-20px_60px_rgba(0,0,0,0.25)]",
+          "max-h-[85vh] overflow-y-auto rounded-t-2xl",
+          "bg-[#FFF8E7] p-4 shadow-[0_-20px_60px_rgba(59,47,47,0.25)]",
           "transition-transform duration-300",
         ].join(" ")}
       >
-        {/* Drag handle */}
-        <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-[#D6D0C7]" />
+        <div className="mx-auto mb-4 h-1.5 w-12 rounded-full bg-[#d8bd8d]" />
 
-        {/* Close button */}
         <button
+          type="button"
           onClick={onClose}
-          className="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full bg-white shadow"
+          className="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full bg-white font-balsamiq font-bold text-[#3b2f2f] shadow"
           aria-label="Close bottom sheet"
         >
           ✕

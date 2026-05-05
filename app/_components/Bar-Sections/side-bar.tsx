@@ -53,6 +53,7 @@ export const SideBar = ({ menuLabels, menuPaths }: HeaderClientProps) => {
           return (
             <button
               key={label}
+              type="button"
               onClick={() => handleNav(label)}
               className={`flex w-full items-center justify-center rounded-xl py-2 text-[16px] md:px-0 lg:justify-start lg:gap-5 lg:px-4
               transition-all duration-150 font-balsamiq border-2

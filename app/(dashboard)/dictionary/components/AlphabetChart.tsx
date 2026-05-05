@@ -1,7 +1,6 @@
 "use client";
 
 import { Character } from "./CharacterCard";
-import { Filter } from "./AlphabetClient";
 
 import { BottomSheet } from "./BottomSheet";
 import { CharacterDetail } from "./CharacterDetail";
@@ -10,8 +9,6 @@ import { LetterGrid } from "./LetterGrid";
 export const AlphabetChart = ({
   characters,
   selectedCharacter,
-  filter,
-  onFilterChange,
   onMobileSelect,
   onDesktopSelect,
   isSheetOpen,
@@ -19,8 +16,6 @@ export const AlphabetChart = ({
 }: {
   characters: Character[];
   selectedCharacter: Character | null;
-  filter: Filter;
-  onFilterChange: (filter: Filter) => void;
   onMobileSelect: (character: Character) => void;
   onDesktopSelect: (character: Character) => void;
   isSheetOpen: boolean;
@@ -34,8 +29,6 @@ export const AlphabetChart = ({
             characters={characters}
             selectedCharacter={selectedCharacter}
             onSelect={onMobileSelect}
-            filter={filter}
-            onFilterChange={onFilterChange}
           />
 
           <BottomSheet isOpen={isSheetOpen} onClose={onCloseSheet}>
@@ -50,9 +43,6 @@ export const AlphabetChart = ({
             characters={characters}
             selectedCharacter={selectedCharacter}
             onSelect={onDesktopSelect}
-            filter={filter}
-            onFilterChange={onFilterChange}
-            compact
           />
 
           {selectedCharacter && (
