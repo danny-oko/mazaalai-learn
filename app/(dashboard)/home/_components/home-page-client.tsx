@@ -2,7 +2,6 @@
 "use client";
 
 import { Montserrat } from "next/font/google";
-import "@fontsource/plus-jakarta-sans";
 
 const montserrat = Montserrat({
   subsets: ["latin", "cyrillic"],
@@ -17,11 +16,19 @@ export const HomePath = () => {
 
   if (loading) {
     return (
-      <div className="fixed inset-0 z-10 flex items-center justify-center bg-[#F0EDE3] font-['Plus_Jakarta_Sans']">
-        <p className={`text-lg font-black text-black animate-pulse}`}>
-          <img src="/bear.png" alt="Mazaalai Learn" className="animate-spin" />
-          LOADING...
-        </p>
+      <div
+        className="flex min-h-[50vh] w-full flex-col items-center justify-center gap-3 bg-[#F0EDE3] py-16 font-['Plus_Jakarta_Sans']"
+        aria-busy="true"
+        aria-label="Loading lessons"
+      >
+        <img
+          src="/bear.png"
+          alt=""
+          width={48}
+          height={48}
+          className="animate-spin"
+        />
+        <p className="text-sm font-semibold text-amber-900/80">Loading lessons…</p>
       </div>
     );
   }
