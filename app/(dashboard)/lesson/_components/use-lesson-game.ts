@@ -23,6 +23,7 @@ interface State {
   loading: boolean;
   reviewStats: LessonReviewStats | null;
   isFailed: boolean;
+  matchFeedback: "correct" | "incorrect" | null;
 }
 
 export interface LessonChoice {
@@ -42,10 +43,7 @@ export interface MatchRenderData {
 }
 
 function sanitizeChoices(
-  items: Array<{
-    value: unknown;
-    label?: unknown;
-  }>,
+  items: Array<{ value: unknown; label?: unknown }>,
 ): LessonChoice[] {
   return items
     .map((item) => {
@@ -98,20 +96,19 @@ function toText(value: unknown): string {
   return "";
 }
 
-function extractMcChoices(value: unknown): Array<{
-  value: unknown;
-  label?: unknown;
-}> {
+function extractMcChoices(
+  value: unknown,
+): Array<{ value: unknown; label?: unknown }> {
   if (!value || typeof value !== "object") return [];
   const rawChoices = (value as { choices?: unknown }).choices;
 
   if (Array.isArray(rawChoices)) {
     return rawChoices.map((choice) => {
-      if (typeof choice === "string") {
-        return { value: choice, label: choice };
-      }
+      if (typeof choice === "string") return { value: choice, label: choice };
       const record = choice as Record<string, unknown>;
-      const text = toText(record.text ?? record.label ?? record.value ?? record.id);
+      const text = toText(
+        record.text ?? record.label ?? record.value ?? record.id,
+      );
       return { value: text, label: text };
     });
   }
@@ -119,20 +116,18 @@ function extractMcChoices(value: unknown): Array<{
   if (rawChoices && typeof rawChoices === "object") {
     return Object.values(rawChoices as Record<string, unknown>).map(
       (choice) => {
-        if (typeof choice === "string") {
-          return { value: choice, label: choice };
-        }
+        if (typeof choice === "string") return { value: choice, label: choice };
         const record = choice as Record<string, unknown>;
-        const text = toText(record.text ?? record.label ?? record.value ?? record.id);
+        const text = toText(
+          record.text ?? record.label ?? record.value ?? record.id,
+        );
         return { value: text, label: text };
       },
     );
   }
 
-  if (typeof rawChoices === "string") {
+  if (typeof rawChoices === "string")
     return [{ value: rawChoices, label: rawChoices }];
-  }
-
   return [];
 }
 
@@ -151,9 +146,7 @@ function extractMatchSideItems(
   if (!Array.isArray(side)) return [];
   return side
     .map((item, index) => {
-      if (typeof item === "string") {
-        return { id: `${index}`, text: item };
-      }
+      if (typeof item === "string") return { id: `${index}`, text: item };
       if (item && typeof item === "object") {
         const record = item as Record<string, unknown>;
         const id = toText(record.id ?? index);
@@ -227,6 +220,7 @@ export function useLessonGame(lessonId: string, userId: string) {
     loading: true,
     reviewStats: null,
     isFailed: false,
+    matchFeedback: null,
   });
 
   const correctRef = useRef(0);
@@ -271,6 +265,7 @@ export function useLessonGame(lessonId: string, userId: string) {
     loading,
     reviewStats,
     isFailed,
+    matchFeedback,
   } = state;
 
   const currentContent = contents[contentIndex] ?? null;
@@ -296,9 +291,8 @@ export function useLessonGame(lessonId: string, userId: string) {
     if (Array.isArray(parsedOptions) && parsedOptions.length) {
       const normalized = sanitizeChoices(
         parsedOptions.map((option) => {
-          if (typeof option === "string") {
+          if (typeof option === "string")
             return { value: option, label: option };
-          }
           const item = option as TaskOption & {
             label?: string;
             value?: string;
@@ -307,57 +301,41 @@ export function useLessonGame(lessonId: string, userId: string) {
           const textValue = toText(
             item.text ?? item.label ?? item.value ?? item.id,
           );
-          return {
-            value: textValue,
-            label: textValue,
-          };
+          return { value: textValue, label: textValue };
         }),
       );
       return shuffle(normalized);
     }
-    if (isMcOptions(parsedOptions)) {
-      const normalized = sanitizeChoices(extractMcChoices(parsedOptions));
-      return shuffle(normalized);
-    }
+    if (isMcOptions(parsedOptions))
+      return shuffle(sanitizeChoices(extractMcChoices(parsedOptions)));
     if (currentTask.type === "MATCH" && isMatchOptions(parsedOptions)) {
       const leftChoices = extractMatchSideItems(parsedOptions.leftSide).map(
-        (item) => ({
-          value: `L:${item.id}`,
-          label: item.text,
-        }),
+        (item) => ({ value: `L:${item.id}`, label: item.text }),
       );
       const rightChoices = extractMatchSideItems(parsedOptions.rightSide).map(
-        (item) => ({
-          value: `R:${item.id}`,
-          label: item.text,
-        }),
+        (item) => ({ value: `R:${item.id}`, label: item.text }),
       );
-      const matchChoices = sanitizeChoices(
-        [...leftChoices, ...rightChoices].map((item) => ({
-          ...item,
-          label: item.value.startsWith("L:")
-            ? `Left: ${item.label}`
-            : `Right: ${item.label}`,
-        })),
+      return shuffle(
+        sanitizeChoices(
+          [...leftChoices, ...rightChoices].map((item) => ({
+            ...item,
+            label: item.value.startsWith("L:")
+              ? `Left: ${item.label}`
+              : `Right: ${item.label}`,
+          })),
+        ),
       );
-      return shuffle(matchChoices);
     }
     const others = sanitizeChoices(
       tasks
         .filter((t) => t.id !== currentTask.id)
-        .map((t) => ({
-          value: t.correctAnswer,
-          label: t.correctAnswer,
-        }))
+        .map((t) => ({ value: t.correctAnswer, label: t.correctAnswer }))
         .slice(0, 3),
     );
     return shuffle(
       sanitizeChoices([
         ...others,
-        {
-          value: currentTask.correctAnswer,
-          label: currentTask.correctAnswer,
-        },
+        { value: currentTask.correctAnswer, label: currentTask.correctAnswer },
       ]),
     );
   }, [currentTask, currentOptions, tasks]);
@@ -381,18 +359,27 @@ export function useLessonGame(lessonId: string, userId: string) {
     setState((s) => {
       if (!currentTask) return s;
       totalRef.current += 1;
+
       const isCorrect =
         !skip &&
         (currentTask.type === "MATCH"
           ? isMatchSelectionCorrect(currentTask, s.selected)
           : s.selected === currentTask.correctAnswer);
+
       if (isCorrect) correctRef.current += 1;
+
+      if (currentTask.type === "MATCH" && !skip && !isCorrect)
+        return { ...s, matchFeedback: "incorrect" };
+      if (currentTask.type === "MATCH" && isCorrect)
+        return { ...s, matchFeedback: "correct" };
+
       const nextHearts =
         !skip && !isCorrect ? Math.max(0, s.hearts - 1) : s.hearts;
       if (nextHearts === 0)
         return { ...s, hearts: 0, selected: null, isFailed: true };
       if (!skip && !isCorrect)
         return { ...s, hearts: nextHearts, selected: null };
+
       const nextTaskIndex = s.taskIndex + 1;
       if (nextTaskIndex < s.tasks.length)
         return {
@@ -400,6 +387,42 @@ export function useLessonGame(lessonId: string, userId: string) {
           taskIndex: nextTaskIndex,
           hearts: nextHearts,
           selected: null,
+        };
+
+      saveProgress(
+        lessonId,
+        userId,
+        nextHearts,
+        calcXp(s.tasks, correctRef.current),
+      );
+      return {
+        ...s,
+        hearts: nextHearts,
+        selected: null,
+        reviewStats: buildReview(nextHearts),
+      };
+    });
+  }
+
+  function clearMatchFeedback() {
+    setState((s) => ({
+      ...s,
+      matchFeedback: null,
+      selected: s.matchFeedback === "incorrect" ? null : s.selected,
+    }));
+  }
+
+  function advanceMatchTask() {
+    setState((s) => {
+      const nextHearts = s.hearts;
+      const nextTaskIndex = s.taskIndex + 1;
+      if (nextTaskIndex < s.tasks.length)
+        return {
+          ...s,
+          taskIndex: nextTaskIndex,
+          hearts: nextHearts,
+          selected: null,
+          matchFeedback: null,
         };
       saveProgress(
         lessonId,
@@ -411,6 +434,7 @@ export function useLessonGame(lessonId: string, userId: string) {
         ...s,
         hearts: nextHearts,
         selected: null,
+        matchFeedback: null,
         reviewStats: buildReview(nextHearts),
       };
     });
@@ -444,7 +468,10 @@ export function useLessonGame(lessonId: string, userId: string) {
     progress,
     isFailed,
     reviewStats,
+    matchFeedback,
     advanceContent,
     checkTaskAnswer,
+    clearMatchFeedback,
+    advanceMatchTask,
   };
 }
