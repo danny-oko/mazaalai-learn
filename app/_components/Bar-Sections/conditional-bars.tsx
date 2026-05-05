@@ -6,6 +6,7 @@ import { BarSections } from "./main-bars";
 export const ConditionalBars = () => {
   const pathname = usePathname();
   const hideBars =
+    pathname === "/" ||
     pathname?.startsWith("/lesson/") ||
     pathname?.startsWith("/sign-in") ||
     pathname?.startsWith("/sign-up");

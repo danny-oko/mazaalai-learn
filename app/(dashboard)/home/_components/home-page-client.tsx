@@ -2,7 +2,6 @@
 "use client";
 
 import { Montserrat } from "next/font/google";
-import "@fontsource/plus-jakarta-sans";
 
 const montserrat = Montserrat({
   subsets: ["latin", "cyrillic"],

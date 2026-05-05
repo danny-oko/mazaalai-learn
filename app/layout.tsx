@@ -25,6 +25,7 @@ const balsamiq = Balsamiq_Sans({
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 const geistMono = Geist_Mono({
@@ -55,10 +56,12 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${mongolFont.variable} ${balsamiq.variable} h-full antialiased`}
     >
       <body className="flex h-full min-h-0 flex-row overflow-hidden">
-        <ConditionalBars />
-        <main className="min-h-0 min-w-0 flex-1 overflow-y-auto">
-          {children}
-        </main>
+        <ClerkProvider>
+          <ConditionalBars />
+          <main className="min-h-0 min-w-0 flex-1 overflow-y-auto">
+            {children}
+          </main>
+        </ClerkProvider>
       </body>
     </html>
   );
