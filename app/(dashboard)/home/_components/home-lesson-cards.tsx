@@ -1,6 +1,6 @@
 "use client";
 
-import { Lock, BookOpen, Check, Star } from "lucide-react";
+import { Lock, Check, Star } from "lucide-react";
 
 import { useEffect, useState } from "react";
 
@@ -39,6 +39,27 @@ function assignStatuses(lessons: Lesson[], completedUpTo: number): Lesson[] {
     }));
 }
 
+type ProgressItem = {
+  lessonId: string;
+  status: "LOCKED" | "IN_PROGRESS" | "COMPLETED";
+};
+
+function resolveCompletedUpTo(lessons: Lesson[], progress: ProgressItem[]) {
+  const sorted = [...lessons].sort((a, b) => a.order - b.order);
+  const completedSet = new Set(
+    progress
+      .filter((item) => item.status === "COMPLETED")
+      .map((item) => item.lessonId),
+  );
+
+  let contiguousCompleted = 0;
+  for (const lesson of sorted) {
+    if (!completedSet.has(lesson.id)) break;
+    contiguousCompleted += 1;
+  }
+  return contiguousCompleted;
+}
+
 export const useLessons = () => {
   const [lessons, setLessons] = useState<Lesson[]>([]);
 
@@ -47,14 +68,21 @@ export const useLessons = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/lessons")
-      .then((res) => {
+    Promise.all([
+      fetch("/api/lessons").then((res) => {
         if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
         return res.json();
-      })
-      .then((data: Lesson[]) => {
-        if (!Array.isArray(data)) return;
-        setLessons(assignStatuses(data, 0));
+      }),
+      fetch("/api/progress").then((res) => (res.ok ? res.json() : [])),
+    ])
+      .then(([lessonsData, progressData]: [Lesson[], ProgressItem[]]) => {
+        if (!Array.isArray(lessonsData)) return;
+        const nextCompletedUpTo = resolveCompletedUpTo(
+          lessonsData,
+          Array.isArray(progressData) ? progressData : [],
+        );
+        setCompletedUpTo(nextCompletedUpTo);
+        setLessons(assignStatuses(lessonsData, nextCompletedUpTo));
         setLoading(false);
       })
       .catch((err) => {
@@ -128,11 +156,11 @@ export const LessonCards = ({
                 background: isLocked
                   ? "#E8E5DC"
                   : isDone
-                    ? "#539f7e"
+                    ? "#2C6601"
                     : "#58cc02",
                 border: isLocked ? "2px dashed #BFC9C1" : "none",
                 boxShadow: isDone
-                  ? "0 0 0 6px #C8EDD9"
+                  ? "0 5px 0 #1E4601"
                   : isActive
                     ? "0 5px 0px rgba(0, 118, 255, 0.39)"
                     : "none",
@@ -141,10 +169,10 @@ export const LessonCards = ({
               }}
             >
               <Icon
-                size={isActive ? 40 : 24}
+                size={isLocked ? 24 : isDone ? 28 : 40}
                 color={isLocked ? "#BFC9C1" : "#fff"}
                 strokeWidth={2}
-                fill={isLocked ? "#BFC9C1" : "#fff"}
+                fill={isLocked ? "#BFC9C1" : isDone ? "" : "#fff"}
               />
             </button>
 

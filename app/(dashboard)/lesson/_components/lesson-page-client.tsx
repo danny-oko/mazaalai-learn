@@ -15,11 +15,17 @@ import { LessonChoiceGrid } from "./lesson-choice-grid";
 export function LessonPageClient({
   lessonId,
   userId,
+  isFirstWeekUser,
 }: {
   lessonId: string;
   userId: string;
+  isFirstWeekUser: boolean;
 }) {
   const router = useRouter();
+  const goHome = () => {
+    router.push("/home");
+    router.refresh();
+  };
   const {
     loading,
     phase,
@@ -38,24 +44,33 @@ export function LessonPageClient({
     checkTaskAnswer,
     clearMatchFeedback,
     advanceMatchTask,
+    refillHeartsForFirstWeek,
   } = useLessonGame(lessonId, userId);
   const [skipped, setSkipped] = useState(false);
 
   if (loading) return <LessonStatusScreen message="LOADING..." animated />;
   if (isFailed)
     return (
-      <LessonStatusScreen
-        message="You're out of hearts."
-        description="Try again after your hearts refill in 1 hour."
-        actionLabel="Back to lessons"
-        onAction={() => router.back()}
-      />
+      isFirstWeekUser ? (
+        <LessonStatusScreen
+          message="You ran out of hearts. Have a free refill on us to keep going!"
+          actionLabel="Refill for free"
+          onAction={refillHeartsForFirstWeek}
+        />
+      ) : (
+        <LessonStatusScreen
+          message="You're out of hearts."
+          description="Try again after your hearts refill in 1 hour."
+          actionLabel="Back to lessons"
+          onAction={goHome}
+        />
+      )
     );
   if (reviewStats)
     return (
       <LessonReviewScreen
         stats={reviewStats}
-        onContinue={() => router.back()}
+        onContinue={goHome}
       />
     );
   if (phase === "teaching" && !currentContent)
