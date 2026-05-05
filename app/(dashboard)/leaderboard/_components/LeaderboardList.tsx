@@ -1,3 +1,7 @@
+"use client";
+
+import { useMemo, useState } from "react";
+
 interface LeaderboardUser {
   rank: number;
   name: string;
@@ -9,6 +13,8 @@ interface LeaderboardUser {
 
 interface LeaderboardListProps {
   users: LeaderboardUser[];
+  initialVisibleCount?: number;
+  loadStep?: number;
 }
 
 function ListItem({ user }: { user: LeaderboardUser }) {
@@ -75,12 +81,32 @@ function ListItem({ user }: { user: LeaderboardUser }) {
   );
 }
 
-export default function LeaderboardList({ users }: LeaderboardListProps) {
+export default function LeaderboardList({
+  users,
+  initialVisibleCount = 4,
+  loadStep = 4,
+}: LeaderboardListProps) {
+  const [visibleCount, setVisibleCount] = useState(initialVisibleCount);
+  const visibleUsers = useMemo(
+    () => users.slice(0, visibleCount),
+    [users, visibleCount],
+  );
+  const hasMore = visibleCount < users.length;
+
   return (
     <div className="mx-4 mt-3 flex flex-col gap-2">
-      {users.map((user) => (
+      {visibleUsers.map((user) => (
         <ListItem key={user.rank} user={user} />
       ))}
+      {hasMore && (
+        <button
+          type="button"
+          onClick={() => setVisibleCount((current) => current + loadStep)}
+          className="mt-2 self-center rounded-xl border border-[#D7B680] bg-[#F3E0BD] px-5 py-2 text-sm font-semibold text-[#7A5C2E] transition hover:bg-[#EFD4A2]"
+        >
+          Load more
+        </button>
+      )}
     </div>
   );
 }

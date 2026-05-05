@@ -1,3 +1,7 @@
+"use client";
+
+import { useMemo, useState } from "react";
+
 interface WebLeaderboardUser {
   rank: number;
   name: string;
@@ -12,6 +16,8 @@ interface WebLeaderboardUser {
 interface WebLeaderboardListProps {
   users: WebLeaderboardUser[];
   maxXp?: number;
+  initialVisibleCount?: number;
+  loadStep?: number;
 }
 
 function WebListItem({
@@ -95,14 +101,31 @@ function WebListItem({
 export default function WebLeaderboardList({
   users,
   maxXp,
+  initialVisibleCount = 5,
+  loadStep = 5,
 }: WebLeaderboardListProps) {
+  const [visibleCount, setVisibleCount] = useState(initialVisibleCount);
+  const visibleUsers = useMemo(
+    () => users.slice(0, visibleCount),
+    [users, visibleCount],
+  );
   const max = maxXp ?? Math.max(...users.map((u) => u.xp));
+  const hasMore = visibleCount < users.length;
 
   return (
     <div className="flex flex-col gap-2">
-      {users.map((user) => (
+      {visibleUsers.map((user) => (
         <WebListItem key={user.rank} user={user} maxXp={max} />
       ))}
+      {hasMore && (
+        <button
+          type="button"
+          onClick={() => setVisibleCount((current) => current + loadStep)}
+          className="mt-2 self-center rounded-xl border border-[#D7B680] bg-[#F3E0BD] px-5 py-2 text-sm font-semibold text-[#7A5C2E] transition hover:bg-[#EFD4A2]"
+        >
+          Load more
+        </button>
+      )}
     </div>
   );
 }
