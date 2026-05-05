@@ -10,25 +10,21 @@ const montserrat = Montserrat({
 
 import { ROW, SW, useLessons, LessonCards } from "./home-lesson-cards";
 import { RoadPath } from "./home-road-path";
+import Mascot from "./home-animation";
+import LoadingScreen from "@/app/_components/loading-screen";
 
 export const HomePath = () => {
   const { lessons, completedUpTo, loading, completeLesson } = useLessons();
 
   if (loading) {
     return (
-      <div
-        className="flex min-h-[50vh] w-full flex-col items-center justify-center gap-3 bg-[#F0EDE3] py-16 font-['Plus_Jakarta_Sans']"
-        aria-busy="true"
-        aria-label="Loading lessons"
-      >
-        <img
-          src="/bear.png"
-          alt=""
-          width={48}
-          height={48}
-          className="animate-spin"
-        />
-        <p className="text-sm font-semibold text-amber-900/80">Loading lessons…</p>
+      <div className="flex flex-col items-center justify-center gap-1 bg-[#F0EDE3] font-['Plus_Jakarta_Sans']">
+        <div className="w-[120px] sm:w-[180px] md:w-[200px] lg:w-[220px] xl:w-[300px] aspect-square transition-all duration-300">
+          <LoadingScreen />
+        </div>
+        <p className={`text-lg font-black text-black animate-pulse}`}>
+          LOADING...
+        </p>
       </div>
     );
   }
@@ -46,6 +42,11 @@ export const HomePath = () => {
           completedUpTo={completedUpTo}
           completeLesson={completeLesson}
         />
+        <div className="fixed right-0 bottom-21.5 md:bottom-0 z-50 pointer-events-none">
+          <div className="w-[120px] sm:w-[180px] md:w-[200px] lg:w-[220px] xl:w-[300px] aspect-square transition-all duration-300">
+            <Mascot />
+          </div>
+        </div>
       </div>
     </div>
   );

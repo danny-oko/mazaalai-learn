@@ -4,7 +4,6 @@ const montserrat = Montserrat({
   subsets: ["latin", "cyrillic"],
   weight: ["400", "500", "600", "700"],
 });
-
 import { Volume2 } from "lucide-react";
 import { LessonContent } from "./lesson-types";
 
@@ -37,5 +36,3 @@ export function LessonContentCard({ item }: LessonContentCardProps) {
     </div>
   );
 }
-
-//

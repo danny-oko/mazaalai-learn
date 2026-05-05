@@ -31,7 +31,7 @@ export const SideBar = ({ menuLabels, menuPaths }: HeaderClientProps) => {
 
   return (
     <aside
-      className="fixed top-0 left-0 z-40 hidden h-full flex-col shadow-2xl md:flex md:w-20 lg:w-[256px]"
+      className="bg-[#f8f4e3] hidden h-full flex-col border-r-2 border-[#d6d4d4] py-5 md:flex md:w-20 md:px-2 lg:w-[300px] lg:px-3 shrink-0"
       aria-label="Main navigation"
     >
       <div className="flex h-[60px] items-center justify-center px-2 lg:justify-start lg:px-5">

@@ -117,7 +117,7 @@ export function LessonReviewScreen({
   const isPerfect = heartsRemaining === 3 && accuracy === 100;
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-10 font-['Plus_Jakarta_Sans']">
+    <div className="min-h-screen bg-[#FEFAE8] flex flex-col items-center justify-center px-4 py-10 font-['Plus_Jakarta_Sans']">
       <div className="w-full max-w-md flex flex-col items-center gap-8">
         {/* Header */}
         <div className="flex flex-col items-center gap-2 text-center">

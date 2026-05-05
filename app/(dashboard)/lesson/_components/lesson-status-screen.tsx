@@ -1,3 +1,4 @@
+import LoadingScreen from "@/app/_components/loading-screen";
 import "@fontsource/plus-jakarta-sans";
 
 interface Props {
@@ -17,15 +18,17 @@ export function LessonStatusScreen({
 }: Props) {
   return (
     <div
-      className={`flex items-center justify-center min-h-screen px-5 font-['Plus_Jakarta_Sans']`}
+      className={`flex items-center justify-center min-h-screen bg-[#FEFAE8] px-5 font-['Plus_Jakarta_Sans']`}
     >
       <div className="w-full max-w-sm text-center flex justify-center">
-        <p
+        <div
           className={`text-lg font-black text-black ${animated ? "animate-pulse" : ""}`}
         >
-          <img src="/bear.png" alt="Mazaalai Learn" className="animate-spin" />
+          <div className="w-[120px] sm:w-[180px] md:w-[200px] lg:w-[220px] xl:w-[300px] aspect-square transition-all duration-300">
+            <LoadingScreen />
+          </div>
           {message}
-        </p>
+        </div>
         {description && (
           <p className="mt-2 text-sm text-[#6B7280]">{description}</p>
         )}

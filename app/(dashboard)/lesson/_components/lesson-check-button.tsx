@@ -1,4 +1,5 @@
 import { Montserrat } from "next/font/google";
+import IncorrectBear from "./lesson-incorrect-animation";
 
 const montserrat = Montserrat({
   subsets: ["latin", "cyrillic"],
@@ -36,7 +37,9 @@ export function LessonCheckButton({
     return (
       <div className="w-full px-4 sm:px-8 py-8 sm:py-10 border-t-4 border-[#FF4B4B] bg-[#FAD99A]">
         <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-center">
-          <div className="flex w-full flex-1 flex-col gap-0.5">
+          <div
+            className={`flex w-full flex-1 gap-0.5 ${shouldRenderCorrectAnswerAsImage ? "flex gap-10" : "flex-col"}`}
+          >
             <span className="text-xs font-black tracking-widest uppercase text-[#FF4B4B]">
               Correct answer
             </span>
@@ -44,7 +47,7 @@ export function LessonCheckButton({
               <img
                 src={correctAnswer}
                 alt="Correct answer"
-                className="mt-2 h-20 w-20 rounded-lg object-cover border border-[#F59E0B]"
+                className="h-20 w-20 rounded-lg object-cover border border-[#F59E0B]"
               />
             ) : (
               <span
@@ -53,6 +56,10 @@ export function LessonCheckButton({
                 {correctAnswer}
               </span>
             )}
+          </div>
+
+          <div className="absolute right-55 bottom-15 -z-10 hidden w-[120px] sm:w-[180px] md:w-[200px] lg:w-[220px] xl:w-[300px] xl:block aspect-square transition-all duration-300">
+            <IncorrectBear />
           </div>
           <button
             onClick={onContinue}
@@ -108,5 +115,3 @@ export function LessonCheckButton({
     </div>
   );
 }
-
-//

@@ -33,8 +33,11 @@ export function LessonPageClient({
     progress,
     isFailed,
     reviewStats,
+    matchFeedback,
     advanceContent,
     checkTaskAnswer,
+    clearMatchFeedback,
+    advanceMatchTask,
   } = useLessonGame(lessonId, userId);
   const [skipped, setSkipped] = useState(false);
 
@@ -96,7 +99,12 @@ export function LessonPageClient({
                     matchData={matchData}
                     choices={choices}
                     selected={selected}
+                    matchFeedback={matchFeedback}
                     onSelect={setSelected}
+                    onMatchFeedbackDone={() => {
+                      if (matchFeedback === "correct") advanceMatchTask();
+                      else clearMatchFeedback();
+                    }}
                   />
                 </>
               )
@@ -105,7 +113,9 @@ export function LessonPageClient({
         </div>
         <LessonCheckButton
           isTeaching={phase === "teaching"}
-          disabled={phase === "tasks" && !selected && !skipped}
+          disabled={
+            (phase === "tasks" && !selected && !skipped) || !!matchFeedback
+          }
           onClick={phase === "teaching" ? advanceContent : handleCheck}
           onSkip={() => {
             setSkipped(true);
