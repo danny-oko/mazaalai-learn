@@ -110,6 +110,7 @@ export function LessonPageClient({
                 <>
                   <LessonTaskCard task={currentTask} />
                   <LessonChoiceGrid
+                    key={currentTask.id}
                     taskType={currentTask.type}
                     matchData={matchData}
                     choices={choices}
