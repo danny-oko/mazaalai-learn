@@ -1,16 +1,14 @@
 import prisma from "@/lib/prisma";
-import { auth } from "@clerk/nextjs/server";
+import { unauthorizedApiResponse } from "@/lib/server/dev-postman-bypass";
+import { getClerkUserIdFromRequest } from "@/lib/server/get-current-app-user";
 import { NextRequest, NextResponse } from "next/server";
 
-// GET /api/progress?userId=xxx
+// GET /api/progress?lessonId=… (user from session or dev impersonation)
 export const GET = async (req: NextRequest) => {
   const lessonId = req.nextUrl.searchParams.get("lessonId");
-  const userIdFromQuery = req.nextUrl.searchParams.get("userId");
-  const { userId: clerkUserId } = await auth();
-  const userId = userIdFromQuery ?? clerkUserId;
+  const userId = await getClerkUserIdFromRequest(req);
 
-  if (!userId)
-    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  if (!userId) return unauthorizedApiResponse(req);
 
   if (lessonId) {
     const progress = await prisma.userLessonProgress.findUnique({
@@ -29,13 +27,14 @@ export const GET = async (req: NextRequest) => {
 // POST /api/progress
 export const POST = async (req: NextRequest) => {
   const body = await req.json();
-  const { userId: clerkUserId } = await auth();
-  const userId = body.userId ?? clerkUserId;
+  const userId = await getClerkUserIdFromRequest(req);
   const { lessonId, status } = body;
   const mistakeCount = Number(body.heartsRemaining ?? body.mistakeCount ?? 3);
   const xpEarned = Number(body.xpEarned ?? 0);
 
-  if (!userId || !lessonId) {
+  if (!userId) return unauthorizedApiResponse(req);
+
+  if (!lessonId) {
     return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
   }
 

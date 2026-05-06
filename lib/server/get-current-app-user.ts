@@ -1,6 +1,19 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
 
 import prisma from "@/lib/prisma";
+import {
+  getDevImpersonatedUserId,
+  isDevPostmanBypassRequest,
+} from "@/lib/server/dev-postman-bypass";
+
+/** Clerk session user id, or dev Postman `x-impersonate-user-id` when bypass headers are set. */
+export async function getClerkUserIdFromRequest(req: Request): Promise<string | null> {
+  if (isDevPostmanBypassRequest(req)) {
+    return getDevImpersonatedUserId(req);
+  }
+  const { userId } = await auth();
+  return userId ?? null;
+}
 
 export async function getCurrentAppUser() {
   const { userId } = await auth();
@@ -39,4 +52,20 @@ export async function getCurrentAppUser() {
       avatarUrl: clerkUser?.imageUrl ?? undefined,
     },
   });
+}
+
+/**
+ * Same as getCurrentAppUser, but in development with valid Postman headers
+ * returns the DB user for `x-impersonate-user-id` (no Clerk session needed).
+ */
+export async function getCurrentAppUserFromRequest(req: Request) {
+  if (isDevPostmanBypassRequest(req)) {
+    const id = getDevImpersonatedUserId(req);
+    if (!id) {
+      return null;
+    }
+    return prisma.user.findUnique({ where: { id } });
+  }
+
+  return getCurrentAppUser();
 }

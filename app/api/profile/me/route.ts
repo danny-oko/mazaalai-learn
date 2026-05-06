@@ -1,11 +1,24 @@
 import { NextResponse } from "next/server";
 
 import prisma from "@/lib/prisma";
-import { getCurrentAppUser } from "@/lib/server/get-current-app-user";
+import {
+  getDevImpersonatedUserId,
+  isDevPostmanBypassRequest,
+} from "@/lib/server/dev-postman-bypass";
+import { getCurrentAppUserFromRequest } from "@/lib/server/get-current-app-user";
 
-export async function GET() {
-  const user = await getCurrentAppUser();
+export async function GET(req: Request) {
+  const user = await getCurrentAppUserFromRequest(req);
   if (!user) {
+    if (isDevPostmanBypassRequest(req) && !getDevImpersonatedUserId(req)) {
+      return NextResponse.json(
+        {
+          message:
+            "DEV Postman: add header x-impersonate-user-id with your Clerk user id (user_...). Sign in once in the app so that row exists in the database.",
+        },
+        { status: 400 },
+      );
+    }
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
@@ -13,8 +26,17 @@ export async function GET() {
 }
 
 export async function PATCH(req: Request) {
-  const user = await getCurrentAppUser();
+  const user = await getCurrentAppUserFromRequest(req);
   if (!user) {
+    if (isDevPostmanBypassRequest(req) && !getDevImpersonatedUserId(req)) {
+      return NextResponse.json(
+        {
+          message:
+            "DEV Postman: add header x-impersonate-user-id with your Clerk user id (user_...).",
+        },
+        { status: 400 },
+      );
+    }
     return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
   }
 
