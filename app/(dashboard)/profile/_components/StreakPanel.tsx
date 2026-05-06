@@ -21,20 +21,26 @@ export default function StreakPanel({ streak }: StreakPanelProps) {
       <div className="mt-3 grid grid-cols-7 gap-1.5">
         {streak.days.map((day, index) => (
           <div
-            key={`${day}-${index}`}
+            key={`${day.label}-${index}`}
             className={`rounded-full py-1 text-center text-[10px] font-bold ${
-              index < 5
+              day.completed
                 ? "bg-[#e4a325] text-white"
                 : "bg-[#f2ece0] text-[#9a907f]"
             }`}
           >
-            {day}
+            {day.label}
           </div>
         ))}
       </div>
       <button
         type="button"
-        className="mt-3 w-full rounded-xl border border-[#d8e2f2] bg-[#ebf3ff] px-3 py-2 text-sm font-semibold text-[#4d6e96]"
+        disabled={streak.frozenCount <= 0}
+        title={
+          streak.frozenCount <= 0
+            ? "Streak freeze is not available yet"
+            : undefined
+        }
+        className="mt-3 w-full rounded-xl border border-[#d8e2f2] bg-[#ebf3ff] px-3 py-2 text-sm font-semibold text-[#4d6e96] disabled:cursor-not-allowed disabled:opacity-50"
       >
         Use Streak Freeze ({streak.frozenCount} left)
       </button>

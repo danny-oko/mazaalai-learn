@@ -28,10 +28,15 @@ export type JourneyProgress = {
   practiceProgressText: string;
 };
 
+export type StreakDayDot = {
+  label: string;
+  completed: boolean;
+};
+
 export type StreakInfo = {
   current: number;
   best: number;
-  days: string[];
+  days: StreakDayDot[];
   frozenCount: number;
 };
 
