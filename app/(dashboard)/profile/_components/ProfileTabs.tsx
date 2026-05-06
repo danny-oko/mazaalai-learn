@@ -1,4 +1,6 @@
-import { ProfileTab } from "../common/types";
+import Link from "next/link";
+
+import type { ProfileTab } from "../common/types";
 
 type ProfileTabsProps = {
   activeTab: ProfileTab;
@@ -17,17 +19,18 @@ export default function ProfileTabs({ activeTab }: ProfileTabsProps) {
       {tabs.map((tab) => {
         const isActive = tab.id === activeTab;
         return (
-          <button
+          <Link
             key={tab.id}
-            type="button"
+            href={`/profile?tab=${tab.id}`}
+            scroll={false}
             className={`border-b-2 pb-3 text-sm font-semibold transition-colors ${
               isActive
                 ? "border-[#d39a2f] text-[#433c31]"
-                : "border-transparent text-[#8d8270]"
+                : "border-transparent text-[#8d8270] hover:text-[#433c31]"
             }`}
           >
             {tab.label}
-          </button>
+          </Link>
         );
       })}
     </nav>

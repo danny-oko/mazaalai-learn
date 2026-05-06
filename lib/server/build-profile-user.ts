@@ -1,0 +1,320 @@
+import type {
+  DailyChallenge,
+  JourneyProgress,
+  ProfileBadge,
+  ProfileUser,
+} from "@/app/(dashboard)/profile/common/types";
+import type { User } from "@prisma/client";
+import prisma from "@/lib/prisma";
+import { getRankNameFromXp } from "@/lib/utils/getRankNameFromXp";
+
+import { PROFILE_SETTING_ITEMS } from "./profile-settings";
+import {
+  bestStreakFromCompletionDates,
+  calculateDailyStreak,
+  toUtcDateOnly,
+} from "./daily-streak";
+
+const XP_PER_LEVEL = 300;
+const DAY_MS = 24 * 60 * 60 * 1000;
+const DOW_LETTERS = ["S", "M", "T", "W", "T", "F", "S"] as const;
+
+function formatMemberSince(date: Date): string {
+  return new Intl.DateTimeFormat("en", { month: "short", year: "numeric" }).format(date);
+}
+
+function daysUntilNextMondayUtc(): number {
+  const now = new Date();
+  const dow = now.getUTCDay();
+  return dow === 0 ? 1 : 8 - dow;
+}
+
+function buildLast7StreakDots(completionUtcMidnights: Set<number>) {
+  const today = toUtcDateOnly(new Date()).getTime();
+  const out: { label: string; completed: boolean }[] = [];
+  for (let i = 6; i >= 0; i -= 1) {
+    const t = today - i * DAY_MS;
+    const dow = new Date(t).getUTCDay();
+    out.push({
+      label: DOW_LETTERS[dow],
+      completed: completionUtcMidnights.has(t),
+    });
+  }
+  return out;
+}
+
+function buildBadges(completedLessonCount: number, totalXp: number, currentStreak: number): ProfileBadge[] {
+  return [
+    { id: "b1", label: "First lesson", icon: "⭐", unlocked: completedLessonCount >= 1 },
+    { id: "b2", label: "5 lessons", icon: "📚", unlocked: completedLessonCount >= 5 },
+    { id: "b3", label: "10 lessons", icon: "🎯", unlocked: completedLessonCount >= 10 },
+    { id: "b4", label: "7-day streak", icon: "🔥", unlocked: currentStreak >= 7 },
+    { id: "b5", label: "100 XP", icon: "✨", unlocked: totalXp >= 100 },
+    { id: "b6", label: "500 XP", icon: "💫", unlocked: totalXp >= 500 },
+    { id: "b7", label: "1000 XP", icon: "🏆", unlocked: totalXp >= 1000 },
+    { id: "b8", label: "25 lessons", icon: "🐉", unlocked: completedLessonCount >= 25 },
+  ];
+}
+
+function buildChallenges(args: {
+  lessonsDoneLast7Days: number;
+  completedLessonToday: boolean;
+  xpThisWeek: number;
+}): DailyChallenge[] {
+  const weeklyLessonTarget = 5;
+  const xpTarget = 50;
+  const pctLessons = Math.min(100, (args.lessonsDoneLast7Days / weeklyLessonTarget) * 100);
+  const pctXp = Math.min(100, (args.xpThisWeek / xpTarget) * 100);
+
+  return [
+    {
+      id: "c1",
+      title: "Lessons this week",
+      subtitle: "Rolling 7 days",
+      progressText: `${Math.min(args.lessonsDoneLast7Days, weeklyLessonTarget)}/${weeklyLessonTarget}`,
+      progressPercent: pctLessons,
+      done: args.lessonsDoneLast7Days >= weeklyLessonTarget,
+      xpReward: 20,
+    },
+    {
+      id: "c2",
+      title: "Lesson today",
+      subtitle: "Complete any lesson (UTC day)",
+      progressText: args.completedLessonToday ? "1/1" : "0/1",
+      progressPercent: args.completedLessonToday ? 100 : 0,
+      done: args.completedLessonToday,
+      xpReward: 15,
+    },
+    {
+      id: "c3",
+      title: "XP this week",
+      subtitle: "From finished lessons",
+      progressText: `${Math.min(args.xpThisWeek, xpTarget)}/${xpTarget} XP`,
+      progressPercent: pctXp,
+      done: args.xpThisWeek >= xpTarget,
+      xpReward: 25,
+    },
+  ];
+}
+
+function emptyJourney(): JourneyProgress {
+  return {
+    moduleLabel: "Current module",
+    title: "No levels yet",
+    description: "Add sections and lessons in the database to see progress here.",
+    lessonProgressText: "0 / 0 lessons",
+    completionPercent: 0,
+    lessonsLeftText: "—",
+    characterProgressText: "—",
+    practiceProgressText: "—",
+  };
+}
+
+export async function buildProfileUser(
+  appUser: User,
+  leaguePosition: number,
+): Promise<ProfileUser> {
+  const userId = appUser.id;
+  const weekAgo = new Date();
+  weekAgo.setTime(weekAgo.getTime() - 7 * DAY_MS);
+
+  const [
+    completedRows,
+    allProgressRows,
+    sections,
+    leaguePeers,
+    weeklyAgg,
+  ] = await Promise.all([
+    prisma.userLessonProgress.findMany({
+      where: { userId, status: "COMPLETED", completedAt: { not: null } },
+      select: { completedAt: true, xpEarned: true, lessonId: true },
+    }),
+    prisma.userLessonProgress.findMany({
+      where: { userId },
+      select: {
+        lessonId: true,
+        status: true,
+        mistakeCount: true,
+        xpEarned: true,
+        completedAt: true,
+      },
+    }),
+    prisma.section.findMany({
+      orderBy: { order: "asc" },
+      select: {
+        id: true,
+        title: true,
+        order: true,
+        lessons: {
+          orderBy: { order: "asc" },
+          select: { id: true, title: true, order: true },
+        },
+      },
+    }),
+    prisma.user.findMany({
+      orderBy: { totalXp: "desc" },
+      take: 12,
+      select: { id: true, name: true, userName: true, totalXp: true },
+    }),
+    prisma.userLessonProgress.aggregate({
+      where: { userId, completedAt: { gte: weekAgo } },
+      _sum: { xpEarned: true },
+    }),
+  ]);
+
+  const completionDates = completedRows
+    .map((r) => r.completedAt)
+    .filter((d): d is Date => Boolean(d));
+
+  const currentStreak = calculateDailyStreak(completionDates);
+  const bestStreak = Math.max(
+    bestStreakFromCompletionDates(completionDates),
+    currentStreak,
+  );
+
+  const completionMidnightSet = new Set(
+    completionDates.map((d) => toUtcDateOnly(d).getTime()),
+  );
+  const streakDays = buildLast7StreakDots(completionMidnightSet);
+
+  const xpThisWeek = weeklyAgg._sum.xpEarned ?? 0;
+  const lessonsDoneLast7Days = completedRows.filter(
+    (r) => r.completedAt && r.completedAt >= weekAgo,
+  ).length;
+
+  const todayMidnight = toUtcDateOnly(new Date()).getTime();
+  const completedLessonToday = completedRows.some(
+    (r) => r.completedAt && toUtcDateOnly(r.completedAt).getTime() === todayMidnight,
+  );
+
+  const activeDaySet = new Set(
+    completedRows
+      .filter((r) => r.completedAt && r.completedAt >= weekAgo)
+      .map((r) => toUtcDateOnly(r.completedAt!).getTime()),
+  );
+  const daysThisWeek = `${Math.min(7, activeDaySet.size)}/7`;
+
+  const progressByLesson = new Map(allProgressRows.map((p) => [p.lessonId, p]));
+
+  let journey: JourneyProgress = emptyJourney();
+  if (sections.length > 0) {
+    let currentSection = sections[sections.length - 1];
+    for (const sec of sections) {
+      const hasIncomplete = sec.lessons.some(
+        (l) => progressByLesson.get(l.id)?.status !== "COMPLETED",
+      );
+      if (hasIncomplete) {
+        currentSection = sec;
+        break;
+      }
+    }
+
+    const total = currentSection.lessons.length;
+    const done = currentSection.lessons.filter(
+      (l) => progressByLesson.get(l.id)?.status === "COMPLETED",
+    ).length;
+    const inProgress = currentSection.lessons.filter(
+      (l) => progressByLesson.get(l.id)?.status === "IN_PROGRESS",
+    ).length;
+    const completionPercent = total ? Math.round((done / total) * 100) : 0;
+
+    journey = {
+      moduleLabel: "Current module",
+      title: currentSection.title,
+      description: `Your progress in ${currentSection.title}.`,
+      lessonProgressText: `${done} / ${total} lessons`,
+      completionPercent,
+      lessonsLeftText:
+        total - done > 0 ? `${total - done} lesson${total - done === 1 ? "" : "s"} left` : "Module complete",
+      characterProgressText:
+        inProgress > 0
+          ? `${inProgress} in progress`
+          : done > 0
+            ? `${done} completed`
+            : "Not started",
+      practiceProgressText: "—",
+    };
+  }
+
+  const completedLessonCount = new Set(completedRows.map((r) => r.lessonId)).size;
+  const badges = buildBadges(completedLessonCount, appUser.totalXp, currentStreak);
+  const dailyChallenges = buildChallenges({
+    lessonsDoneLast7Days,
+    completedLessonToday,
+    xpThisWeek,
+  });
+
+  const displayName = appUser.name ?? appUser.userName;
+  const rankTitle = getRankNameFromXp(appUser.totalXp);
+
+  let leagueEntries = leaguePeers.map((u, i) => ({
+    rank: i + 1,
+    name: u.name ?? u.userName,
+    xp: u.totalXp,
+    isCurrentUser: u.id === userId,
+  }));
+
+  const inLeaderboard = leagueEntries.some((e) => e.isCurrentUser);
+  if (!inLeaderboard) {
+    leagueEntries = [
+      ...leagueEntries,
+      {
+        rank: leaguePosition,
+        name: displayName,
+        xp: appUser.totalXp,
+        isCurrentUser: true,
+      },
+    ];
+  }
+
+  const level = Math.max(1, Math.floor(appUser.totalXp / XP_PER_LEVEL) + 1);
+  const nextLevelXp = level * XP_PER_LEVEL;
+  const previousLevelXp = (level - 1) * XP_PER_LEVEL;
+  const inLevelXp = Math.max(0, appUser.totalXp - previousLevelXp);
+  const neededInLevel = Math.max(1, nextLevelXp - previousLevelXp);
+  const toNextLevel = Math.max(0, nextLevelXp - appUser.totalXp);
+
+  return {
+    id: appUser.id,
+    name: displayName,
+    username: appUser.userName,
+    avatarInitial: displayName.charAt(0).toUpperCase() || "U",
+    memberSince: formatMemberSince(appUser.createdAt),
+    rankTitle,
+    language: "Mongolian",
+    streakLabel: `${currentStreak}-day streak`,
+    level,
+    levelTitle: `Level ${level} Learner`,
+    totalXp: appUser.totalXp,
+    levelProgressText: `${inLevelXp.toLocaleString()} / ${neededInLevel.toLocaleString()} XP`,
+    toNextLevelText: `${toNextLevel.toLocaleString()} XP to Level ${level + 1}`,
+    leaguePosition,
+    streakCount: currentStreak,
+    badgeCount: badges.filter((b) => b.unlocked).length,
+    activeTab: "overview",
+    weeklyStats: {
+      xpThisWeek,
+      daysThisWeek,
+    },
+    streak: {
+      current: currentStreak,
+      best: bestStreak,
+      days: streakDays,
+      frozenCount: 0,
+    },
+    experience: {
+      currentLevel: level,
+      currentXp: appUser.totalXp,
+      nextLevelXp,
+    },
+    dailyChallenges,
+    journey,
+    badges,
+    settings: PROFILE_SETTING_ITEMS,
+    league: {
+      name: `${rankTitle} league`,
+      resetInText: `${daysUntilNextMondayUtc()}d to reset`,
+      entries: leagueEntries,
+    },
+  };
+}

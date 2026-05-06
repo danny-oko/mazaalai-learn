@@ -1,0 +1,44 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
+import { Button } from "@/components/ui/button";
+
+const STORAGE_KEY = "mazaalai-profile-dark-preview";
+
+export function AppearanceToggle() {
+  const [dark, setDark] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    const root = document.documentElement;
+    const initial = saved === "1" || root.classList.contains("dark");
+    setDark(initial);
+    root.classList.toggle("dark", initial);
+  }, []);
+
+  const toggle = () => {
+    const next = !dark;
+    setDark(next);
+    document.documentElement.classList.toggle("dark", next);
+    localStorage.setItem(STORAGE_KEY, next ? "1" : "0");
+  };
+
+  return (
+    <section
+      id="appearance"
+      className="scroll-mt-24 rounded-2xl border border-[#e6dece] bg-white p-4 md:p-5"
+    >
+      <h2 className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-[#8a806f]">
+        Appearance
+      </h2>
+      <p className="mb-4 text-sm text-[#706552]">
+        Toggle a dark theme preview for this browser. This is stored locally on
+        your device.
+      </p>
+      <Button type="button" variant="outline" onClick={toggle} className="rounded-xl">
+        {dark ? "Switch to light" : "Switch to dark"}
+      </Button>
+    </section>
+  );
+}

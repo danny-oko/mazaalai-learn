@@ -3,30 +3,7 @@ import { HomePath } from "./_components/home-page-client";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
 import { ensureUser } from "@/lib/server/ensure-user";
-
-function toUtcDateOnly(value: Date) {
-  return new Date(Date.UTC(value.getUTCFullYear(), value.getUTCMonth(), value.getUTCDate()));
-}
-
-function calculateDailyStreak(completedAt: Date[]) {
-  const uniqueDays = Array.from(new Set(completedAt.map((d) => toUtcDateOnly(d).getTime()))).sort(
-    (a, b) => b - a,
-  );
-  if (!uniqueDays.length) return 0;
-
-  const oneDayMs = 24 * 60 * 60 * 1000;
-  const today = toUtcDateOnly(new Date()).getTime();
-  const yesterday = today - oneDayMs;
-  if (uniqueDays[0] !== today && uniqueDays[0] !== yesterday) return 0;
-
-  let streak = 1;
-  for (let i = 1; i < uniqueDays.length; i += 1) {
-    if (uniqueDays[i - 1] - uniqueDays[i] !== oneDayMs) break;
-    streak += 1;
-  }
-
-  return streak;
-}
+import { calculateDailyStreak } from "@/lib/server/daily-streak";
 
 export default async function HomeSection() {
   const { userId } = await auth();
