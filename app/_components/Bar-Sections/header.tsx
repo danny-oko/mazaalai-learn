@@ -3,7 +3,7 @@ import "@fontsource/plus-jakarta-sans";
 type HeaderProps = {
   heartsRemaining?: number;
   streak: number;
-  xp: number;
+  totalXp: number;
 };
 
 const MAX_HEARTS = 3;
@@ -11,14 +11,14 @@ const MAX_HEARTS = 3;
 export const Header = ({
   heartsRemaining = MAX_HEARTS,
   streak,
-  xp,
+  totalXp,
 }: HeaderProps) => {
   const safeHeartsRemaining = Math.max(
     0,
     Math.min(heartsRemaining, MAX_HEARTS),
   );
   const isOutOfHearts = safeHeartsRemaining === 0;
-  const isStreakLost = xp === 0;
+  const isStreakLost = streak === 0;
 
   return (
     <div
@@ -77,7 +77,7 @@ export const Header = ({
                 width={30}
               />
               <span className="text-xs font-black sm:text-sm">
-                {xp.toLocaleString()} XP
+                {totalXp.toLocaleString()} XP
               </span>
             </div>
           </div>
