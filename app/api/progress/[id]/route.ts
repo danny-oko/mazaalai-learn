@@ -1,10 +1,29 @@
 import prisma from "@/lib/prisma";
+import { unauthorizedApiResponse } from "@/lib/server/dev-postman-bypass";
+import { getClerkUserIdFromRequest } from "@/lib/server/get-current-app-user";
 import { NextRequest, NextResponse } from "next/server";
 
-export const PATCH = async (req: NextRequest, { params }: { params: { id: string } }) => {
+type Params = { params: Promise<{ id: string }> };
+
+export const PATCH = async (req: NextRequest, { params }: Params) => {
+  const { id } = await params;
+  const userId = await getClerkUserIdFromRequest(req);
+  if (!userId) return unauthorizedApiResponse(req);
+
+  const existing = await prisma.userLessonProgress.findUnique({
+    where: { id },
+    select: { userId: true },
+  });
+  if (!existing) {
+    return NextResponse.json({ message: "Not found" }, { status: 404 });
+  }
+  if (existing.userId !== userId) {
+    return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+  }
+
   const body = await req.json();
   const progress = await prisma.userLessonProgress.update({
-    where: { id: params.id },
+    where: { id },
     data: {
       ...(body.status && { status: body.status }),
       ...(body.mistakeCount !== undefined && { mistakeCount: parseInt(body.mistakeCount) }),
@@ -15,7 +34,22 @@ export const PATCH = async (req: NextRequest, { params }: { params: { id: string
   return NextResponse.json(progress);
 };
 
-export const DELETE = async (_: NextRequest, { params }: { params: { id: string } }) => {
-  await prisma.userLessonProgress.delete({ where: { id: params.id } });
+export const DELETE = async (req: NextRequest, { params }: Params) => {
+  const { id } = await params;
+  const userId = await getClerkUserIdFromRequest(req);
+  if (!userId) return unauthorizedApiResponse(req);
+
+  const existing = await prisma.userLessonProgress.findUnique({
+    where: { id },
+    select: { userId: true },
+  });
+  if (!existing) {
+    return NextResponse.json({ message: "Not found" }, { status: 404 });
+  }
+  if (existing.userId !== userId) {
+    return NextResponse.json({ message: "Forbidden" }, { status: 403 });
+  }
+
+  await prisma.userLessonProgress.delete({ where: { id } });
   return NextResponse.json({ message: "Deleted" });
 };
