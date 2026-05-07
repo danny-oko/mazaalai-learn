@@ -1,3 +1,5 @@
+import "@fontsource/plus-jakarta-sans";
+
 type HeaderProps = {
   heartsRemaining?: number;
   streak: number;
@@ -11,12 +13,17 @@ export const Header = ({
   streak,
   xp,
 }: HeaderProps) => {
-  const safeHeartsRemaining = Math.max(0, Math.min(heartsRemaining, MAX_HEARTS));
+  const safeHeartsRemaining = Math.max(
+    0,
+    Math.min(heartsRemaining, MAX_HEARTS),
+  );
   const isOutOfHearts = safeHeartsRemaining === 0;
   const isStreakLost = xp === 0;
 
   return (
-    <div className="md:fixed right-20 top-4 z-100 pt-[env(safe-area-inset-top)]">
+    <div
+      className={`md:fixed right-20 top-4 z-100 pt-[env(safe-area-inset-top)] font-['Plus_Jakarta_Sans']`}
+    >
       <div className="max-w-lg">
         <div className="flex items-center px-4 py-3 font-['Plus_Jakarta_Sans'] text-[#0F5238]">
           <div className="flex shrink-0 items-center gap-25 sm:gap-6">

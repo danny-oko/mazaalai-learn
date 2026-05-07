@@ -1,5 +1,5 @@
 import { Montserrat } from "next/font/google";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { TaskType } from "./lesson-types";
 import { LessonChoice, MatchRenderData } from "./use-lesson-game";
 
@@ -49,23 +49,6 @@ export function LessonChoiceGrid({
     rightId: string;
   } | null>(null);
   const feedbackTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const matchResetKey = useMemo(() => {
-    if (!matchData) return "nomatch";
-    return [
-      ...matchData.leftSide.map((i) => i.id),
-      "|",
-      ...matchData.rightSide.map((i) => i.id),
-    ].join(",");
-  }, [matchData]);
-
-  useEffect(() => {
-    setActiveButton(null);
-    setDismissed(new Set());
-    setWrongPair(null);
-    setCorrectPair(null);
-    if (taskType === "MATCH") onSelect("");
-  }, [matchResetKey]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (!matchFeedback) return;

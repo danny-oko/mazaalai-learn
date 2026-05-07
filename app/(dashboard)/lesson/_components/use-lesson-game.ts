@@ -226,6 +226,7 @@ export function useLessonGame(lessonId: string, userId: string) {
 
   const correctRef = useRef(0);
   const totalRef = useRef(0);
+  const earnedXpRef = useRef(0);
   const startRef = useRef(Date.now());
 
   useEffect(() => {
@@ -241,7 +242,7 @@ export function useLessonGame(lessonId: string, userId: string) {
         ([contents, tasks, progress, allProgress]: [
           LessonContent[],
           Task[],
-          { mistakeCount: number } | null,
+          { mistakeCount: number; xpEarned?: number } | null,
           Array<{ mistakeCount: number }>,
         ]) => {
           const savedHeartsAcrossLessons =
@@ -251,6 +252,7 @@ export function useLessonGame(lessonId: string, userId: string) {
           const heartsFromProgress =
             progress?.mistakeCount ?? savedHeartsAcrossLessons ?? 3;
           startRef.current = Date.now();
+          earnedXpRef.current = progress?.xpEarned ?? 0;
           setState((s) => ({
             ...s,
             contents: contents.sort((a, b) => a.order - b.order),
@@ -377,6 +379,7 @@ export function useLessonGame(lessonId: string, userId: string) {
           : s.selected === currentTask.correctAnswer);
 
       if (isCorrect && shouldCountForReview) correctRef.current += 1;
+      if (isCorrect) earnedXpRef.current += currentTask.xpReward;
 
       if (currentTask.type === "MATCH" && !skip && !isCorrect)
         return { ...s, matchFeedback: "incorrect" };
@@ -390,7 +393,7 @@ export function useLessonGame(lessonId: string, userId: string) {
           lessonId,
           userId,
           0,
-          calcXp(s.tasks, correctRef.current),
+          calcXp(),
         );
         return { ...s, hearts: 0, selected: null, isFailed: true };
       }
@@ -410,7 +413,7 @@ export function useLessonGame(lessonId: string, userId: string) {
         lessonId,
         userId,
         nextHearts,
-        calcXp(s.tasks, correctRef.current),
+        calcXp(),
       );
       return {
         ...s,
@@ -445,7 +448,7 @@ export function useLessonGame(lessonId: string, userId: string) {
         lessonId,
         userId,
         nextHearts,
-        calcXp(s.tasks, correctRef.current),
+        calcXp(),
       );
       return {
         ...s,
@@ -459,7 +462,7 @@ export function useLessonGame(lessonId: string, userId: string) {
 
   function buildReview(remainingHearts: number): LessonReviewStats {
     return {
-      xpEarned: calcXp(tasks, correctRef.current) + remainingHearts * 5,
+      xpEarned: calcXp(),
       totalQuestions: totalRef.current,
       correctAnswers: correctRef.current,
       heartsRemaining: remainingHearts,
@@ -467,9 +470,8 @@ export function useLessonGame(lessonId: string, userId: string) {
     };
   }
 
-  function calcXp(tasks: Task[], correct: number) {
-    const total = tasks.reduce((sum, t) => sum + t.xpReward, 0);
-    return Math.round(total * (tasks.length > 0 ? correct / tasks.length : 1));
+  function calcXp() {
+    return earnedXpRef.current;
   }
 
   async function refillHeartsForFirstWeek() {
@@ -484,7 +486,7 @@ export function useLessonGame(lessonId: string, userId: string) {
       lessonId,
       userId,
       refillHearts,
-      calcXp(tasks, correctRef.current),
+      calcXp(),
       "IN_PROGRESS",
     );
   }

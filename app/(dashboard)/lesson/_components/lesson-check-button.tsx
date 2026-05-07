@@ -47,6 +47,8 @@ export function LessonCheckButton({
               <img
                 src={correctAnswer}
                 alt="Correct answer"
+                width={80}
+                height={80}
                 className="h-20 w-20 rounded-lg object-cover border border-[#F59E0B]"
               />
             ) : (
