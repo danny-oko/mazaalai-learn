@@ -7,6 +7,9 @@ import { calculateDailyStreak } from "@/lib/server/daily-streak";
 
 export default async function HomeSection() {
   const { userId } = await auth();
+
+  console.log("user id:", userId);
+
   let xp = 0;
   let streak = 0;
   let heartsRemaining = 3;
