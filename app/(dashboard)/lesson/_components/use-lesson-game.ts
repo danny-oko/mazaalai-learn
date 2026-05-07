@@ -192,7 +192,7 @@ async function saveProgress(
   userId: string,
   heartsRemaining: number,
   xpEarned: number,
-  status: "COMPLETED" | "IN_PROGRESS" = "COMPLETED",
+  status: "COMPLETED" | "IN_PROGRESS" = "IN_PROGRESS",
 ) {
   try {
     await fetch("/api/progress", {
@@ -228,6 +228,7 @@ export function useLessonGame(lessonId: string, userId: string) {
   const totalRef = useRef(0);
   const earnedXpRef = useRef(0);
   const startRef = useRef(Date.now());
+  const awardedXpTasksRef = useRef(new Set<string>());
 
   useEffect(() => {
     Promise.all([
@@ -236,7 +237,9 @@ export function useLessonGame(lessonId: string, userId: string) {
       fetch(`/api/progress?lessonId=${lessonId}&userId=${userId}`).then((r) =>
         r.ok ? r.json() : null,
       ),
-      fetch(`/api/progress?userId=${userId}`).then((r) => (r.ok ? r.json() : [])),
+      fetch(`/api/progress?userId=${userId}`).then((r) =>
+        r.ok ? r.json() : [],
+      ),
     ])
       .then(
         ([contents, tasks, progress, allProgress]: [
@@ -379,7 +382,12 @@ export function useLessonGame(lessonId: string, userId: string) {
           : s.selected === currentTask.correctAnswer);
 
       if (isCorrect && shouldCountForReview) correctRef.current += 1;
-      if (isCorrect) earnedXpRef.current += currentTask.xpReward;
+      if (isCorrect) {
+        if (!awardedXpTasksRef.current.has(currentTask.id)) {
+          awardedXpTasksRef.current.add(currentTask.id);
+          earnedXpRef.current += currentTask.xpReward;
+        }
+      }
 
       if (currentTask.type === "MATCH" && !skip && !isCorrect)
         return { ...s, matchFeedback: "incorrect" };
@@ -389,12 +397,7 @@ export function useLessonGame(lessonId: string, userId: string) {
       const nextHearts =
         !skip && !isCorrect ? Math.max(0, s.hearts - 1) : s.hearts;
       if (nextHearts === 0) {
-        saveProgress(
-          lessonId,
-          userId,
-          0,
-          calcXp(),
-        );
+        saveProgress(lessonId, userId, 0, calcXp(), "IN_PROGRESS");
         return { ...s, hearts: 0, selected: null, isFailed: true };
       }
       if (!skip && !isCorrect)
@@ -409,12 +412,7 @@ export function useLessonGame(lessonId: string, userId: string) {
           selected: null,
         };
 
-      saveProgress(
-        lessonId,
-        userId,
-        nextHearts,
-        calcXp(),
-      );
+      saveProgress(lessonId, userId, nextHearts, calcXp(), "COMPLETED");
       return {
         ...s,
         hearts: nextHearts,
@@ -444,12 +442,7 @@ export function useLessonGame(lessonId: string, userId: string) {
           selected: null,
           matchFeedback: null,
         };
-      saveProgress(
-        lessonId,
-        userId,
-        nextHearts,
-        calcXp(),
-      );
+      saveProgress(lessonId, userId, nextHearts, calcXp(), "COMPLETED");
       return {
         ...s,
         hearts: nextHearts,
@@ -482,13 +475,7 @@ export function useLessonGame(lessonId: string, userId: string) {
       isFailed: false,
       selected: null,
     }));
-    await saveProgress(
-      lessonId,
-      userId,
-      refillHearts,
-      calcXp(),
-      "IN_PROGRESS",
-    );
+    await saveProgress(lessonId, userId, refillHearts, calcXp(), "IN_PROGRESS");
   }
 
   return {

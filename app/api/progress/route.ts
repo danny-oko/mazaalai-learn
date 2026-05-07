@@ -31,11 +31,13 @@ export const POST = async (req: NextRequest) => {
   const { lessonId, status } = body;
   const mistakeCount = Number(body.heartsRemaining ?? body.mistakeCount ?? 3);
   const xpEarned = Number(body.xpEarned ?? 0);
+  const nextStatusRaw = status ?? "IN_PROGRESS";
 
-  if (!userId) return unauthorizedApiResponse(req);
-
-  if (!lessonId) {
-    return NextResponse.json({ message: "Missing required fields" }, { status: 400 });
+  if (!userId || !lessonId) {
+    return NextResponse.json(
+      { message: "Missing required fields" },
+      { status: 400 },
+    );
   }
 
   const user = await prisma.user.findUnique({ where: { id: userId } });
@@ -49,13 +51,13 @@ export const POST = async (req: NextRequest) => {
   });
 
   const nextStatus =
-    existing?.status === "COMPLETED" && status !== "COMPLETED"
+    existing?.status === "COMPLETED" && nextStatusRaw !== "COMPLETED"
       ? "COMPLETED"
-      : (status ?? existing?.status ?? "LOCKED");
+      : (nextStatusRaw ?? existing?.status ?? "LOCKED");
   const nextCompletedAt =
     nextStatus === "COMPLETED"
-      ? existing?.completedAt ?? new Date()
-      : existing?.completedAt ?? null;
+      ? (existing?.completedAt ?? new Date())
+      : (existing?.completedAt ?? null);
 
   const progress = await prisma.userLessonProgress.upsert({
     where: { userId_lessonId: { userId, lessonId } },
@@ -68,10 +70,10 @@ export const POST = async (req: NextRequest) => {
     create: {
       userId,
       lessonId,
-      status: status ?? "LOCKED",
+      status: nextStatusRaw ?? "LOCKED",
       mistakeCount,
       xpEarned,
-      completedAt: status === "COMPLETED" ? new Date() : null,
+      completedAt: nextStatusRaw === "COMPLETED" ? new Date() : null,
     },
   });
 
@@ -79,7 +81,7 @@ export const POST = async (req: NextRequest) => {
   if (xpDelta > 0) {
     await prisma.user.update({
       where: { id: userId },
-      data: { totalXp: { increment: xpDelta } },
+      data: { totalXp: xpEarned },
     });
   }
 
