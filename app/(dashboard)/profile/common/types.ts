@@ -45,6 +45,12 @@ export type WeeklyStats = {
   daysThisWeek: string;
 };
 
+export type ActivityHeatmapDay = {
+  dateKey: string;
+  count: number;
+  level: 0 | 1 | 2 | 3 | 4;
+};
+
 export type ExperienceInfo = {
   currentLevel: number;
   currentXp: number;
@@ -67,9 +73,12 @@ export type ProfileSettingItem = {
 
 export type ProfileUser = {
   id: string;
+  email: string;
   name: string;
   username: string;
+  avatarUrl: string | null;
   avatarInitial: string;
+  heartsRemaining: number;
   memberSince: string;
   rankTitle: string;
   language: string;
@@ -84,6 +93,7 @@ export type ProfileUser = {
   badgeCount: number;
   activeTab: ProfileTab;
   weeklyStats: WeeklyStats;
+  activityHeatmap: ActivityHeatmapDay[];
   streak: StreakInfo;
   experience: ExperienceInfo;
   dailyChallenges: DailyChallenge[];
