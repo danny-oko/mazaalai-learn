@@ -14,8 +14,6 @@ export default function StrokeAnimation({
   path,
   play,
   viewBox = "0 0 21 49",
-  width = 63,
-  height = 147,
 }: StrokeAnimationProps) {
   const pathRefs = useRef<(SVGPathElement | null)[]>([]);
   const paths = path.split("|");
@@ -24,10 +22,9 @@ export default function StrokeAnimation({
     if (!play) return;
 
     const elements = pathRefs.current.filter(Boolean) as SVGPathElement[];
-    const totalDuration = 2500; // давтах хугацаа (ms)
+    const totalDuration = 2500;
 
     const runAnimation = () => {
-      // Бүх path-г reset
       elements.forEach((el) => {
         const len = el.getTotalLength();
         el.style.transition = "none";
@@ -35,7 +32,6 @@ export default function StrokeAnimation({
         el.style.strokeDashoffset = `${len}`;
       });
 
-      // 2 frame дараа зурах
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           elements.forEach((el, i) => {
@@ -56,8 +52,8 @@ export default function StrokeAnimation({
 
   return (
     <svg
-      width={width}
-      height={height}
+      width="100%"
+      height="100%"
       viewBox={viewBox}
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

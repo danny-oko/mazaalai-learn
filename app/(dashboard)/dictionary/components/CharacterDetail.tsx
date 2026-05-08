@@ -31,7 +31,6 @@ export const CharacterDetail = ({
   const selectedForm =
     forms.find((form) => form.type === selectedFormType) ?? forms[0];
 
-  // form сонгоход автоматаар тоглуулах
   useEffect(() => {
     setPlay(false);
     const timer = setTimeout(() => setPlay(true), 50);
@@ -112,7 +111,7 @@ export const CharacterDetail = ({
         <div
           className={[
             "flex items-center justify-center rounded-[20px] bg-white",
-            compact ? "h-32" : "h-48",
+            compact ? "h-48" : "h-64",
           ].join(" ")}
         >
           {selectedForm?.strokePath ? (
