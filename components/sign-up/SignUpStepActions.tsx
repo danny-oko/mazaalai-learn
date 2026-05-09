@@ -1,4 +1,26 @@
 import { Button } from "@/components/ui/button";
+import { mnUi } from "@/lib/i18n/mn-ui";
+
+function LoadingSpinner() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4 shrink-0 animate-spin">
+      <circle
+        cx="12"
+        cy="12"
+        r="10"
+        className="opacity-25"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="4"
+      />
+      <path
+        className="opacity-90"
+        fill="currentColor"
+        d="M4 12a8 8 0 0 1 8-8v4a4 4 0 0 0-4 4H4Z"
+      />
+    </svg>
+  );
+}
 
 function LoadingSpinner() {
   return (
@@ -50,7 +72,7 @@ export function SignUpStepActions({
           onClick={onContinueFromName}
           className="inline-flex h-12 w-full max-w-sm items-center justify-center gap-2 rounded-2xl bg-[#E8920A] text-base font-semibold text-white hover:bg-[#cf7d09] sm:h-[3.25rem] sm:text-lg"
         >
-          Continue
+          {mnUi.continue}
         </Button>
       </div>
     );
@@ -65,7 +87,7 @@ export function SignUpStepActions({
         disabled={isSubmitting}
         className="min-h-12 flex-1 rounded-2xl border-amber-300 bg-white px-3 text-sm font-semibold text-amber-900 hover:border-[#E8920A] hover:bg-[#E8920A] hover:text-white sm:min-h-[3.25rem] sm:px-4 sm:text-base"
       >
-        Back
+        {mnUi.back}
       </Button>
       {step < 3 ? (
         <Button
@@ -73,7 +95,7 @@ export function SignUpStepActions({
           onClick={onNextFromPassword}
           className="inline-flex min-h-12 flex-1 items-center justify-center gap-2 rounded-2xl bg-[#E8920A] px-3 text-sm font-semibold text-white hover:bg-[#cf7d09] sm:min-h-[3.25rem] sm:px-4 sm:text-base"
         >
-          Next
+          {mnUi.next}
         </Button>
       ) : (
         <Button
@@ -85,12 +107,12 @@ export function SignUpStepActions({
           {isSubmitting ? (
             <>
               <LoadingSpinner />
-              {awaitingEmailVerification ? "Verifying…" : "Creating account…"}
+              {awaitingEmailVerification ? mnUi.verifying : mnUi.creatingAccount}
             </>
           ) : awaitingEmailVerification ? (
-            "Verify & start learning"
+            mnUi.verifyStartLearning
           ) : (
-            "Start learning"
+            mnUi.startLearning
           )}
         </Button>
       )}
