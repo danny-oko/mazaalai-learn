@@ -52,6 +52,9 @@ export function AgeSignUp({ value, onChange }: AgeSignUpProps) {
         <h1 className="text-2xl font-bold tracking-tight text-amber-950 sm:text-3xl">
           {mnSignUp.ageTitle}
         </h1>
+        <p className="text-sm text-amber-900/70 sm:text-base">
+          Swipe the card, tap the numbers, or use the chevrons.
+        </p>
       </div>
       <Field>
         <FieldLabel
@@ -117,6 +120,9 @@ export function AgeSignUp({ value, onChange }: AgeSignUpProps) {
                 {nextAge}
               </button>
             </div>
+            <p className="mt-2 text-center text-[10px] font-semibold uppercase tracking-[0.2em] text-amber-900/55 sm:text-xs">
+              Swipe ← →
+            </p>
           </div>
 
           <button
