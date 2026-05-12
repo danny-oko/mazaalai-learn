@@ -10,9 +10,16 @@ import { AuthHeader } from "@/components/auth/AuthHeader";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { SignInForm } from "@/components/auth/SignInForm";
 import { Button } from "@/components/ui/button";
-import { Field, FieldError, FieldLabel, FieldGroup } from "@/components/ui/field";
+import {
+  Field,
+  FieldError,
+  FieldLabel,
+  FieldGroup,
+} from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { getClerkErrorMessage } from "@/lib/clerk/error-message";
+import { mnAuth, mnLabels, mnValidation } from "@/lib/i18n/mn-copy";
+import { mnUi } from "@/lib/i18n/mn-ui";
 import { signInSchema } from "@/lib/validators/auth";
 
 const HOME_ROUTE = "/home";
@@ -24,7 +31,6 @@ export default function SignInPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isSigningIn, setIsSigningIn] = useState(false);
-  /** Clerk Client Trust / MFA: new browsers (e.g. incognito) often require email OTP after password. */
   const [secondFactorEmailAddressId, setSecondFactorEmailAddressId] = useState<
     string | null
   >(null);
@@ -39,8 +45,6 @@ export default function SignInPage() {
     if (!sessionLoaded || !isSignedIn) return;
     router.replace(HOME_ROUTE);
   }, [sessionLoaded, isSignedIn, router]);
-
-  // BFCache: Back can restore `/sign-in` without re-running middleware; bounce signed-in users away.
   useEffect(() => {
     const onPageShow = (e: PageTransitionEvent) => {
       if (!e.persisted) return;
@@ -52,16 +56,17 @@ export default function SignInPage() {
   }, [sessionLoaded, isSignedIn, router]);
 
   const onGoogleSignIn = async () => {
-    if (!isLoaded || !signIn) return;
+    if (!isLoaded || !signIn || typeof window === "undefined") return;
     setError(null);
+    const origin = window.location.origin;
     try {
       await signIn.authenticateWithRedirect({
         strategy: "oauth_google",
-        redirectUrl: "/sign-in",
-        redirectUrlComplete: HOME_ROUTE,
+        redirectUrl: `${origin}/sso-callback`,
+        redirectUrlComplete: `${origin}${HOME_ROUTE}`,
       });
     } catch (err: unknown) {
-      setError(getClerkErrorMessage(err, "Could not start Google sign-in."));
+      setError(getClerkErrorMessage(err, mnAuth.googleSignInFailed));
     }
   };
 
@@ -76,12 +81,15 @@ export default function SignInPage() {
     });
     if (!parsed.success) {
       setIsSigningIn(false);
-      return setError(parsed.error.issues[0]?.message ?? "Invalid input.");
+      return setError(
+        parsed.error.issues[0]?.message ?? mnValidation.invalidInput,
+      );
     }
 
     const identifier = parsed.data.email;
     const password = parsed.data.password;
 
+    let keepSigningInSpinner = false;
     try {
       const attempt = await signIn.create({
         identifier,
@@ -91,6 +99,7 @@ export default function SignInPage() {
       if (attempt.status === "complete") {
         await setActive({ session: attempt.createdSessionId });
         router.replace(HOME_ROUTE);
+        keepSigningInSpinner = true;
         return;
       }
 
@@ -109,26 +118,22 @@ export default function SignInPage() {
           return;
         }
 
-        setError(
-          "Extra sign-in verification is required (for example authenticator app). This screen only supports email codes—try Google sign-in or adjust verification in Clerk Dashboard.",
-        );
+        setError(mnAuth.secondFactorUnsupported);
         return;
       }
 
-      setError(
-        `Sign-in needs another step (${attempt.status}). Try again or use Google.`,
-      );
+      setError(mnAuth.signInNeedsStep(attempt.status));
     } catch (err: unknown) {
       const msg = (err as { errors?: Array<{ message?: string }> })?.errors?.[0]
         ?.message;
       if (msg?.toLowerCase().includes("session already exists")) {
         await signOut();
-        setError("Previous session cleared. Please log in again.");
+        setError(mnAuth.sessionCleared);
         return;
       }
-      setError(msg ?? "Unable to sign in. Please check your credentials.");
+      setError(msg ?? mnAuth.signInFailed);
     } finally {
-      setIsSigningIn(false);
+      if (!keepSigningInSpinner) setIsSigningIn(false);
     }
   };
 
@@ -136,12 +141,13 @@ export default function SignInPage() {
     if (!isLoaded || !signIn || !secondFactorEmailAddressId) return;
     const code = String(formData.get("code") ?? "").trim();
     if (!code) {
-      setError("Enter the verification code from your email.");
+      setError(mnAuth.enterVerificationCode);
       return;
     }
 
     setError(null);
     setIsSecondFactorBusy(true);
+    let keepSecondFactorSpinner = false;
     try {
       const attempt = await signIn.attemptSecondFactor({
         strategy: "email_code",
@@ -151,14 +157,15 @@ export default function SignInPage() {
       if (attempt.status === "complete") {
         await setActive({ session: attempt.createdSessionId });
         router.replace(HOME_ROUTE);
+        keepSecondFactorSpinner = true;
         return;
       }
 
-      setError("Verification did not complete. Check the code and try again.");
+      setError(mnAuth.verificationIncomplete);
     } catch (err: unknown) {
-      setError(getClerkErrorMessage(err, "Invalid or expired code."));
+      setError(getClerkErrorMessage(err, mnAuth.invalidOrExpiredCode));
     } finally {
-      setIsSecondFactorBusy(false);
+      if (!keepSecondFactorSpinner) setIsSecondFactorBusy(false);
     }
   };
 
@@ -172,7 +179,7 @@ export default function SignInPage() {
         emailAddressId: secondFactorEmailAddressId,
       });
     } catch (err: unknown) {
-      setError(getClerkErrorMessage(err, "Could not resend the code."));
+      setError(getClerkErrorMessage(err, mnAuth.resendCodeFailed));
     } finally {
       setIsSecondFactorBusy(false);
     }
@@ -184,11 +191,11 @@ export default function SignInPage() {
       {secondFactorEmailAddressId ? (
         <form action={onSecondFactorSubmit} className="space-y-4">
           <p className="text-center text-sm text-amber-900/90">
-            We sent a verification code to your email (Clerk{" "}
-            <span className="whitespace-nowrap">Client Trust</span>: new devices
-            and private windows often need this step). Check spam, or use test
-            code <code className="rounded bg-amber-100 px-1">424242</code> for
-            Clerk test emails.
+            {mnAuth.signIn2faBeforeClientTrust}
+            <span className="whitespace-nowrap">{mnAuth.signIn2faClientTrust}</span>
+            {mnAuth.signIn2faAfterClientTrustBeforeCode}
+            <code className="rounded bg-amber-100 px-1">424242</code>
+            {mnAuth.signIn2faAfterCode}
           </p>
           <FieldGroup className="gap-3">
             <Field>
@@ -196,7 +203,7 @@ export default function SignInPage() {
                 htmlFor="sign-in-2fa-code"
                 className="text-sm font-semibold tracking-wide text-[#E8920A]"
               >
-                Verification code
+                {mnLabels.verificationCode}
               </FieldLabel>
               <Input
                 id="sign-in-2fa-code"
@@ -207,7 +214,7 @@ export default function SignInPage() {
                 required
                 disabled={isSecondFactorBusy}
                 className="h-11 rounded-2xl border-amber-300/80 bg-[#F8F4E3] text-sm sm:h-12 sm:text-base disabled:opacity-60"
-                placeholder="Enter email code"
+                placeholder={mnAuth.verificationCodePlaceholder}
               />
             </Field>
             <FieldError>{error}</FieldError>
@@ -216,7 +223,7 @@ export default function SignInPage() {
               disabled={isSecondFactorBusy}
               className="h-11 w-full rounded-2xl bg-[#E8920A] text-sm text-white hover:bg-[#cf7d09] sm:h-12 sm:text-base"
             >
-              {isSecondFactorBusy ? "Verifying…" : "Continue"}
+              {isSecondFactorBusy ? mnUi.verifying : mnUi.continue}
             </Button>
             <Button
               type="button"
@@ -225,7 +232,7 @@ export default function SignInPage() {
               disabled={isSecondFactorBusy}
               className="w-full rounded-xl border-amber-300 text-sm"
             >
-              Resend code
+              {mnUi.resendCode}
             </Button>
           </FieldGroup>
         </form>
@@ -240,12 +247,12 @@ export default function SignInPage() {
       )}
 
       <p className="text-center text-xs text-amber-900/80 sm:text-sm">
-        No account yet?{" "}
+        {mnUi.noAccountYet}{" "}
         <Link
           href="/sign-up"
           className="font-semibold text-amber-800 hover:text-amber-900 hover:underline"
         >
-          Sign up
+          {mnUi.signUp}
         </Link>
       </p>
     </AuthShell>

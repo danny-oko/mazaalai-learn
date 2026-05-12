@@ -11,15 +11,22 @@ import { LessonTopBar } from "./lesson-top-bar";
 import { useLessonGame } from "./use-lesson-game";
 import { LessonReviewScreen } from "./lesson-review-screen";
 import { LessonChoiceGrid } from "./lesson-choice-grid";
+import { mnUi } from "@/lib/i18n/mn-ui";
 
 export function LessonPageClient({
   lessonId,
   userId,
+  isFirstWeekUser,
 }: {
   lessonId: string;
   userId: string;
+  isFirstWeekUser: boolean;
 }) {
   const router = useRouter();
+  const goHome = () => {
+    router.push("/home");
+    router.refresh();
+  };
   const {
     loading,
     phase,
@@ -38,26 +45,28 @@ export function LessonPageClient({
     checkTaskAnswer,
     clearMatchFeedback,
     advanceMatchTask,
+    refillHeartsForFirstWeek,
   } = useLessonGame(lessonId, userId);
   const [skipped, setSkipped] = useState(false);
 
   if (loading) return <LessonStatusScreen message="LOADING..." animated />;
   if (isFailed)
-    return (
+    return isFirstWeekUser ? (
+      <LessonStatusScreen
+        message="You ran out of hearts. Have a free refill on us to keep going!"
+        actionLabel={mnUi.refillFree}
+        onAction={refillHeartsForFirstWeek}
+      />
+    ) : (
       <LessonStatusScreen
         message="You're out of hearts."
         description="Try again after your hearts refill in 1 hour."
-        actionLabel="Back to lessons"
-        onAction={() => router.back()}
+        actionLabel={mnUi.backToLessons}
+        onAction={goHome}
       />
     );
   if (reviewStats)
-    return (
-      <LessonReviewScreen
-        stats={reviewStats}
-        onContinue={() => router.back()}
-      />
-    );
+    return <LessonReviewScreen stats={reviewStats} onContinue={goHome} />;
   if (phase === "teaching" && !currentContent)
     return <LessonStatusScreen message="No content found." />;
   if (phase === "tasks" && !currentTask)
@@ -95,6 +104,7 @@ export function LessonPageClient({
                 <>
                   <LessonTaskCard task={currentTask} />
                   <LessonChoiceGrid
+                    key={currentTask.id}
                     taskType={currentTask.type}
                     matchData={matchData}
                     choices={choices}

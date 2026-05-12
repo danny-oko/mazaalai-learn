@@ -1,7 +1,9 @@
 import prisma from "@/lib/prisma";
+import { unauthorizedApiResponse } from "@/lib/server/dev-postman-bypass";
+import { getClerkUserIdFromRequest } from "@/lib/server/get-current-app-user";
 import { NextRequest, NextResponse } from "next/server";
 
-// GET /api/speech-attempts?userId=xxx
+// GET /api/speech-targets/:id — attempts for the authenticated (or impersonated) user
 export const GET = async (req: NextRequest) => {
   try {
     const userId = req.nextUrl.searchParams.get("userId");

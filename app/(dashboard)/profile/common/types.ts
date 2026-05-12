@@ -28,16 +28,27 @@ export type JourneyProgress = {
   practiceProgressText: string;
 };
 
+export type StreakDayDot = {
+  label: string;
+  completed: boolean;
+};
+
 export type StreakInfo = {
   current: number;
   best: number;
-  days: string[];
+  days: StreakDayDot[];
   frozenCount: number;
 };
 
 export type WeeklyStats = {
   xpThisWeek: number;
   daysThisWeek: string;
+};
+
+export type ActivityHeatmapDay = {
+  dateKey: string;
+  count: number;
+  level: 0 | 1 | 2 | 3 | 4;
 };
 
 export type ExperienceInfo = {
@@ -62,9 +73,12 @@ export type ProfileSettingItem = {
 
 export type ProfileUser = {
   id: string;
+  email: string;
   name: string;
   username: string;
+  avatarUrl: string | null;
   avatarInitial: string;
+  heartsRemaining: number;
   memberSince: string;
   rankTitle: string;
   language: string;
@@ -77,8 +91,11 @@ export type ProfileUser = {
   leaguePosition: number;
   streakCount: number;
   badgeCount: number;
+  /** Distinct lessons marked completed (sidebar + consistency). */
+  completedLessonsCount: number;
   activeTab: ProfileTab;
   weeklyStats: WeeklyStats;
+  activityHeatmap: ActivityHeatmapDay[];
   streak: StreakInfo;
   experience: ExperienceInfo;
   dailyChallenges: DailyChallenge[];

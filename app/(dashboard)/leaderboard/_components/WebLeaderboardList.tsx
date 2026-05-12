@@ -1,19 +1,27 @@
+"use client";
+
+import { useMemo, useState } from "react";
+
+import { mnUi } from "@/lib/i18n/mn-ui";
+
 interface WebLeaderboardUser {
+  id: string;
   rank: number;
   name: string;
-  title: string;
   xp: number;
-  xpChange?: number;
-  avatarUrl?: string;
-  isMe?: boolean;
+  title: string;
+  avatarUrl: string | null; // Change from 'undefined' to 'null'
+  isMe: boolean;
   isNew?: boolean;
+  xpChange?: number;
 }
 
 interface WebLeaderboardListProps {
   users: WebLeaderboardUser[];
   maxXp?: number;
+  initialVisibleCount?: number;
+  loadStep?: number;
 }
-
 function WebListItem({
   user,
   maxXp,
@@ -21,6 +29,7 @@ function WebListItem({
   user: WebLeaderboardUser;
   maxXp: number;
 }) {
+
   const progressPercent = Math.min((user.xp / maxXp) * 100, 100);
 
   return (
@@ -95,14 +104,31 @@ function WebListItem({
 export default function WebLeaderboardList({
   users,
   maxXp,
+  initialVisibleCount = 5,
+  loadStep = 5,
 }: WebLeaderboardListProps) {
+  const [visibleCount, setVisibleCount] = useState(initialVisibleCount);
+  const visibleUsers = useMemo(
+    () => users.slice(0, visibleCount),
+    [users, visibleCount],
+  );
   const max = maxXp ?? Math.max(...users.map((u) => u.xp));
+  const hasMore = visibleCount < users.length;
 
   return (
     <div className="flex flex-col gap-2">
-      {users.map((user) => (
+      {visibleUsers.map((user) => (
         <WebListItem key={user.rank} user={user} maxXp={max} />
       ))}
+      {hasMore && (
+        <button
+          type="button"
+          onClick={() => setVisibleCount((current: number) => current + loadStep)}
+          className="mt-2 self-center rounded-xl border border-[#D7B680] bg-[#F3E0BD] px-5 py-2 text-sm font-semibold text-[#7A5C2E] transition hover:bg-[#EFD4A2]"
+        >
+          {mnUi.loadMore}
+        </button>
+      )}
     </div>
   );
 }

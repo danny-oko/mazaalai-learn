@@ -2,6 +2,8 @@
 
 import { ReactNode, useEffect, useRef, useState } from "react";
 
+import { mnUi } from "@/lib/i18n/mn-ui";
+
 export const BottomSheet = ({
   isOpen,
   onClose,
@@ -17,12 +19,26 @@ export const BottomSheet = ({
   // Sheet-ийг доош drag хийх хэмжээ
   const [dragY, setDragY] = useState(0);
 
-  // Bottom sheet open үед body scroll lock
+  // Lock the app scroll root (<main>) — body is already overflow-hidden; real scroll is on main.
   useEffect(() => {
-    document.body.style.overflow = isOpen ? "hidden" : "";
+    if (!isOpen) return;
+
+    const scrollRoot =
+      (document.querySelector(
+        "[data-app-scroll-container]",
+      ) as HTMLElement | null) ?? document.documentElement;
+
+    const prevOverflow = scrollRoot.style.overflow;
+    const prevOverscroll = scrollRoot.style.overscrollBehavior;
+    const scrollTop = scrollRoot.scrollTop;
+
+    scrollRoot.style.overflow = "hidden";
+    scrollRoot.style.overscrollBehavior = "none";
 
     return () => {
-      document.body.style.overflow = "";
+      scrollRoot.style.overflow = prevOverflow;
+      scrollRoot.style.overscrollBehavior = prevOverscroll;
+      scrollRoot.scrollTop = scrollTop;
     };
   }, [isOpen]);
 
@@ -56,8 +72,9 @@ export const BottomSheet = ({
       {/* Overlay */}
       <div
         onClick={onClose}
+        aria-hidden={!isOpen}
         className={[
-          "fixed inset-0 z-40 bg-black/40 transition-opacity duration-300 xl:hidden",
+          "fixed inset-0 z-40 touch-none overscroll-none bg-black/40 transition-opacity duration-300 xl:hidden",
           isOpen ? "opacity-100" : "pointer-events-none opacity-0",
         ].join(" ")}
       />
@@ -83,7 +100,7 @@ export const BottomSheet = ({
           type="button"
           onClick={onClose}
           className="absolute right-5 top-5 flex h-9 w-9 items-center justify-center rounded-full bg-white font-balsamiq font-bold text-[#3b2f2f] shadow"
-          aria-label="Close bottom sheet"
+          aria-label={mnUi.closeSheet}
         >
           ✕
         </button>

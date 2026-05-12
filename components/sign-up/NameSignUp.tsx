@@ -1,5 +1,6 @@
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { mnLabels, mnSignUp } from "@/lib/i18n/mn-copy";
 
 type NameSignUpProps = {
   fullName: string;
@@ -20,41 +21,41 @@ export function NameSignUp({
 }: NameSignUpProps) {
   return (
     <div className="flex flex-col gap-3 sm:gap-4">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-amber-950 sm:text-3xl">What&apos;s your name?</h1>
-      </div>
+      <h1 className="text-2xl font-bold tracking-tight text-amber-950 sm:text-3xl">
+        {mnSignUp.nameTitle}
+      </h1>
       <Field>
         <FieldLabel htmlFor="name" className="text-sm font-semibold tracking-wide text-[#E8920A]">
-          Full Name
+          {mnLabels.fullName}
         </FieldLabel>
         <Input
           id="name"
           value={fullName}
           onChange={(e) => onChangeFullName(e.target.value)}
-          className="h-11 rounded-2xl border-amber-300/80 bg-[#F8F4E3] text-sm sm:h-12 sm:text-base"
+          className="h-11 rounded-2xl border-amber-300/80 bg-[#F8F4E3] text-sm transition-shadow focus-visible:border-amber-500 focus-visible:ring-2 focus-visible:ring-amber-400/35 sm:h-12 sm:text-base"
         />
       </Field>
       <Field>
         <FieldLabel htmlFor="username" className="text-sm font-semibold tracking-wide text-[#E8920A]">
-          User Name
+          {mnLabels.username}
         </FieldLabel>
         <Input
           id="username"
           value={username}
           onChange={(e) => onChangeUsername(e.target.value)}
-          className="h-11 rounded-2xl border-amber-300/80 bg-[#F8F4E3] text-sm sm:h-12 sm:text-base"
+          className="h-11 rounded-2xl border-amber-300/80 bg-[#F8F4E3] text-sm transition-shadow focus-visible:border-amber-500 focus-visible:ring-2 focus-visible:ring-amber-400/35 sm:h-12 sm:text-base"
         />
       </Field>
       <Field>
         <FieldLabel htmlFor="email" className="text-sm font-semibold tracking-wide text-[#E8920A]">
-          Email
+          {mnLabels.email}
         </FieldLabel>
         <Input
           id="email"
           type="email"
           value={email}
           onChange={(e) => onChangeEmail(e.target.value)}
-          className="h-11 rounded-2xl border-amber-300/80 bg-[#F8F4E3] text-sm sm:h-12 sm:text-base"
+          className="h-11 rounded-2xl border-amber-300/80 bg-[#F8F4E3] text-sm transition-shadow focus-visible:border-amber-500 focus-visible:ring-2 focus-visible:ring-amber-400/35 sm:h-12 sm:text-base"
         />
       </Field>
     </div>

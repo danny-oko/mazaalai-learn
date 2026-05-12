@@ -1,24 +1,73 @@
 "use client";
 
-import { Lock, BookOpen, Check, Star } from "lucide-react";
-
+import { Check, Lock, Star } from "lucide-react";
+import { Montserrat } from "next/font/google";
 import { useEffect, useState } from "react";
-
 import { useRouter } from "next/navigation";
+
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
+
+const montserrat = Montserrat({
+  subsets: ["latin", "cyrillic"],
+  weight: ["400", "500", "600", "700"],
+});
 
 export type Lesson = {
   id: string;
-
   title: string;
-
-  description: string;
-
+  description?: string | null;
+  videoUrl?: string | null;
   order: number;
-
   levelId: string;
-
   status?: "done" | "active" | "locked";
 };
+
+/** Returns a youtube.com/embed/… URL for iframe embedding, or null if not embeddable. */
+function toYoutubeEmbedUrl(url: string | null | undefined): string | null {
+  if (!url?.trim()) return null;
+  const raw = url.trim();
+  try {
+    const withScheme = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+    const u = new URL(withScheme);
+    const host = u.hostname.replace(/^www\./i, "").toLowerCase();
+
+    if (host === "youtu.be") {
+      const id = u.pathname.replace(/^\//, "").split("/")[0];
+      return id ? `https://www.youtube.com/embed/${id}` : null;
+    }
+
+    if (host === "youtube.com" || host === "m.youtube.com") {
+      if (u.pathname.startsWith("/embed/")) {
+        const id = u.pathname.slice("/embed/".length).split("/")[0];
+        return id ? `https://www.youtube.com/embed/${id}` : null;
+      }
+      if (u.pathname === "/watch") {
+        const v = u.searchParams.get("v");
+        return v ? `https://www.youtube.com/embed/${v}` : null;
+      }
+      if (u.pathname.startsWith("/shorts/")) {
+        const id = u.pathname.split("/")[2];
+        return id ? `https://www.youtube.com/embed/${id}` : null;
+      }
+      if (u.pathname.startsWith("/live/")) {
+        const id = u.pathname.split("/")[2];
+        return id ? `https://www.youtube.com/embed/${id}` : null;
+      }
+    }
+  } catch {
+    return null;
+  }
+  return null;
+}
 
 export const X = [47, 78, 47, 18, 47, 78, 47];
 
@@ -39,6 +88,27 @@ function assignStatuses(lessons: Lesson[], completedUpTo: number): Lesson[] {
     }));
 }
 
+type ProgressItem = {
+  lessonId: string;
+  status: "LOCKED" | "IN_PROGRESS" | "COMPLETED";
+};
+
+function resolveCompletedUpTo(lessons: Lesson[], progress: ProgressItem[]) {
+  const sorted = [...lessons].sort((a, b) => a.order - b.order);
+  const completedSet = new Set(
+    progress
+      .filter((item) => item.status === "COMPLETED")
+      .map((item) => item.lessonId),
+  );
+
+  let contiguousCompleted = 0;
+  for (const lesson of sorted) {
+    if (!completedSet.has(lesson.id)) break;
+    contiguousCompleted += 1;
+  }
+  return contiguousCompleted;
+}
+
 export const useLessons = () => {
   const [lessons, setLessons] = useState<Lesson[]>([]);
 
@@ -47,14 +117,21 @@ export const useLessons = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/lessons")
-      .then((res) => {
+    Promise.all([
+      fetch("/api/lessons").then((res) => {
         if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
         return res.json();
-      })
-      .then((data: Lesson[]) => {
-        if (!Array.isArray(data)) return;
-        setLessons(assignStatuses(data, 0));
+      }),
+      fetch("/api/progress").then((res) => (res.ok ? res.json() : [])),
+    ])
+      .then(([lessonsData, progressData]: [Lesson[], ProgressItem[]]) => {
+        if (!Array.isArray(lessonsData)) return;
+        const nextCompletedUpTo = resolveCompletedUpTo(
+          lessonsData,
+          Array.isArray(progressData) ? progressData : [],
+        );
+        setCompletedUpTo(nextCompletedUpTo);
+        setLessons(assignStatuses(lessonsData, nextCompletedUpTo));
         setLoading(false);
       })
       .catch((err) => {
@@ -63,34 +140,96 @@ export const useLessons = () => {
       });
   }, []);
 
-  function completeLesson() {
-    const next = completedUpTo + 1;
-
-    setCompletedUpTo(next);
-
-    setLessons((prev) => assignStatuses(prev, next));
-  }
-
-  return { lessons, completedUpTo, loading, completeLesson };
+  return { lessons, completedUpTo, loading };
 };
 
 export const LessonCards = ({
   lessons,
-
-  completedUpTo,
-
-  completeLesson,
 }: {
   lessons: ReturnType<typeof useLessons>["lessons"];
-
-  completedUpTo: number;
-
-  completeLesson: () => void;
 }) => {
   const router = useRouter();
+  const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
+
+  const embedUrl = selectedLesson
+    ? toYoutubeEmbedUrl(selectedLesson.videoUrl)
+    : null;
 
   return (
     <>
+      <Dialog
+        open={selectedLesson !== null}
+        onOpenChange={(open) => {
+          if (!open) setSelectedLesson(null);
+        }}
+      >
+        <DialogContent
+          showCloseButton
+          className={cn(
+            montserrat.className,
+            "max-h-[min(90vh,640px)] overflow-y-auto border-[#ead9bb] sm:max-w-lg",
+          )}
+          style={{ backgroundColor: "#F0EDE3" }}
+        >
+          {selectedLesson ? (
+            <>
+              <DialogHeader>
+                <DialogTitle className="text-[#0F5238]">
+                  {selectedLesson.title}
+                </DialogTitle>
+                {selectedLesson.description ? (
+                  <DialogDescription className="text-[#3b2f2f]/90">
+                    {selectedLesson.description}
+                  </DialogDescription>
+                ) : (
+                  <DialogDescription className="sr-only">
+                    Lesson preview
+                  </DialogDescription>
+                )}
+              </DialogHeader>
+
+              <div className="space-y-3">
+                {embedUrl ? (
+                  <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-black shadow-inner">
+                    <iframe
+                      key={embedUrl}
+                      title={`Video preview: ${selectedLesson.title}`}
+                      src={embedUrl}
+                      className="absolute inset-0 h-full w-full border-0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                      referrerPolicy="strict-origin-when-cross-origin"
+                    />
+                  </div>
+                ) : (
+                  <div className="flex aspect-video w-full items-center justify-center rounded-lg border border-dashed border-[#BFC9C1] bg-[#ECE8D8] text-center text-sm font-medium text-[#7a5930]">
+                    No preview video available
+                  </div>
+                )}
+              </div>
+
+              <DialogFooter className="mt-2">
+                <Button
+                  type="button"
+                  className="h-11 w-full border-0 bg-[#58cc02] font-bold uppercase tracking-widest text-white hover:bg-[#58cc02]/90"
+                  onClick={() => {
+                    router.push(`/lesson/${selectedLesson.id}`);
+                    setSelectedLesson(null);
+                  }}
+                >
+                  START LESSON
+                </Button>
+              </DialogFooter>
+            </>
+          ) : (
+            <>
+              <DialogTitle className="sr-only">Lesson</DialogTitle>
+              <DialogDescription className="sr-only">Lesson details</DialogDescription>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
+
       {lessons.map((l, i) => {
         const isLocked = l.status === "locked";
 
@@ -119,20 +258,20 @@ export const LessonCards = ({
             <button
               disabled={isLocked}
               onClick={() => {
-                if (!isLocked) router.push(`/lesson/${l.id}`);
+                if (!isLocked) setSelectedLesson(l);
               }}
-              className="relative flex items-center justify-center rounded-full transition-all duration-300"
+              className={`relative flex items-center justify-center rounded-full transition-all duration-300 ${isActive && !isLocked ? "hover:-translate-y-1 active:translate-y-0 active:brightness-90" : ""}`}
               style={{
                 width: isActive ? 80 : 72,
                 height: isActive ? 60 : 52,
                 background: isLocked
                   ? "#E8E5DC"
                   : isDone
-                    ? "#539f7e"
+                    ? "#2C6601"
                     : "#58cc02",
                 border: isLocked ? "2px dashed #BFC9C1" : "none",
                 boxShadow: isDone
-                  ? "0 0 0 6px #C8EDD9"
+                  ? "0 5px 0 #000000"
                   : isActive
                     ? "0 5px 0px rgba(0, 118, 255, 0.39)"
                     : "none",
@@ -141,10 +280,10 @@ export const LessonCards = ({
               }}
             >
               <Icon
-                size={isActive ? 40 : 24}
+                size={isLocked ? 24 : isDone ? 28 : 40}
                 color={isLocked ? "#BFC9C1" : "#fff"}
                 strokeWidth={2}
-                fill={isLocked ? "#BFC9C1" : "#fff"}
+                fill={isLocked ? "#BFC9C1" : isDone ? "" : "#fff"}
               />
             </button>
 

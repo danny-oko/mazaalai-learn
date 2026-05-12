@@ -1,4 +1,6 @@
 import { Montserrat } from "next/font/google";
+
+import { mnUi } from "@/lib/i18n/mn-ui";
 import IncorrectBear from "./lesson-incorrect-animation";
 
 const montserrat = Montserrat({
@@ -47,6 +49,8 @@ export function LessonCheckButton({
               <img
                 src={correctAnswer}
                 alt="Correct answer"
+                width={80}
+                height={80}
                 className="h-20 w-20 rounded-lg object-cover border border-[#F59E0B]"
               />
             ) : (
@@ -66,7 +70,7 @@ export function LessonCheckButton({
             className="w-full sm:w-[300px] py-3.5 px-7 rounded-2xl font-black text-sm tracking-widest uppercase text-white active:scale-95 transition-all"
             style={{ background: "#FF4B4B", boxShadow: "0 4px 0 #991B1B" }}
           >
-            Continue
+            {mnUi.continue}
           </button>
         </div>
       </div>
@@ -82,7 +86,7 @@ export function LessonCheckButton({
             className="w-full sm:w-[300px] py-3.5 px-20 rounded-2xl font-black text-sm tracking-widest uppercase text-white active:scale-95 transition-all"
             style={{ background: "#E8920A", boxShadow: "0 4px 10px #E8920A" }}
           >
-            Got it
+            {mnUi.gotIt}
           </button>
         </div>
       </div>
@@ -91,12 +95,12 @@ export function LessonCheckButton({
 
   return (
     <div className="w-full px-4 sm:px-8 py-8 sm:py-10">
-      <div className="mx-auto flex w-full max-w-5xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mx-auto flex w-full max-w-5xl gap-4 items-center justify-between">
         <button
           onClick={onSkip}
           className="w-full sm:w-[300px] py-3.5 px-6 rounded-2xl font-black text-sm tracking-widest uppercase border-2 border-[#374151] text-[#6B7280] hover:border-[#4B5563] hover:text-[#9CA3AF] transition-colors"
         >
-          Skip
+          {mnUi.skip}
         </button>
         <button
           onClick={onClick}
@@ -109,7 +113,7 @@ export function LessonCheckButton({
             color: disabled ? "#6B7280" : "#FFFFFF",
           }}
         >
-          Check
+          {mnUi.check}
         </button>
       </div>
     </div>

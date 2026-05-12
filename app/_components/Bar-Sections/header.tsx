@@ -1,27 +1,37 @@
-import { Flame, Heart } from "lucide-react";
+import "@fontsource/plus-jakarta-sans";
 
 type HeaderProps = {
-  mistakeCount?: number;
+  heartsRemaining?: number;
   streak: number;
-  xp: number;
+  totalXp: number;
+  fixedOnDesktop?: boolean;
 };
 
-const MAX_HEARTS = 3;
+const MAX_HEARTS = 5;
 
 export const Header = ({
-  mistakeCount = MAX_HEARTS,
+  heartsRemaining = MAX_HEARTS,
   streak,
-  xp,
+  totalXp,
+  fixedOnDesktop = true,
 }: HeaderProps) => {
-  const safeHeartsRemaining = Math.max(0, Math.min(mistakeCount, MAX_HEARTS));
+  const safeHeartsRemaining = Math.max(
+    0,
+    Math.min(heartsRemaining, MAX_HEARTS),
+  );
   const isOutOfHearts = safeHeartsRemaining === 0;
-  const isStreakLost = xp === 0;
+  const isStreakLost = streak === 0;
 
   return (
-    <div className="md:fixed right-20 top-4 z-100 pt-[env(safe-area-inset-top)]">
-      <div className="max-w-lg">
+    <div
+      className={[
+        "w-full pt-[env(safe-area-inset-top)] font-['Plus_Jakarta_Sans']",
+        fixedOnDesktop ? "md:fixed right-20 top-4 z-100" : "",
+      ].join(" ")}
+    >
+      <div className="w-full">
         <div className="flex items-center px-4 py-3 font-['Plus_Jakarta_Sans'] text-[#0F5238]">
-          <div className="flex shrink-0 items-center gap-25 sm:gap-6">
+          <div className="flex shrink-0 items-center gap-10">
             <div
               className={`flex items-center gap-3 ${
                 isOutOfHearts ? "text-[#A3A3A3]" : "text-[#FF4B4B]"
@@ -42,7 +52,7 @@ export const Header = ({
                   width={30}
                 />
               )}
-              <span className="text-xs font-black sm:text-sm">
+              <span className="text-md font-black sm:text-lg">
                 {safeHeartsRemaining}
               </span>
             </div>
@@ -62,7 +72,7 @@ export const Header = ({
                   height={20}
                 />
               )}
-              <span className="text-xs font-black sm:text-sm">{streak}</span>
+              <span className="text-md font-black sm:text-lg">{streak}</span>
             </div>
             <div className="flex items-center gap-1">
               <img
@@ -71,8 +81,8 @@ export const Header = ({
                 height={30}
                 width={30}
               />
-              <span className="text-xs font-black sm:text-sm">
-                {xp.toLocaleString()} XP
+              <span className="text-md font-black sm:text-lg">
+                {totalXp.toLocaleString()} XP
               </span>
             </div>
           </div>

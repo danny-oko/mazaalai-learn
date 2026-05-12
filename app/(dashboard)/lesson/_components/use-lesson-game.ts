@@ -192,6 +192,7 @@ async function saveProgress(
   userId: string,
   heartsRemaining: number,
   xpEarned: number,
+  status: "COMPLETED" | "IN_PROGRESS" = "IN_PROGRESS",
 ) {
   try {
     await fetch("/api/progress", {
@@ -202,7 +203,7 @@ async function saveProgress(
         userId,
         heartsRemaining,
         xpEarned,
-        status: "COMPLETED",
+        status,
       }),
     });
   } catch {}
@@ -215,7 +216,7 @@ export function useLessonGame(lessonId: string, userId: string) {
     tasks: [],
     taskIndex: 0,
     phase: "teaching",
-    hearts: 3,
+    hearts: 5,
     selected: null,
     loading: true,
     reviewStats: null,
@@ -225,28 +226,36 @@ export function useLessonGame(lessonId: string, userId: string) {
 
   const correctRef = useRef(0);
   const totalRef = useRef(0);
+  const earnedXpRef = useRef(0);
   const startRef = useRef(Date.now());
+  const awardedXpTasksRef = useRef(new Set<string>());
+  const saveProgressCalledRef = useRef(false);
 
   useEffect(() => {
+    saveProgressCalledRef.current = false;
+    earnedXpRef.current = 0;
+    correctRef.current = 0;
+    totalRef.current = 0;
+    awardedXpTasksRef.current = new Set();
+
     Promise.all([
       fetch(`/api/lesson-contents?lessonId=${lessonId}`).then((r) => r.json()),
       fetch(`/api/tasks?lessonId=${lessonId}`).then((r) => r.json()),
-      fetch(`/api/progress?lessonId=${lessonId}&userId=${userId}`).then((r) =>
-        r.ok ? r.json() : null,
-      ),
+      fetch(`/api/users/${userId}`).then((r) => (r.ok ? r.json() : null)),
     ])
       .then(
-        ([contents, tasks, progress]: [
+        ([contents, tasks, userData]: [
           LessonContent[],
           Task[],
-          { mistakeCount: number } | null,
+          { heartsRemaining: number } | null,
         ]) => {
+          const heartsFromUser = userData?.heartsRemaining ?? 5;
           startRef.current = Date.now();
           setState((s) => ({
             ...s,
             contents: contents.sort((a, b) => a.order - b.order),
             tasks: tasks.sort((a, b) => a.order - b.order),
-            hearts: progress?.mistakeCount ?? 3,
+            hearts: Math.max(0, Math.min(5, heartsFromUser)),
             loading: false,
           }));
         },
@@ -358,7 +367,8 @@ export function useLessonGame(lessonId: string, userId: string) {
   function checkTaskAnswer(skip = false) {
     setState((s) => {
       if (!currentTask) return s;
-      totalRef.current += 1;
+      const shouldCountForReview = currentTask.type !== "MATCH";
+      if (shouldCountForReview) totalRef.current += 1;
 
       const isCorrect =
         !skip &&
@@ -366,7 +376,13 @@ export function useLessonGame(lessonId: string, userId: string) {
           ? isMatchSelectionCorrect(currentTask, s.selected)
           : s.selected === currentTask.correctAnswer);
 
-      if (isCorrect) correctRef.current += 1;
+      if (isCorrect && shouldCountForReview) correctRef.current += 1;
+      if (isCorrect) {
+        if (!awardedXpTasksRef.current.has(currentTask.id)) {
+          awardedXpTasksRef.current.add(currentTask.id);
+          earnedXpRef.current += currentTask.xpReward;
+        }
+      }
 
       if (currentTask.type === "MATCH" && !skip && !isCorrect)
         return { ...s, matchFeedback: "incorrect" };
@@ -375,8 +391,10 @@ export function useLessonGame(lessonId: string, userId: string) {
 
       const nextHearts =
         !skip && !isCorrect ? Math.max(0, s.hearts - 1) : s.hearts;
-      if (nextHearts === 0)
+      if (nextHearts === 0) {
+        saveProgress(lessonId, userId, 0, calcXp(), "IN_PROGRESS");
         return { ...s, hearts: 0, selected: null, isFailed: true };
+      }
       if (!skip && !isCorrect)
         return { ...s, hearts: nextHearts, selected: null };
 
@@ -389,12 +407,10 @@ export function useLessonGame(lessonId: string, userId: string) {
           selected: null,
         };
 
-      saveProgress(
-        lessonId,
-        userId,
-        nextHearts,
-        calcXp(s.tasks, correctRef.current),
-      );
+      if (!saveProgressCalledRef.current) {
+        saveProgressCalledRef.current = true;
+        saveProgress(lessonId, userId, nextHearts, calcXp(), "COMPLETED");
+      }
       return {
         ...s,
         hearts: nextHearts,
@@ -424,12 +440,11 @@ export function useLessonGame(lessonId: string, userId: string) {
           selected: null,
           matchFeedback: null,
         };
-      saveProgress(
-        lessonId,
-        userId,
-        nextHearts,
-        calcXp(s.tasks, correctRef.current),
-      );
+
+      if (!saveProgressCalledRef.current) {
+        saveProgressCalledRef.current = true;
+        saveProgress(lessonId, userId, nextHearts, calcXp(), "COMPLETED");
+      }
       return {
         ...s,
         hearts: nextHearts,
@@ -442,7 +457,7 @@ export function useLessonGame(lessonId: string, userId: string) {
 
   function buildReview(remainingHearts: number): LessonReviewStats {
     return {
-      xpEarned: calcXp(tasks, correctRef.current) + remainingHearts * 5,
+      xpEarned: calcXp(),
       totalQuestions: totalRef.current,
       correctAnswers: correctRef.current,
       heartsRemaining: remainingHearts,
@@ -450,9 +465,19 @@ export function useLessonGame(lessonId: string, userId: string) {
     };
   }
 
-  function calcXp(tasks: Task[], correct: number) {
-    const total = tasks.reduce((sum, t) => sum + t.xpReward, 0);
-    return Math.round(total * (tasks.length > 0 ? correct / tasks.length : 1));
+  function calcXp() {
+    return earnedXpRef.current;
+  }
+
+  async function refillHeartsForFirstWeek() {
+    const refillHearts = 5;
+    setState((s) => ({
+      ...s,
+      hearts: refillHearts,
+      isFailed: false,
+      selected: null,
+    }));
+    await saveProgress(lessonId, userId, refillHearts, calcXp(), "IN_PROGRESS");
   }
 
   return {
@@ -473,5 +498,6 @@ export function useLessonGame(lessonId: string, userId: string) {
     checkTaskAnswer,
     clearMatchFeedback,
     advanceMatchTask,
+    refillHeartsForFirstWeek,
   };
 }
