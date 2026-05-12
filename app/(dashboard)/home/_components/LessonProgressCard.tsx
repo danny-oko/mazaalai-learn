@@ -17,7 +17,8 @@ export default function LessonProgressCard({
   nextLessonHref,
   nextLessonTitle,
 }: LessonProgressCardProps) {
-  const progress = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
+  const progress =
+    totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
 
   return (
     <SidebarWidget
@@ -25,9 +26,9 @@ export default function LessonProgressCard({
       subtitle={mnProfile.lessonCardSubtitle(completedLessons, totalLessons)}
     >
       <div className="space-y-4">
-        <div className="h-2 rounded-full bg-[#E9E3D8]">
+        <div className="h-2 rounded-full bg-[#E9E3D8] dark:bg-[#252f35]">
           <div
-            className="h-2 rounded-full bg-[#E8920A]"
+            className="h-2 rounded-full bg-[#E8920A] dark:bg-[#ffad33]"
             style={{ width: `${Math.max(0, Math.min(100, progress))}%` }}
           />
         </div>

@@ -1,8 +1,9 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import type { MenuLabel } from "./main-bars";
 import { NavMenuIcon } from "./nav-menu-icon";
+import { useNavLoading } from "../nav-loading-context";
 
 type DockBarProps = {
   menuLabels: readonly MenuLabel[];
@@ -11,7 +12,7 @@ type DockBarProps = {
 
 export const DockBar = ({ menuLabels, menuPaths }: DockBarProps) => {
   const pathname = usePathname();
-  const router = useRouter();
+  const { navigateTo } = useNavLoading();
 
   const active =
     menuLabels.find((label) => pathname.startsWith(menuPaths[label])) ??
@@ -30,7 +31,7 @@ export const DockBar = ({ menuLabels, menuPaths }: DockBarProps) => {
             <button
               key={label}
               type="button"
-              onClick={() => router.push(menuPaths[label])}
+              onClick={() => navigateTo(menuPaths[label])}
               className={`flex flex-col items-center gap-1 px-2 py-2 transition-all duration-200 font-['Plus_Jakarta_Sans'] rounded-4xl w-[60px] h-[60px] justify-center
                 border 
                 ${
@@ -43,7 +44,7 @@ export const DockBar = ({ menuLabels, menuPaths }: DockBarProps) => {
                 label={label}
                 width={30}
                 height={30}
-                className="h-[30px] w-[30px] transition-all duration-200"
+                className="transition-all duration-200"
               />
             </button>
           );

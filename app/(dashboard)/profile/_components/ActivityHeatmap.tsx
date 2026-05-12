@@ -4,6 +4,8 @@ import * as React from "react";
 
 import { mnProfile } from "@/lib/i18n/mn-profile";
 import type { ActivityHeatmapDay } from "../common/types";
+import { useEffect, useState } from "react";
+import { useTheme } from "next-themes";
 
 type ActivityHeatmapProps = {
   days: ActivityHeatmapDay[];
@@ -22,6 +24,16 @@ const COLORS: string[] = [
   "#E8920A",
   "#BA7517",
   "#854F0B",
+];
+
+const DARK_COLORS: string[] = [
+  "#1a2124",
+  "#252f35",
+  "#ccac81",
+  "#f59e0b",
+  "#ffad33",
+  "#d97706",
+  "#92400e",
 ];
 
 function addDaysUTC(date: Date, days: number) {
@@ -121,8 +133,9 @@ export default function ActivityHeatmap({ days }: ActivityHeatmapProps) {
       maxValue = Math.max(maxValue, v);
     }
 
-    const rows: Array<Array<{ date: Date; dateKey: string; value: number; level: number }>> =
-      Array.from({ length: ROWS }, () => []);
+    const rows: Array<
+      Array<{ date: Date; dateKey: string; value: number; level: number }>
+    > = Array.from({ length: ROWS }, () => []);
 
     for (let r = 0; r < ROWS; r += 1) {
       for (let c = 0; c < COLS; c += 1) {
@@ -135,6 +148,13 @@ export default function ActivityHeatmap({ days }: ActivityHeatmapProps) {
 
     return rows;
   }, [lessonsByDate, startDateUTC]);
+
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
+
+  const isDarkMode = mounted && resolvedTheme === "dark";
 
   return (
     <div className="overflow-hidden rounded-3xl border border-[#ead9bb] bg-gradient-to-br from-white via-[#fffdfb] to-[#fff4e6] p-3 shadow-sm">
@@ -160,7 +180,9 @@ export default function ActivityHeatmap({ days }: ActivityHeatmapProps) {
               {grid.map((row, r) => (
                 <div className="hm-row" key={r}>
                   <div className="row-label">
-                    {[0, 2, 4].includes(r) ? ROW_LABELS[[0, 2, 4].indexOf(r)] : ""}
+                    {[0, 2, 4].includes(r)
+                      ? ROW_LABELS[[0, 2, 4].indexOf(r)]
+                      : ""}
                   </div>
                   {row.map((cell) => {
                     const dateStr = formatTooltipDateUTC(cell.date);
@@ -174,8 +196,15 @@ export default function ActivityHeatmap({ days }: ActivityHeatmapProps) {
                         key={cell.dateKey}
                         className="hm-cell"
                         style={{
-                          background: COLORS[cell.level],
-                          border: cell.level === 0 ? "0.5px solid #E8E5DC" : "none",
+                          background: isDarkMode
+                            ? DARK_COLORS[cell.level]
+                            : COLORS[cell.level],
+                          border:
+                            cell.level === 0
+                              ? isDarkMode
+                                ? "1px solid #252f35"
+                                : "0.5px solid #E8E5DC"
+                              : "none",
                         }}
                         onMouseEnter={(e) => {
                           showCellTooltip(e, dateStr, valStr);
@@ -216,7 +245,7 @@ export default function ActivityHeatmap({ days }: ActivityHeatmapProps) {
 
         @media (prefers-color-scheme: dark) {
           .hm-root {
-            --text-muted: #8a8880;
+            --text-muted: #8d96a3ff;
           }
         }
 
@@ -285,7 +314,14 @@ export default function ActivityHeatmap({ days }: ActivityHeatmapProps) {
         .hm-cell {
           aspect-ratio: 1;
           border-radius: 3px;
+<<<<<<< HEAD
           cursor: default;
+=======
+          cursor: pointer;
+          transition:
+            transform 0.1s,
+            outline 0.1s;
+>>>>>>> 589fb68 (Theme & Loading Screen)
           position: relative;
         }
 

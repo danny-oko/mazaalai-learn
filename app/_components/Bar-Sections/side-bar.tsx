@@ -1,8 +1,9 @@
 "use client";
 
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import type { MenuLabel } from "./main-bars";
 import { NavMenuIcon } from "./nav-menu-icon";
+import { useNavLoading } from "../nav-loading-context";
 
 type HeaderClientProps = {
   menuLabels: readonly MenuLabel[];
@@ -11,15 +12,11 @@ type HeaderClientProps = {
 
 export const SideBar = ({ menuLabels, menuPaths }: HeaderClientProps) => {
   const pathname = usePathname();
-  const router = useRouter();
+  const { navigateTo } = useNavLoading();
 
   const active =
     menuLabels.find((label) => pathname.startsWith(menuPaths[label])) ??
     menuLabels[0];
-
-  const handleNav = (label: MenuLabel) => {
-    router.push(menuPaths[label]);
-  };
 
   return (
     <aside
@@ -46,13 +43,13 @@ export const SideBar = ({ menuLabels, menuPaths }: HeaderClientProps) => {
             <button
               key={label}
               type="button"
-              onClick={() => handleNav(label)}
+              onClick={() => navigateTo(menuPaths[label])}
               className={`flex w-full items-center justify-center rounded-xl py-2 text-[16px] md:px-0 lg:justify-start lg:gap-5 lg:px-4
               transition-all duration-150 font-balsamiq border-2
               ${
                 isActive
                   ? "bg-[#84d8ff]/15 text-[#1cb0f6] border-[#84d8ff]"
-                  : "text-[#777777] border-transparent"
+                  : "text-[#777777] border-transparent dark:text-[#94a3b8]"
               }`}
             >
               <NavMenuIcon

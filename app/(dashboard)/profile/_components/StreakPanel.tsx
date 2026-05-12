@@ -15,7 +15,9 @@ export default function StreakPanel({ streak }: StreakPanelProps) {
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8a806f]">
           {mnProfile.streakTitle}
         </p>
-        <p className="mt-2 text-sm font-semibold text-[#7e7463]">{mnProfile.streakCurrent}</p>
+        <p className="mt-2 text-sm font-semibold text-[#7e7463]">
+          {mnProfile.streakCurrent}
+        </p>
         <p className="flex items-center gap-2 text-5xl font-extrabold leading-none text-[#c77a0a]">
           <Flame className="size-10 shrink-0" strokeWidth={2} aria-hidden />
           {streak.current}

@@ -1,7 +1,6 @@
 "use client";
 
 import Lottie from "lottie-react";
-// Import your downloaded JSON file verbatim
 import mazaalaiData from "@/public/animations/mazaalai.json";
 
 export default function Mascot() {

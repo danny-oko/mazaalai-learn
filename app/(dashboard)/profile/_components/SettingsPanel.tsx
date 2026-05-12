@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useClerk } from "@clerk/nextjs";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 import { mnProfile } from "@/lib/i18n/mn-profile";
 
@@ -20,6 +22,10 @@ const sectionHref: Record<string, string> = {
 
 export default function SettingsPanel({ settings }: SettingsPanelProps) {
   const { signOut } = useClerk();
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
 
   const onLogout = async () => {
     await signOut({ redirectUrl: "/sign-in" });
@@ -43,11 +49,12 @@ export default function SettingsPanel({ settings }: SettingsPanelProps) {
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#fde9b8] to-[#f0c978] text-sm ring-1 ring-white/60">
                 {item.icon}
               </span>
+
               <span className="min-w-0 flex-1">
-                <span className="block text-sm font-semibold text-[#2a241e]">
+                <span className="block text-sm font-semibold text-[#2a241e] dark:text-[#f8fafc]">
                   {item.label}
                 </span>
-                <span className="block truncate text-xs text-[#7d7364]">
+                <span className="block truncate text-xs text-[#7d7364] dark:text-[#a39b8f]">
                   {item.description}
                 </span>
               </span>
@@ -57,6 +64,7 @@ export default function SettingsPanel({ settings }: SettingsPanelProps) {
             </Link>
           );
         })}
+
         <button
           type="button"
           onClick={onLogout}
