@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { mnLabels } from "@/lib/i18n/mn-copy";
+import { mnProfile } from "@/lib/i18n/mn-profile";
 import { mnUi } from "@/lib/i18n/mn-ui";
 import {
   Field,
@@ -49,13 +51,13 @@ export function ProfileAccountForm({
       });
       const data = (await res.json()) as { message?: string };
       if (!res.ok) {
-        setError(data.message ?? "Could not save.");
+        setError(data.message ?? mnProfile.saveFailed);
         return;
       }
       setSaved(true);
       router.refresh();
     } catch {
-      setError("Network error. Try again.");
+      setError(mnProfile.networkError);
     } finally {
       setBusy(false);
     }
@@ -64,10 +66,10 @@ export function ProfileAccountForm({
   return (
     <section
       id="account"
-      className="scroll-mt-24 rounded-2xl border border-[#e6dece] bg-white p-4 md:p-5"
+      className="scroll-mt-24 rounded-3xl border border-[#ead9bb] bg-gradient-to-br from-white to-[#fffdf6] p-4 shadow-sm md:p-5"
     >
       <h2 className="mb-4 text-xs font-bold uppercase tracking-[0.2em] text-[#8a806f]">
-        Account details
+        {mnProfile.accountSectionTitle}
       </h2>
       <form onSubmit={onSubmit} className="space-y-4">
         <FieldGroup className="gap-4">
@@ -76,7 +78,7 @@ export function ProfileAccountForm({
               htmlFor="profile-name"
               className="text-sm font-semibold text-[#E8920A]"
             >
-              Display name
+              {mnProfile.displayName}
             </FieldLabel>
             <Input
               id="profile-name"
@@ -92,7 +94,7 @@ export function ProfileAccountForm({
               htmlFor="profile-username"
               className="text-sm font-semibold text-[#E8920A]"
             >
-              Username
+              {mnLabels.username}
             </FieldLabel>
             <Input
               id="profile-username"
@@ -108,14 +110,14 @@ export function ProfileAccountForm({
               htmlFor="profile-avatar"
               className="text-sm font-semibold text-[#E8920A]"
             >
-              Avatar URL
+              {mnProfile.avatarUrl}
             </FieldLabel>
             <Input
               id="profile-avatar"
               type="url"
               value={avatarUrl}
               onChange={(e) => setAvatarUrl(e.target.value)}
-              placeholder="https://..."
+              placeholder={mnProfile.urlPlaceholder}
               disabled={busy}
               className="rounded-2xl border-amber-300/80 bg-[#F8F4E3]"
             />
@@ -123,7 +125,7 @@ export function ProfileAccountForm({
           <FieldError>{error}</FieldError>
           {saved ? (
             <p className="text-sm text-emerald-700" role="status">
-              Saved.
+              {mnProfile.saved}
             </p>
           ) : null}
           <Button

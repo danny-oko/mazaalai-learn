@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { mnProfile } from "@/lib/i18n/mn-profile";
 import { mnUi } from "@/lib/i18n/mn-ui";
 
 const STORAGE_KEY = "mazaalai-profile-dark-preview";
@@ -28,16 +29,13 @@ export function AppearanceToggle() {
   return (
     <section
       id="appearance"
-      className="scroll-mt-24 rounded-2xl border border-[#e6dece] bg-white p-4 md:p-5"
+      className="scroll-mt-24 rounded-3xl border border-[#ead9bb] bg-gradient-to-br from-white via-[#fffefb] to-[#fff6e8] p-4 shadow-sm md:p-5"
     >
       <h2 className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-[#8a806f]">
-        Appearance
+        {mnProfile.appearanceTitle}
       </h2>
-      <p className="mb-4 text-sm text-[#706552]">
-        Toggle a dark theme preview for this browser. This is stored locally on
-        your device.
-      </p>
-      <Button type="button" variant="outline" onClick={toggle} className="rounded-xl">
+      <p className="mb-4 text-sm text-[#706552]">{mnProfile.appearanceBody}</p>
+      <Button type="button" variant="outline" onClick={toggle} className="rounded-2xl border-[#E8920A]/40 font-bold">
         {dark ? mnUi.switchToLight : mnUi.switchToDark}
       </Button>
     </section>

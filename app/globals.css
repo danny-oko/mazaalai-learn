@@ -164,4 +164,24 @@
   font-family: var(--font-balsamiq);
 }
 
-/*  */
+/* Profile route: extra warmth without leaving the app palette */
+.profile-page-shell {
+  position: relative;
+  isolation: isolate;
+}
+
+.profile-page-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(ellipse 90% 55% at 15% 0%, rgb(232 146 10 / 0.08), transparent 45%),
+    radial-gradient(ellipse 70% 45% at 100% 100%, rgb(253 224 170 / 0.14), transparent 48%);
+}
+
+.profile-page-shell > * {
+  position: relative;
+  z-index: 1;
+}

@@ -1,21 +1,20 @@
+import { mnProfile } from "@/lib/i18n/mn-profile";
+
 export function ProfileHelpSection() {
   return (
     <section
       id="help"
-      className="scroll-mt-24 rounded-2xl border border-[#e6dece] bg-white p-4 md:p-5"
+      className="scroll-mt-24 rounded-3xl border border-[#ead9bb] bg-gradient-to-br from-[#f8fbff] to-[#fffefb] p-4 shadow-sm md:p-5"
     >
       <h2 className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-[#8a806f]">
-        Help &amp; support
+        {mnProfile.helpTitle}
       </h2>
-      <p className="mb-4 text-sm text-[#706552]">
-        Need help with lessons or your account? Reach out and we&apos;ll get back
-        to you.
-      </p>
+      <p className="mb-4 text-sm text-[#706552]">{mnProfile.helpBody}</p>
       <a
         href="mailto:support@mazaalai.learn"
-        className="inline-flex rounded-xl bg-[#1d2b55] px-4 py-2 text-sm font-semibold text-white hover:bg-[#152042]"
+        className="inline-flex rounded-2xl bg-gradient-to-r from-[#1d2b55] to-[#2a4080] px-4 py-2.5 text-sm font-bold text-white shadow-sm transition-colors hover:brightness-110"
       >
-        Email support
+        {mnProfile.helpEmailCta}
       </a>
     </section>
   );

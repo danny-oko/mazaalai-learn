@@ -1,6 +1,8 @@
 "use client";
 
 import * as React from "react";
+
+import { mnProfile } from "@/lib/i18n/mn-profile";
 import type { ActivityHeatmapDay } from "../common/types";
 
 type ActivityHeatmapProps = {
@@ -9,7 +11,7 @@ type ActivityHeatmapProps = {
 
 const COLS = 26;
 const ROWS = 7;
-const DAYS: string[] = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const ROW_LABELS = mnProfile.heatmapRowLabels;
 
 // index 0 = empty, 1-6 = low → max
 const COLORS: string[] = [
@@ -36,7 +38,7 @@ function toISODateKeyUTC(date: Date) {
 }
 
 function formatTooltipDateUTC(date: Date) {
-  return date.toLocaleDateString("en-US", {
+  return date.toLocaleDateString("mn-MN", {
     month: "short",
     day: "numeric",
     year: "numeric",
@@ -57,6 +59,65 @@ export default function ActivityHeatmap({ days }: ActivityHeatmapProps) {
     dateStr: string;
     valStr: string;
   }>({ visible: false, x: 0, y: 0, dateStr: "", valStr: "" });
+
+  const tooltipRaf = React.useRef<number | null>(null);
+  const tooltipPending = React.useRef<{
+    x: number;
+    y: number;
+    dateStr: string;
+    valStr: string;
+  } | null>(null);
+
+  const flushTooltip = React.useCallback(() => {
+    tooltipRaf.current = null;
+    const p = tooltipPending.current;
+    if (!p) return;
+    setTooltip((prev) => {
+      if (
+        prev.visible &&
+        prev.x === p.x &&
+        prev.y === p.y &&
+        prev.dateStr === p.dateStr &&
+        prev.valStr === p.valStr
+      ) {
+        return prev;
+      }
+      return { visible: true, ...p };
+    });
+  }, []);
+
+  const queueCellTooltip = React.useCallback(
+    (e: React.MouseEvent, dateStr: string, valStr: string) => {
+      tooltipPending.current = {
+        x: e.clientX + 14,
+        y: e.clientY - 40,
+        dateStr,
+        valStr,
+      };
+      if (tooltipRaf.current == null) {
+        tooltipRaf.current = requestAnimationFrame(flushTooltip);
+      }
+    },
+    [flushTooltip],
+  );
+
+  const hideTooltip = React.useCallback(() => {
+    tooltipPending.current = null;
+    if (tooltipRaf.current != null) {
+      cancelAnimationFrame(tooltipRaf.current);
+      tooltipRaf.current = null;
+    }
+    setTooltip((t) => ({ ...t, visible: false }));
+  }, []);
+
+  React.useEffect(
+    () => () => {
+      if (tooltipRaf.current != null) {
+        cancelAnimationFrame(tooltipRaf.current);
+      }
+    },
+    [],
+  );
 
   const { startDateUTC, lessonsByDate } = React.useMemo(() => {
     const endDateUTC = new Date();
@@ -85,7 +146,7 @@ export default function ActivityHeatmap({ days }: ActivityHeatmapProps) {
       const d = addDaysUTC(startDateUTC, c * 7);
       if (d.getUTCMonth() !== prevMonth) {
         labels.push(
-          d.toLocaleString("default", { month: "short", timeZone: "UTC" }),
+          d.toLocaleString("mn-MN", { month: "short", timeZone: "UTC" }),
         );
         prevMonth = d.getUTCMonth();
       } else {
@@ -118,7 +179,7 @@ export default function ActivityHeatmap({ days }: ActivityHeatmapProps) {
   }, [lessonsByDate, startDateUTC]);
 
   return (
-    <>
+    <div className="overflow-hidden rounded-3xl border border-[#ead9bb] bg-gradient-to-br from-white via-[#fffdfb] to-[#fff4e6] p-3 shadow-sm">
       <div className="hm-root">
         <div className="hm-grid-wrap">
           <div className="hm-grid-inner">
@@ -140,13 +201,15 @@ export default function ActivityHeatmap({ days }: ActivityHeatmapProps) {
             <div className="hm-rows">
               {grid.map((row, r) => (
                 <div className="hm-row" key={r}>
-                  <div className="row-label">{[0, 2, 4].includes(r) ? DAYS[r] : ""}</div>
+                  <div className="row-label">
+                    {[0, 2, 4].includes(r) ? ROW_LABELS[[0, 2, 4].indexOf(r)] : ""}
+                  </div>
                   {row.map((cell) => {
                     const dateStr = formatTooltipDateUTC(cell.date);
                     const valStr =
                       cell.value > 0
-                        ? `${cell.value} lesson${cell.value === 1 ? "" : "s"}`
-                        : "No activity";
+                        ? mnProfile.heatmapLessons(cell.value)
+                        : mnProfile.heatmapNoActivity;
 
                     return (
                       <div
@@ -157,17 +220,9 @@ export default function ActivityHeatmap({ days }: ActivityHeatmapProps) {
                           border: cell.level === 0 ? "0.5px solid #E8E5DC" : "none",
                         }}
                         onMouseMove={(e) => {
-                          setTooltip({
-                            visible: true,
-                            x: e.clientX + 14,
-                            y: e.clientY - 40,
-                            dateStr,
-                            valStr,
-                          });
+                          queueCellTooltip(e, dateStr, valStr);
                         }}
-                        onMouseLeave={() =>
-                          setTooltip((t) => ({ ...t, visible: false }))
-                        }
+                        onMouseLeave={hideTooltip}
                         role="img"
                         aria-label={`${dateStr}: ${valStr}`}
                       />
@@ -215,8 +270,8 @@ export default function ActivityHeatmap({ days }: ActivityHeatmapProps) {
         .hm-grid-inner {
           width: 100%;
           min-width: 0;
-          background: rgba(245, 243, 238, 0.7);
-          border: 1px solid rgba(0, 0, 0, 0.06);
+          background: rgba(255, 253, 248, 0.95);
+          border: 1px solid rgba(234, 217, 187, 0.55);
           border-radius: 12px;
           padding: 12px;
         }
@@ -252,6 +307,7 @@ export default function ActivityHeatmap({ days }: ActivityHeatmapProps) {
           display: flex;
           flex-direction: column;
           gap: 3px;
+          contain: content;
         }
 
         .hm-row {
@@ -271,15 +327,21 @@ export default function ActivityHeatmap({ days }: ActivityHeatmapProps) {
         .hm-cell {
           aspect-ratio: 1;
           border-radius: 3px;
-          cursor: pointer;
-          transition: transform 0.1s, outline 0.1s;
+          cursor: default;
           position: relative;
         }
 
-        .hm-cell:hover {
-          transform: scale(1.25);
-          z-index: 10;
-          outline: 2px solid var(--ma-amber);
+        @media (hover: hover) {
+          .hm-cell {
+            cursor: pointer;
+            transition: outline 0.1s ease;
+          }
+
+          .hm-cell:hover {
+            outline: 2px solid var(--ma-amber);
+            outline-offset: 1px;
+            z-index: 2;
+          }
         }
 
         .hm-tooltip {
@@ -307,6 +369,6 @@ export default function ActivityHeatmap({ days }: ActivityHeatmapProps) {
           font-size: 14px;
         }
       `}</style>
-    </>
+    </div>
   );
 }

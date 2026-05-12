@@ -1,6 +1,9 @@
 import { MainLayout } from "@/components/layout/MainLayout";
-import prisma from "@/lib/prisma";
-import { buildProfileUser } from "@/lib/server/build-profile-user";
+import {
+  buildProfileUserFromData,
+  fetchProfileDashboardData,
+} from "@/lib/server/build-profile-user";
+import { mnProfile } from "@/lib/i18n/mn-profile";
 import { getCurrentAppUser } from "@/lib/server/get-current-app-user";
 import { redirect } from "next/navigation";
 import LessonProgressCard from "../home/_components/LessonProgressCard";
@@ -36,40 +39,17 @@ export default async function ProfilePage({
   if (!appUser) {
     redirect("/sign-in");
   }
-  const [
-    completedLessons,
-    usersAbove,
-    totalLessonsCount,
-    inProgressLesson,
-    firstLesson,
-  ] = await Promise.all([
-    prisma.userLessonProgress.findMany({
-      where: { userId: appUser.id, status: "COMPLETED" },
-      select: { lessonId: true },
-      distinct: ["lessonId"],
-    }),
-    prisma.user.count({
-      where: { totalXp: { gt: appUser.totalXp } },
-    }),
-    prisma.lesson.count(),
-    prisma.userLessonProgress.findFirst({
-      where: { userId: appUser.id, status: "IN_PROGRESS" },
-      select: { lesson: { select: { id: true, title: true } } },
-    }),
-    prisma.lesson.findFirst({
-      orderBy: { order: "asc" },
-      select: { id: true, title: true },
-    }),
-  ]);
-  const leaguePosition = usersAbove + 1;
 
-  const profile = await buildProfileUser(appUser, leaguePosition);
+  const dashboard = await fetchProfileDashboardData(appUser.id, appUser.totalXp);
+  const profile = buildProfileUserFromData(appUser, dashboard);
   const currentUser: ProfileUser = { ...profile, activeTab };
-  const nextLesson = inProgressLesson?.lesson ?? firstLesson;
+
+  const nextLesson =
+    dashboard.inProgressLesson?.lesson ?? dashboard.firstLesson;
   const nextLessonHref = nextLesson
     ? `/lesson/${nextLesson.id}`
     : "/dictionary";
-  const nextLessonTitle = nextLesson?.title ?? "Explore Dictionary";
+  const nextLessonTitle = nextLesson?.title ?? mnProfile.exploreDictionary;
   const nearbyPlayers = currentUser.league.entries.slice(0, 5).map((entry) => ({
     id: `${entry.rank}-${entry.name}`,
     rank: entry.rank,
@@ -82,8 +62,8 @@ export default async function ProfilePage({
   const profileAside = (
     <>
       <LessonProgressCard
-        completedLessons={completedLessons.length}
-        totalLessons={totalLessonsCount}
+        completedLessons={currentUser.completedLessonsCount}
+        totalLessons={dashboard.totalLessonsCount}
         nextLessonHref={nextLessonHref}
         nextLessonTitle={nextLessonTitle}
       />
@@ -92,9 +72,9 @@ export default async function ProfilePage({
   );
 
   return (
-    <div className="min-h-screen bg-[#FFF8E7] pb-24 text-[#3b2f2f] md:pb-10">
+    <div className="profile-page-shell min-h-screen bg-[#FFF8E7] pb-24 text-[#3b2f2f] md:pb-10">
       <MainLayout aside={profileAside}>
-        <div className="flex flex-col gap-4 md:gap-5">
+        <div className="flex flex-col gap-5 md:gap-6">
           <ProfileHeroEditable
             name={currentUser.name}
             username={currentUser.username}

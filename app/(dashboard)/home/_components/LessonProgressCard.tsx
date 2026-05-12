@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { SidebarWidget } from "@/components/layout/SidebarWidget";
+import { mnProfile } from "@/lib/i18n/mn-profile";
 import { mnUi } from "@/lib/i18n/mn-ui";
 
 type LessonProgressCardProps = {
@@ -20,8 +21,8 @@ export default function LessonProgressCard({
 
   return (
     <SidebarWidget
-      title="Lesson Progress"
-      subtitle={`${completedLessons}/${totalLessons} lessons completed`}
+      title={mnProfile.lessonCardTitle}
+      subtitle={mnProfile.lessonCardSubtitle(completedLessons, totalLessons)}
     >
       <div className="space-y-4">
         <div className="h-2 rounded-full bg-[#E9E3D8]">
@@ -31,7 +32,8 @@ export default function LessonProgressCard({
           />
         </div>
         <p className="text-sm text-[#6F6658]">
-          Next lesson: <span className="font-bold text-[#1C2B4A]">{nextLessonTitle}</span>
+          {mnProfile.nextLesson}:{" "}
+          <span className="font-bold text-[#1C2B4A]">{nextLessonTitle}</span>
         </p>
         <Link
           href={nextLessonHref}
