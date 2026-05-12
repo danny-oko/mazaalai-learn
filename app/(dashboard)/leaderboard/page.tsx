@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import { MainLayout } from "@/components/layout/MainLayout";
+import { fetchLeaderboardTop100Cached } from "@/lib/server/leaderboard-data";
 import { getRankNameFromXp } from "@/lib/utils/getRankNameFromXp";
 import { auth } from "@clerk/nextjs/server"; // Import Clerk auth
 import WebLeaguePath from "./_components/LeagueProgression";
@@ -10,25 +11,25 @@ import WebPodiumSection from "./_components/WebPodiumSection";
 export default async function RankPage() {
   const { userId } = await auth();
 
-  const [dbUsers, currentUser] = await Promise.all([
-    prisma.user.findMany({
-      orderBy: { totalXp: "desc" },
-      select: {
-        id: true,
-        name: true,
-        userName: true,
-        totalXp: true,
-        avatarUrl: true,
-      },
-      take: 100,
-    }),
-    userId
-      ? prisma.user.findUnique({
+  /** Indexed ORDER BY + short cache — avoids full-table sort on every navigation. */
+  const dbUsers = await fetchLeaderboardTop100Cached();
+
+  let currentUser: { totalXp: number } | null = null;
+  if (userId) {
+    const inTop = dbUsers.find((u) => u.id === userId);
+    if (inTop) {
+      currentUser = { totalXp: inTop.totalXp };
+    } else {
+      try {
+        currentUser = await prisma.user.findUnique({
           where: { id: userId },
           select: { totalXp: true },
-        })
-      : null,
-  ]);
+        });
+      } catch {
+        currentUser = null;
+      }
+    }
+  }
 
   const allUsers = dbUsers.map((user, index) => ({
     id: user.id,

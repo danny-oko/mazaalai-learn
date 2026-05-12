@@ -18,9 +18,9 @@ export default function ProfileTabsSection({
   const [activeTab, setActiveTab] = useState<ProfileTab>(initialTab);
 
   return (
-    <>
+    <div className="flex flex-col gap-3">
       <ProfileTabs activeTab={activeTab} onTabChange={setActiveTab} />
       <ProfileTabContent activeTab={activeTab} currentUser={currentUser} />
-    </>
+    </div>
   );
 }

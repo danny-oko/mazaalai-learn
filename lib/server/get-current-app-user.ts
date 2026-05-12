@@ -1,4 +1,5 @@
 import { auth, currentUser } from "@clerk/nextjs/server";
+import type { Prisma } from "@prisma/client";
 
 import prisma from "@/lib/prisma";
 import {
@@ -21,7 +22,11 @@ export async function getCurrentAppUser() {
     return null;
   }
 
-  const clerkUser = await currentUser();
+  const [existing, clerkUser] = await Promise.all([
+    prisma.user.findUnique({ where: { id: userId } }),
+    currentUser(),
+  ]);
+
   const primaryEmail = clerkUser?.emailAddresses.find(
     (entry) => entry.id === clerkUser.primaryEmailAddressId,
   )?.emailAddress;
@@ -36,7 +41,6 @@ export async function getCurrentAppUser() {
     [clerkUser?.firstName, clerkUser?.lastName].filter(Boolean).join(" ").trim() ||
     username;
 
-  const existing = await prisma.user.findUnique({ where: { id: userId } });
   if (!existing) {
     return prisma.user.create({
       data: {
@@ -49,16 +53,27 @@ export async function getCurrentAppUser() {
     });
   }
 
-  // Don't overwrite user-edited profile fields on every request.
-  // Only fill missing values from Clerk, while keeping email in sync.
+  const data: Prisma.UserUpdateInput = {};
+  if (existing.email !== email) {
+    data.email = email;
+  }
+  if (!existing.userName && username) {
+    data.userName = username;
+  }
+  if (!existing.name && name) {
+    data.name = name;
+  }
+  if (!existing.avatarUrl && clerkUser?.imageUrl) {
+    data.avatarUrl = clerkUser.imageUrl;
+  }
+
+  if (Object.keys(data).length === 0) {
+    return existing;
+  }
+
   return prisma.user.update({
     where: { id: userId },
-    data: {
-      email,
-      ...(existing.userName ? {} : { userName: username }),
-      ...(existing.name ? {} : { name }),
-      ...(existing.avatarUrl ? {} : { avatarUrl: clerkUser?.imageUrl ?? undefined }),
-    },
+    data,
   });
 }
 

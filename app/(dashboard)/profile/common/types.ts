@@ -91,6 +91,8 @@ export type ProfileUser = {
   leaguePosition: number;
   streakCount: number;
   badgeCount: number;
+  /** Distinct lessons marked completed (sidebar + consistency). */
+  completedLessonsCount: number;
   activeTab: ProfileTab;
   weeklyStats: WeeklyStats;
   activityHeatmap: ActivityHeatmapDay[];

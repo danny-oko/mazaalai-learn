@@ -4,9 +4,11 @@ import type {
   ProfileBadge,
   ProfileUser,
 } from "@/app/(dashboard)/profile/common/types";
-import type { User } from "@prisma/client";
+import type { LessonStatus, User } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { getRankNameFromXp } from "@/lib/utils/getRankNameFromXp";
+
+import { mnProfile } from "@/lib/i18n/mn-profile";
 
 import { PROFILE_SETTING_ITEMS } from "./profile-settings";
 import {
@@ -17,11 +19,10 @@ import {
 
 const XP_PER_LEVEL = 300;
 const DAY_MS = 24 * 60 * 60 * 1000;
-const DOW_LETTERS = ["S", "M", "T", "W", "T", "F", "S"] as const;
 const HEATMAP_DAYS = 70;
 
 function formatMemberSince(date: Date): string {
-  return new Intl.DateTimeFormat("en", { month: "short", year: "numeric" }).format(date);
+  return new Intl.DateTimeFormat("mn-MN", { month: "short", year: "numeric" }).format(date);
 }
 
 function daysUntilNextMondayUtc(): number {
@@ -37,7 +38,7 @@ function buildLast7StreakDots(completionUtcMidnights: Set<number>) {
     const t = today - i * DAY_MS;
     const dow = new Date(t).getUTCDay();
     out.push({
-      label: DOW_LETTERS[dow],
+      label: mnProfile.dowUtc[dow],
       completed: completionUtcMidnights.has(t),
     });
   }
@@ -79,15 +80,16 @@ function buildActivityHeatmap(completedRows: { completedAt: Date | null }[]) {
 }
 
 function buildBadges(completedLessonCount: number, totalXp: number, currentStreak: number): ProfileBadge[] {
+  const { badges: b } = mnProfile;
   return [
-    { id: "b1", label: "First lesson", icon: "⭐", unlocked: completedLessonCount >= 1 },
-    { id: "b2", label: "5 lessons", icon: "📚", unlocked: completedLessonCount >= 5 },
-    { id: "b3", label: "10 lessons", icon: "🎯", unlocked: completedLessonCount >= 10 },
-    { id: "b4", label: "7-day streak", icon: "🔥", unlocked: currentStreak >= 7 },
-    { id: "b5", label: "100 XP", icon: "✨", unlocked: totalXp >= 100 },
-    { id: "b6", label: "500 XP", icon: "💫", unlocked: totalXp >= 500 },
-    { id: "b7", label: "1000 XP", icon: "🏆", unlocked: totalXp >= 1000 },
-    { id: "b8", label: "25 lessons", icon: "🐉", unlocked: completedLessonCount >= 25 },
+    { id: "b1", label: b.b1, icon: "⭐", unlocked: completedLessonCount >= 1 },
+    { id: "b2", label: b.b2, icon: "📚", unlocked: completedLessonCount >= 5 },
+    { id: "b3", label: b.b3, icon: "🎯", unlocked: completedLessonCount >= 10 },
+    { id: "b4", label: b.b4, icon: "🔥", unlocked: currentStreak >= 7 },
+    { id: "b5", label: b.b5, icon: "✨", unlocked: totalXp >= 100 },
+    { id: "b6", label: b.b6, icon: "💫", unlocked: totalXp >= 500 },
+    { id: "b7", label: b.b7, icon: "🏆", unlocked: totalXp >= 1000 },
+    { id: "b8", label: b.b8, icon: "🐉", unlocked: completedLessonCount >= 25 },
   ];
 }
 
@@ -100,12 +102,14 @@ function buildChallenges(args: {
   const xpTarget = 50;
   const pctLessons = Math.min(100, (args.lessonsDoneLast7Days / weeklyLessonTarget) * 100);
   const pctXp = Math.min(100, (args.xpThisWeek / xpTarget) * 100);
+  const ch = mnProfile.challenges;
+  const xpU = ch.xpUnit;
 
   return [
     {
       id: "c1",
-      title: "Lessons this week",
-      subtitle: "Rolling 7 days",
+      title: ch.c1Title,
+      subtitle: ch.c1Subtitle,
       progressText: `${Math.min(args.lessonsDoneLast7Days, weeklyLessonTarget)}/${weeklyLessonTarget}`,
       progressPercent: pctLessons,
       done: args.lessonsDoneLast7Days >= weeklyLessonTarget,
@@ -113,8 +117,8 @@ function buildChallenges(args: {
     },
     {
       id: "c2",
-      title: "Lesson today",
-      subtitle: "Complete any lesson (UTC day)",
+      title: ch.c2Title,
+      subtitle: ch.c2Subtitle,
       progressText: args.completedLessonToday ? "1/1" : "0/1",
       progressPercent: args.completedLessonToday ? 100 : 0,
       done: args.completedLessonToday,
@@ -122,9 +126,9 @@ function buildChallenges(args: {
     },
     {
       id: "c3",
-      title: "XP this week",
-      subtitle: "From finished lessons",
-      progressText: `${Math.min(args.xpThisWeek, xpTarget)}/${xpTarget} XP`,
+      title: ch.c3Title,
+      subtitle: ch.c3Subtitle,
+      progressText: `${Math.min(args.xpThisWeek, xpTarget)}/${xpTarget} ${xpU}`,
       progressPercent: pctXp,
       done: args.xpThisWeek >= xpTarget,
       xpReward: 25,
@@ -134,10 +138,10 @@ function buildChallenges(args: {
 
 function emptyJourney(): JourneyProgress {
   return {
-    moduleLabel: "Current module",
-    title: "No levels yet",
-    description: "Add sections and lessons in the database to see progress here.",
-    lessonProgressText: "0 / 0 lessons",
+    moduleLabel: mnProfile.journeyModuleLabel,
+    title: mnProfile.journeyEmptyTitle,
+    description: mnProfile.journeyEmptyDescription,
+    lessonProgressText: mnProfile.lessonsProgress(0, 0),
     completionPercent: 0,
     lessonsLeftText: "—",
     characterProgressText: "—",
@@ -145,33 +149,62 @@ function emptyJourney(): JourneyProgress {
   };
 }
 
-export async function buildProfileUser(
-  appUser: User,
-  leaguePosition: number,
-): Promise<ProfileUser> {
-  const userId = appUser.id;
+/** Narrow rows from Prisma — used by profile page + `buildProfileUserFromData`. */
+export type ProfileCompletedRow = { completedAt: Date; lessonId: string };
+export type ProfileProgressRow = { lessonId: string; status: LessonStatus };
+export type ProfileSectionRow = {
+  id: string;
+  title: string;
+  order: number;
+  lessons: { id: string; order: number }[];
+};
+
+/** Single round-trip payload for the profile route (aside + tabs). */
+export type ProfileDashboardData = {
+  completedRows: ProfileCompletedRow[];
+  allProgressRows: ProfileProgressRow[];
+  sections: ProfileSectionRow[];
+  leaguePeers: {
+    id: string;
+    name: string | null;
+    userName: string;
+    totalXp: number;
+  }[];
+  weeklyXpSum: number;
+  usersAbove: number;
+  totalLessonsCount: number;
+  inProgressLesson: { lesson: { id: string; title: string } } | null;
+  firstLesson: { id: string; title: string } | null;
+};
+
+/**
+ * All DB reads for `/profile` in one parallel batch (replaces two sequential batches).
+ */
+export async function fetchProfileDashboardData(
+  userId: string,
+  totalXp: number,
+): Promise<ProfileDashboardData> {
   const weekAgo = new Date();
   weekAgo.setTime(weekAgo.getTime() - 7 * DAY_MS);
 
   const [
-    completedRows,
+    completedRowsRaw,
     allProgressRows,
     sections,
     leaguePeers,
     weeklyAgg,
+    usersAbove,
+    totalLessonsCount,
+    inProgressLesson,
+    firstLesson,
   ] = await Promise.all([
     prisma.userLessonProgress.findMany({
       where: { userId, status: "COMPLETED", completedAt: { not: null } },
-      select: { completedAt: true, xpEarned: true, lessonId: true },
+      select: { completedAt: true, lessonId: true },
     }),
     prisma.userLessonProgress.findMany({
       where: { userId },
-      select: {
-        lessonId: true,
-        status: true,
-        xpEarned: true,
-        completedAt: true,
-      },
+      select: { lessonId: true, status: true },
     }),
     prisma.section.findMany({
       orderBy: { order: "asc" },
@@ -181,7 +214,7 @@ export async function buildProfileUser(
         order: true,
         lessons: {
           orderBy: { order: "asc" },
-          select: { id: true, title: true, order: true },
+          select: { id: true, order: true },
         },
       },
     }),
@@ -194,7 +227,47 @@ export async function buildProfileUser(
       where: { userId, completedAt: { gte: weekAgo } },
       _sum: { xpEarned: true },
     }),
+    prisma.user.count({
+      where: { totalXp: { gt: totalXp } },
+    }),
+    prisma.lesson.count(),
+    prisma.userLessonProgress.findFirst({
+      where: { userId, status: "IN_PROGRESS" },
+      select: { lesson: { select: { id: true, title: true } } },
+    }),
+    prisma.lesson.findFirst({
+      orderBy: { order: "asc" },
+      select: { id: true, title: true },
+    }),
   ]);
+
+  const completedRows: ProfileCompletedRow[] = completedRowsRaw
+    .filter((r): r is { lessonId: string; completedAt: Date } => r.completedAt != null)
+    .map((r) => ({ lessonId: r.lessonId, completedAt: r.completedAt }));
+
+  return {
+    completedRows,
+    allProgressRows,
+    sections,
+    leaguePeers,
+    weeklyXpSum: weeklyAgg._sum.xpEarned ?? 0,
+    usersAbove,
+    totalLessonsCount,
+    inProgressLesson,
+    firstLesson,
+  };
+}
+
+export function buildProfileUserFromData(
+  appUser: User,
+  data: ProfileDashboardData,
+): ProfileUser {
+  const userId = appUser.id;
+  const leaguePosition = data.usersAbove + 1;
+  const weekAgo = new Date();
+  weekAgo.setTime(weekAgo.getTime() - 7 * DAY_MS);
+
+  const { completedRows, allProgressRows, sections, leaguePeers } = data;
 
   const completionDates = completedRows
     .map((r) => r.completedAt)
@@ -212,7 +285,7 @@ export async function buildProfileUser(
   const streakDays = buildLast7StreakDots(completionMidnightSet);
   const activityHeatmap = buildActivityHeatmap(completedRows);
 
-  const xpThisWeek = weeklyAgg._sum.xpEarned ?? 0;
+  const xpThisWeek = data.weeklyXpSum;
   const lessonsDoneLast7Days = completedRows.filter(
     (r) => r.completedAt && r.completedAt >= weekAgo,
   ).length;
@@ -254,19 +327,23 @@ export async function buildProfileUser(
     const completionPercent = total ? Math.round((done / total) * 100) : 0;
 
     journey = {
-      moduleLabel: "Current module",
+      moduleLabel: mnProfile.journeyModuleLabel,
       title: currentSection.title,
-      description: `Your progress in ${currentSection.title}.`,
-      lessonProgressText: `${done} / ${total} lessons`,
+      description: mnProfile.journeyDescription(currentSection.title),
+      lessonProgressText: mnProfile.lessonsProgress(done, total),
       completionPercent,
       lessonsLeftText:
-        total - done > 0 ? `${total - done} lesson${total - done === 1 ? "" : "s"} left` : "Module complete",
+        total - done > 0
+          ? total - done === 1
+            ? mnProfile.lessonsLeftOne
+            : mnProfile.lessonsLeftMany(total - done)
+          : mnProfile.moduleComplete,
       characterProgressText:
         inProgress > 0
-          ? `${inProgress} in progress`
+          ? mnProfile.inProgressCount(inProgress)
           : done > 0
-            ? `${done} completed`
-            : "Not started",
+            ? mnProfile.completedCount(done)
+            : mnProfile.notStarted,
       practiceProgressText: "—",
     };
   }
@@ -319,16 +396,23 @@ export async function buildProfileUser(
     heartsRemaining: appUser.heartsRemaining,
     memberSince: formatMemberSince(appUser.createdAt),
     rankTitle,
-    language: "Mongolian",
-    streakLabel: `${currentStreak}-day streak`,
+    language: mnProfile.languageDisplay,
+    streakLabel: mnProfile.streakLabel(currentStreak),
     level,
-    levelTitle: `Level ${level} Learner`,
+    levelTitle: mnProfile.levelTitle(level),
     totalXp: appUser.totalXp,
-    levelProgressText: `${inLevelXp.toLocaleString()} / ${neededInLevel.toLocaleString()} XP`,
-    toNextLevelText: `${toNextLevel.toLocaleString()} XP to Level ${level + 1}`,
+    levelProgressText: mnProfile.levelProgressLine(
+      inLevelXp.toLocaleString(),
+      neededInLevel.toLocaleString(),
+    ),
+    toNextLevelText: mnProfile.toNextLevelLine(
+      toNextLevel.toLocaleString(),
+      level + 1,
+    ),
     leaguePosition,
     streakCount: currentStreak,
     badgeCount: badges.filter((b) => b.unlocked).length,
+    completedLessonsCount: completedLessonCount,
     activeTab: "overview",
     weeklyStats: {
       xpThisWeek,
@@ -351,8 +435,8 @@ export async function buildProfileUser(
     badges,
     settings: PROFILE_SETTING_ITEMS,
     league: {
-      name: `${rankTitle} league`,
-      resetInText: `${daysUntilNextMondayUtc()}d to reset`,
+      name: mnProfile.leagueName(rankTitle),
+      resetInText: mnProfile.leagueResetDays(daysUntilNextMondayUtc()),
       entries: leagueEntries,
     },
   };
