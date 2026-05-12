@@ -22,27 +22,6 @@ function LoadingSpinner() {
   );
 }
 
-function LoadingSpinner() {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24" className="h-4 w-4 shrink-0 animate-spin">
-      <circle
-        cx="12"
-        cy="12"
-        r="10"
-        className="opacity-25"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="4"
-      />
-      <path
-        className="opacity-90"
-        fill="currentColor"
-        d="M4 12a8 8 0 0 1 8-8v4a4 4 0 0 0-4 4H4Z"
-      />
-    </svg>
-  );
-}
-
 type SignUpStepActionsProps = {
   step: number;
   isLoaded: boolean;
