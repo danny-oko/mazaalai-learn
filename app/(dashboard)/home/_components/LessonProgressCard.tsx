@@ -26,15 +26,17 @@ export default function LessonProgressCard({
       subtitle={mnProfile.lessonCardSubtitle(completedLessons, totalLessons)}
     >
       <div className="space-y-4">
-        <div className="h-2 rounded-full bg-[#E9E3D8]">
+        <div className="h-2 rounded-full bg-[#E9E3D8] dark:bg-[#252f35]">
           <div
-            className="h-2 rounded-full bg-[#E8920A]"
+            className="h-2 rounded-full bg-[#E8920A] dark:bg-[#ffad33]"
             style={{ width: `${Math.max(0, Math.min(100, progress))}%` }}
           />
         </div>
-        <p className="text-sm text-[#6F6658]">
+        <p className="text-sm text-[#6F6658] dark:text-[#bdb5a6]">
           {mnProfile.nextLesson}:{" "}
-          <span className="font-bold text-[#1C2B4A]">{nextLessonTitle}</span>
+          <span className="font-bold text-[#1C2B4A] dark:text-[#cbd5e1]">
+            {nextLessonTitle}
+          </span>
         </p>
         <Link
           href={nextLessonHref}

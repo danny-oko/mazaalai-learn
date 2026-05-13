@@ -131,15 +131,15 @@
 
 @layer base {
   .dark body {
-    background: linear-gradient(to bottom, #131f24 0%, #131f24 100%);
+    background: linear-gradient(to bottom, #020617 0%, #0c2a36 100%);
     min-height: 100vh;
-    border-color: #0c192e;
+    border-color: #252f35;
   }
 
   html:not(.dark) body {
-    background-color: #fefae8;
+    background: linear-gradient(to bottom, #fef3c7 0%, #fffbeb 100%);
     min-height: 100vh;
-    border-color: #d6d4d4;
+    border-color: #e5e5e5;
   }
 }
 
@@ -179,8 +179,16 @@
   z-index: 0;
   pointer-events: none;
   background-image:
-    radial-gradient(ellipse 90% 55% at 15% 0%, rgb(232 146 10 / 0.08), transparent 45%),
-    radial-gradient(ellipse 70% 45% at 100% 100%, rgb(253 224 170 / 0.14), transparent 48%);
+    radial-gradient(
+      ellipse 90% 55% at 15% 0%,
+      rgb(232 146 10 / 0.08),
+      transparent 45%
+    ),
+    radial-gradient(
+      ellipse 70% 45% at 100% 100%,
+      rgb(253 224 170 / 0.14),
+      transparent 48%
+    );
 }
 
 .profile-page-shell > * {

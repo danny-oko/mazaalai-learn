@@ -158,18 +158,18 @@ export const LessonCards = ({
           showCloseButton
           className={cn(
             montserrat.className,
-            "max-h-[min(90vh,640px)] overflow-y-auto border-[#ead9bb] sm:max-w-lg",
+            "max-h-[min(90vh,640px)] overflow-y-auto sm:max-w-lg",
+            "bg-[#F0EDE3] border-[#ead9bb] dark:bg-[#1a2124] dark:border-[#252f35]",
           )}
-          style={{ backgroundColor: "#F0EDE3" }}
         >
           {selectedLesson ? (
             <>
               <DialogHeader>
-                <DialogTitle className="text-[#0F5238]">
+                <DialogTitle className="text-[#0F5238] dark:text-[#4ade80]">
                   {selectedLesson.title}
                 </DialogTitle>
                 {selectedLesson.description ? (
-                  <DialogDescription className="text-[#3b2f2f]/90">
+                  <DialogDescription className="text-[#3b2f2f]/90 dark:text-slate-400">
                     {selectedLesson.description}
                   </DialogDescription>
                 ) : (
@@ -193,7 +193,7 @@ export const LessonCards = ({
                     />
                   </div>
                 ) : (
-                  <div className="flex aspect-video w-full items-center justify-center rounded-lg border border-dashed border-[#BFC9C1] bg-[#ECE8D8] text-center text-sm font-medium text-[#7a5930]">
+                  <div className="flex aspect-video w-full items-center justify-center rounded-lg border border-dashed border-[#BFC9C1] bg-[#ECE8D8] text-center text-sm font-medium text-[#7a5930] dark:bg-[#252f35] dark:border-[#37464f] dark:text-slate-400">
                     No preview video available
                   </div>
                 )}
@@ -202,7 +202,7 @@ export const LessonCards = ({
               <DialogFooter className="mt-2">
                 <Button
                   type="button"
-                  className="h-11 w-full border-0 bg-[#58cc02] font-bold uppercase tracking-widest text-white hover:bg-[#58cc02]/90"
+                  className="h-11 w-full border-0 bg-[#58cc02] font-bold uppercase tracking-widest text-white hover:bg-[#58cc02]/90 dark:bg-[#ffad33] dark:text-[#131f24] dark:hover:bg-[#ffad33]/80"
                   onClick={() => {
                     navigateTo(`/lesson/${selectedLesson.id}`);
                     setSelectedLesson(null);
@@ -246,46 +246,48 @@ export const LessonCards = ({
               onClick={() => {
                 if (!isLocked) setSelectedLesson(l);
               }}
-              className={`relative flex items-center justify-center rounded-full transition-all duration-300 ${isActive && !isLocked ? "hover:-translate-y-1 active:translate-y-0 active:brightness-90" : ""}`}
               style={{
                 width: isActive ? 80 : 72,
                 height: isActive ? 60 : 52,
-                background: isLocked
-                  ? "#E8E5DC"
-                  : isDone
-                    ? "#2C6601"
-                    : "#58cc02",
-                border: isLocked ? "2px dashed #BFC9C1" : "none",
-                boxShadow: isDone
-                  ? "0 5px 0 #000000"
-                  : isActive
-                    ? "0 5px 0px rgba(0, 118, 255, 0.39)"
-                    : "none",
-                cursor: isLocked ? "not-allowed" : "pointer",
-                transform: isActive ? "scale(1.05)" : "scale(1)",
               }}
+              className={cn(
+                "relative flex items-center justify-center rounded-full transition-all duration-300",
+                isActive && !isLocked
+                  ? "hover:-translate-y-1 active:translate-y-0 active:brightness-90 scale-105"
+                  : "scale-100",
+                isLocked
+                  ? "cursor-not-allowed border-2 border-dashed border-[#BFC9C1] bg-[#E8E5DC] dark:border-[#252f35] dark:bg-[#1a2124]"
+                  : isDone
+                    ? "cursor-pointer border-none bg-[#2C6601] shadow-[0_5px_0_#000000] dark:bg-[#132a24] dark:shadow-[0_5px_0_#09120f]"
+                    : "cursor-pointer border-none bg-[#58cc02] shadow-[0_5px_0_rgba(0,118,255,0.39)] dark:bg-[#ffad33] dark:shadow-[0_5px_0_#cc8a29]",
+              )}
             >
               <Icon
                 size={isLocked ? 24 : isDone ? 28 : 40}
-                color={isLocked ? "#BFC9C1" : "#fff"}
                 strokeWidth={2}
-                fill={isLocked ? "#BFC9C1" : isDone ? "" : "#fff"}
+                className={cn(
+                  isLocked
+                    ? "text-[#BFC9C1] dark:text-[#52606b]"
+                    : "text-white dark:text-[#131f24]",
+                  isDone ? "fill-transparent" : "fill-current",
+                )}
               />
             </button>
 
             {isActive && (
-              <div
-                className="mt-3 mx-auto max-w-[min(85vw,11rem)] rounded-2xl px-4 py-1.5 text-center text-[13px] font-bold uppercase leading-snug tracking-widest text-white wrap-break-word sm:max-w-none sm:whitespace-nowrap sm:rounded-full sm:px-5"
-                style={{ background: "#58cc02" }}
-              >
+              <div className="mt-3 mx-auto max-w-[min(85vw,11rem)] rounded-2xl bg-[#58cc02] dark:bg-[#ffad33] px-4 py-1.5 text-center text-[13px] font-bold uppercase leading-snug tracking-widest text-white dark:text-[#131f24] wrap-break-word sm:max-w-none sm:whitespace-nowrap sm:rounded-full sm:px-5">
                 {l.title}
               </div>
             )}
 
             {!isActive && (
               <p
-                className="mt-2 mx-auto max-w-[min(85vw,11rem)] rounded-2xl bg-[#ECE8D8] px-3 py-1.5 text-center text-[13px] font-bold leading-snug wrap-break-word sm:max-w-none sm:whitespace-nowrap"
-                style={{ color: isLocked ? "#BFC9C1" : "#0F5238" }}
+                className={cn(
+                  "mt-2 mx-auto max-w-[min(85vw,11rem)] rounded-2xl bg-[#ECE8D8] dark:bg-[#252f35] px-3 py-1.5 text-center text-[13px] font-bold leading-snug wrap-break-word sm:max-w-none sm:whitespace-nowrap",
+                  isLocked
+                    ? "text-[#BFC9C1] dark:text-[#52606b]"
+                    : "text-[#0F5238] dark:text-[#4ade80]",
+                )}
               >
                 {l.title}
               </p>

@@ -49,7 +49,7 @@ export const SideBar = ({ menuLabels, menuPaths }: HeaderClientProps) => {
               ${
                 isActive
                   ? "bg-[#84d8ff]/15 text-[#1cb0f6] border-[#84d8ff]"
-                  : "text-[#777777] border-transparent"
+                  : "text-[#777777] border-transparent dark:text-[#94a3b8]"
               }`}
             >
               <NavMenuIcon
