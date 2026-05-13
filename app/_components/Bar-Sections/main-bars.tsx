@@ -2,20 +2,20 @@ import { DockBar } from "./dock-bar";
 import { SideBar } from "./side-bar";
 
 export const menuLabels = [
-  "Map",
-  "Dictionary",
-  "Reading",
-  "Leaderboard",
-  "Profile",
+  "Нүүр Хуудас",
+  "Цагаан Толгой",
+  "Уншлага",
+  "Онооны Самбар",
+  "Профайл",
 ] as const;
 export type MenuLabel = (typeof menuLabels)[number];
 
 export const menuPaths: Record<MenuLabel, string> = {
-  Map: "/home",
-  Dictionary: "/dictionary",
-  Reading: "/reading",
-  Leaderboard: "/leaderboard",
-  Profile: "/profile",
+  "Нүүр Хуудас": "/home",
+  "Цагаан Толгой": "/dictionary",
+  Уншлага: "/reading",
+  "Онооны Самбар": "/leaderboard",
+  Профайл: "/profile",
 };
 
 export const BarSections = () => {
