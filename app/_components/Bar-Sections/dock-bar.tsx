@@ -2,15 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import type { MenuLabel } from "./main-bars";
-
-const menuIcons: Record<MenuLabel, string> = {
-  Map: "https://d35aaqx5ub95lt.cloudfront.net/vendor/784035717e2ff1d448c0f6cc4efc89fb.svg",
-  Dictionary:
-    "https://d35aaqx5ub95lt.cloudfront.net/vendor/80a60f598d6a6b0493aeb4d7b93fc0e3.svg",
-  Leaderboard:
-    "https://d35aaqx5ub95lt.cloudfront.net/vendor/ca9178510134b4b0893dbac30b6670aa.svg",
-  Profile: "./chicken.png",
-};
+import { NavMenuIcon } from "./nav-menu-icon";
 
 type DockBarProps = {
   menuLabels: readonly MenuLabel[];
@@ -47,12 +39,11 @@ export const DockBar = ({ menuLabels, menuPaths }: DockBarProps) => {
                     : "text-[#777777] hover:bg-[#F2EEDD] border-transparent"
                 }`}
             >
-              <img
-                src={menuIcons[label]}
-                alt={label}
+              <NavMenuIcon
+                label={label}
                 width={30}
                 height={30}
-                className={`transition-all duration-200`}
+                className="h-[30px] w-[30px] transition-all duration-200"
               />
             </button>
           );
