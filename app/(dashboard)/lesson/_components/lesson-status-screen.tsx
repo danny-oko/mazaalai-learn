@@ -24,11 +24,11 @@ export function LessonStatusScreen({
 }: Props) {
   return (
     <div
-      className={`flex items-center justify-center min-h-screen font-['Plus_Jakarta_Sans'] ${montserrat.className}`}
+      className={`flex items-center justify-center min-h-screen ${montserrat.className}`}
     >
       <div className="flex-col w-full max-w-sm text-center flex justify-center items-center">
         <div
-          className={`text-lg font-black text-black ${animated ? "animate-pulse" : ""}`}
+          className={`text-lg font-black ${animated ? "animate-pulse" : ""}`}
         >
           <div className="w-[120px] sm:w-[180px] md:w-[200px] lg:w-[220px] xl:w-[300px] aspect-square transition-all duration-300">
             <LoadingScreen />
