@@ -16,13 +16,35 @@ const statAccent: Record<string, string> = {
   badges: "from-[#f5e6c8] to-[#c9a227]",
 };
 
-export default function ProfileSummaryStats({ user }: ProfileSummaryStatsProps) {
+export default function ProfileSummaryStats({
+  user,
+}: ProfileSummaryStatsProps) {
   const stats = [
-    { id: "xp", label: mnProfile.summaryTotalXp, value: user.totalXp.toLocaleString() },
-    { id: "league", label: mnProfile.summaryLeague, value: `#${user.leaguePosition}` },
-    { id: "hearts", label: mnProfile.summaryHearts, value: user.heartsRemaining.toString() },
-    { id: "streak", label: mnProfile.summaryStreak, value: user.streakCount.toString() },
-    { id: "badges", label: mnProfile.summaryBadges, value: user.badgeCount.toString() },
+    {
+      id: "xp",
+      label: mnProfile.summaryTotalXp,
+      value: user.totalXp.toLocaleString(),
+    },
+    {
+      id: "league",
+      label: mnProfile.summaryLeague,
+      value: `#${user.leaguePosition}`,
+    },
+    {
+      id: "hearts",
+      label: mnProfile.summaryHearts,
+      value: user.heartsRemaining.toString(),
+    },
+    {
+      id: "streak",
+      label: mnProfile.summaryStreak,
+      value: user.streakCount.toString(),
+    },
+    {
+      id: "badges",
+      label: mnProfile.summaryBadges,
+      value: user.badgeCount.toString(),
+    },
   ];
 
   const iconFor = (id: string) => {
@@ -33,7 +55,13 @@ export default function ProfileSummaryStats({ user }: ProfileSummaryStatsProps) 
       case "league":
         return <Trophy className={`${className} text-[#1C2B4A]`} aria-hidden />;
       case "hearts":
-        return <Heart className={`${className} text-[#c45a2c]`} fill="currentColor" aria-hidden />;
+        return (
+          <Heart
+            className={`${className} text-[#c45a2c]`}
+            fill="currentColor"
+            aria-hidden
+          />
+        );
       case "streak":
         return null;
       case "badges":

@@ -16,7 +16,10 @@ const tabs: Array<{ id: ProfileTab; label: string }> = [
   { id: "settings", label: mnProfile.tabSettings },
 ];
 
-export default function ProfileTabs({ activeTab, onTabChange }: ProfileTabsProps) {
+export default function ProfileTabs({
+  activeTab,
+  onTabChange,
+}: ProfileTabsProps) {
   return (
     <nav
       className="flex w-full max-w-full flex-nowrap gap-1 overflow-x-auto rounded-2xl border border-[#ead9bb]/90 bg-gradient-to-r from-[#faf3e6] to-[#f5ecda] p-1.5 [-ms-overflow-style:none] [scrollbar-width:none] md:inline-flex md:w-auto [&::-webkit-scrollbar]:hidden"

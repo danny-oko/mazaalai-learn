@@ -3,6 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import type { MenuLabel } from "./main-bars";
 import { NavMenuIcon } from "./nav-menu-icon";
+import { useNavLoading } from "../nav-loading-context";
 
 type DockBarProps = {
   menuLabels: readonly MenuLabel[];
@@ -19,10 +20,10 @@ export const DockBar = ({ menuLabels, menuPaths }: DockBarProps) => {
 
   return (
     <nav
-      className="fixed bottom-0 z-50 w-full md:hidden border-t-2 border-[#d6d4d4]"
+      className="fixed bottom-0 z-50 w-full md:hidden border-t-2"
       aria-label="Mobile navigation"
     >
-      <div className="flex items-center justify-around gap-1 bg-[#FEFAE8] p-3 shadow-xl backdrop-blur-md">
+      <div className="flex items-center justify-around gap-1 p-3 shadow-xl backdrop-blur-md">
         {menuLabels.map((label) => {
           const isActive = active === label;
 
@@ -43,7 +44,7 @@ export const DockBar = ({ menuLabels, menuPaths }: DockBarProps) => {
                 label={label}
                 width={30}
                 height={30}
-                className="h-[30px] w-[30px] transition-all duration-200"
+                className={`transition-all duration-200`}
               />
             </button>
           );

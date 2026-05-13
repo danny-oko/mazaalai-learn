@@ -26,6 +26,8 @@ export function AppearanceToggle() {
     localStorage.setItem(STORAGE_KEY, next ? "1" : "0");
   };
 
+  // {experience.currentXp.toLocaleString()}
+  // mnProfile.experienceLevel(experience.currentLevel)}
   return (
     <section
       id="appearance"
@@ -35,7 +37,12 @@ export function AppearanceToggle() {
         {mnProfile.appearanceTitle}
       </h2>
       <p className="mb-4 text-sm text-[#706552]">{mnProfile.appearanceBody}</p>
-      <Button type="button" variant="outline" onClick={toggle} className="rounded-2xl border-[#E8920A]/40 font-bold">
+      <Button
+        type="button"
+        variant="outline"
+        onClick={toggle}
+        className="rounded-2xl border-[#E8920A]/40 font-bold"
+      >
         {dark ? mnUi.switchToLight : mnUi.switchToDark}
       </Button>
     </section>

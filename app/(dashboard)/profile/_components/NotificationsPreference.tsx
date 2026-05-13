@@ -30,7 +30,9 @@ export function NotificationsPreference() {
       <h2 className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-[#8a806f]">
         {mnProfile.notificationsTitle}
       </h2>
-      <p className="mb-4 text-sm text-[#706552]">{mnProfile.notificationsBody}</p>
+      <p className="mb-4 text-sm text-[#706552]">
+        {mnProfile.notificationsBody}
+      </p>
       <button
         type="button"
         onClick={toggle}
@@ -39,7 +41,9 @@ export function NotificationsPreference() {
         <span>{mnProfile.notificationsDaily}</span>
         <span
           className={`rounded-full px-3 py-1 text-xs font-bold ${
-            enabled ? "bg-emerald-100 text-emerald-800" : "bg-neutral-200 text-neutral-600"
+            enabled
+              ? "bg-emerald-100 text-emerald-800"
+              : "bg-neutral-200 text-neutral-600"
           }`}
         >
           {enabled ? mnProfile.notificationsOn : mnProfile.notificationsOff}

@@ -30,9 +30,9 @@ export default function LeaguePanel({ league }: LeaguePanelProps) {
               <p className="font-semibold text-[#27221d]">
                 {entry.name}
                 {entry.isCurrentUser ? (
-                    <span className="ml-1 rounded-full bg-[#e9a732] px-1.5 py-0.5 text-[10px] font-bold text-white">
-                      {mnProfile.leagueYou}
-                    </span>
+                  <span className="ml-1 rounded-full bg-[#e9a732] px-1.5 py-0.5 text-[10px] font-bold text-white">
+                    {mnProfile.leagueYou}
+                  </span>
                 ) : null}
               </p>
             </div>

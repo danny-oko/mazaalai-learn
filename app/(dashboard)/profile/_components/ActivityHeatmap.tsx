@@ -121,8 +121,9 @@ export default function ActivityHeatmap({ days }: ActivityHeatmapProps) {
       maxValue = Math.max(maxValue, v);
     }
 
-    const rows: Array<Array<{ date: Date; dateKey: string; value: number; level: number }>> =
-      Array.from({ length: ROWS }, () => []);
+    const rows: Array<
+      Array<{ date: Date; dateKey: string; value: number; level: number }>
+    > = Array.from({ length: ROWS }, () => []);
 
     for (let r = 0; r < ROWS; r += 1) {
       for (let c = 0; c < COLS; c += 1) {
@@ -160,7 +161,9 @@ export default function ActivityHeatmap({ days }: ActivityHeatmapProps) {
               {grid.map((row, r) => (
                 <div className="hm-row" key={r}>
                   <div className="row-label">
-                    {[0, 2, 4].includes(r) ? ROW_LABELS[[0, 2, 4].indexOf(r)] : ""}
+                    {[0, 2, 4].includes(r)
+                      ? ROW_LABELS[[0, 2, 4].indexOf(r)]
+                      : ""}
                   </div>
                   {row.map((cell) => {
                     const dateStr = formatTooltipDateUTC(cell.date);
@@ -175,7 +178,8 @@ export default function ActivityHeatmap({ days }: ActivityHeatmapProps) {
                         className="hm-cell"
                         style={{
                           background: COLORS[cell.level],
-                          border: cell.level === 0 ? "0.5px solid #E8E5DC" : "none",
+                          border:
+                            cell.level === 0 ? "0.5px solid #E8E5DC" : "none",
                         }}
                         onMouseEnter={(e) => {
                           showCellTooltip(e, dateStr, valStr);
@@ -285,7 +289,18 @@ export default function ActivityHeatmap({ days }: ActivityHeatmapProps) {
         .hm-cell {
           aspect-ratio: 1;
           border-radius: 3px;
+<<<<<<< HEAD
           cursor: default;
+=======
+          cursor: pointer;
+<<<<<<< HEAD
+          transition:
+            transform 0.1s,
+            outline 0.1s;
+>>>>>>> 589fb68 (Theme & Loading Screen)
+=======
+          transition: transform 0.1s, outline 0.1s;
+>>>>>>> cd84c80 (Revert "Theme & Loading Screen")
           position: relative;
         }
 

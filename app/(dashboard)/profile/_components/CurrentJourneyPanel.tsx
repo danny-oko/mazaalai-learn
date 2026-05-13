@@ -6,7 +6,9 @@ type CurrentJourneyPanelProps = {
   journey: JourneyProgress;
 };
 
-export default function CurrentJourneyPanel({ journey }: CurrentJourneyPanelProps) {
+export default function CurrentJourneyPanel({
+  journey,
+}: CurrentJourneyPanelProps) {
   return (
     <section className="rounded-3xl border border-[#ead9bb] bg-gradient-to-br from-white via-[#fffefb] to-[#fff2dc] p-4 shadow-sm md:p-5">
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">

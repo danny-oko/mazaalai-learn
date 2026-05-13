@@ -17,7 +17,8 @@ export default function LessonProgressCard({
   nextLessonHref,
   nextLessonTitle,
 }: LessonProgressCardProps) {
-  const progress = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
+  const progress =
+    totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
 
   return (
     <SidebarWidget
