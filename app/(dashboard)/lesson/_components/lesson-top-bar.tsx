@@ -1,5 +1,5 @@
-import Image from "next/image";
 import { X } from "lucide-react";
+import Image from "next/image";
 
 interface LessonTopBarProps {
   progress: number;
@@ -17,12 +17,12 @@ export function LessonTopBar({ progress, hearts, onBack }: LessonTopBarProps) {
         >
           <X className="w-6 h-6" strokeWidth={2.5} />
         </button>
-        <div className="flex-1 h-4 rounded-full overflow-hidden bg-[#ECE8D8]">
+        <div className="flex-1 h-4 rounded-full overflow-hidden bg-[#E9E3D8] dark:bg-[#252f35]">
           <div
             className="h-full rounded-full transition-all duration-700"
             style={{
               width: `${Math.max(progress, 2)}%`,
-              background: "#E8930A",
+              background: "#E8920A",
             }}
           />
         </div>
