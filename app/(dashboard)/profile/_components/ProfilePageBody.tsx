@@ -17,32 +17,43 @@ type ProfilePageBodyProps = {
   activeTab: ProfileTab;
 };
 
-export default async function ProfilePageBody({ activeTab }: ProfilePageBodyProps) {
+export default async function ProfilePageBody({
+  activeTab,
+}: ProfilePageBodyProps) {
   const appUser = await getCurrentAppUser();
   if (!appUser) {
     redirect("/sign-in");
   }
 
-  const dashboard = await fetchProfileDashboardData(appUser.id, appUser.totalXp);
+  const dashboard = await fetchProfileDashboardData(
+    appUser.id,
+    appUser.totalXp,
+  );
   const profile = buildProfileUserFromData(appUser, dashboard);
   const currentUser: ProfileUser = { ...profile, activeTab };
 
   const nextLesson =
     dashboard.inProgressLesson?.lesson ?? dashboard.firstLesson;
-  const nextLessonHref = nextLesson ? `/lesson/${nextLesson.id}` : "/dictionary";
+  const nextLessonHref = nextLesson
+    ? `/lesson/${nextLesson.id}`
+    : "/dictionary";
   const nextLessonTitle = nextLesson?.title ?? mnProfile.exploreDictionary;
-  const nearbyPlayers = currentUser.league.entries.slice(0, 5).map((entry) => ({
-    id: `${entry.rank}-${entry.name}`,
-    rank: entry.rank,
-    name: entry.name,
-    xp: entry.xp,
-    xpChange: 0,
-    avatarUrl: null,
-    isMe: Boolean(entry.isCurrentUser),
-  }));
+
+  // Энд (entry: any) гэж нэмсэн нь улаан зураасыг арилгаж, өгөгдлийг чөлөөтэй авах боломж олгоно
+  const nearbyPlayers = currentUser.league.entries
+    .slice(0, 5)
+    .map((entry: any) => ({
+      id: `${entry.rank}-${entry.name}`,
+      rank: entry.rank,
+      name: entry.name,
+      xp: entry.xp,
+      xpChange: entry.xpChange || 0,
+      avatarUrl: entry.avatarUrl || null,
+      isMe: Boolean(entry.isCurrentUser),
+    }));
 
   const profileAside = (
-    <>
+    <div className="flex flex-col gap-y-4">
       <LessonProgressCard
         completedLessons={currentUser.completedLessonsCount}
         totalLessons={dashboard.totalLessonsCount}
@@ -50,26 +61,25 @@ export default async function ProfilePageBody({ activeTab }: ProfilePageBodyProp
         nextLessonTitle={nextLessonTitle}
       />
       <WebNearbyPlayers players={nearbyPlayers} />
-    </>
+    </div>
   );
 
   return (
-    <div className="profile-page-shell min-h-screen bg-[#FFF8E7] pb-24 text-[#3b2f2f] md:pb-10">
-      <MainLayout aside={profileAside}>
-        <div className="flex flex-col gap-5 md:gap-6">
-          <ProfileHero
-            name={currentUser.name}
-            username={currentUser.username}
-            memberSince={currentUser.memberSince}
-            avatarUrl={currentUser.avatarUrl}
-            avatarInitial={currentUser.avatarInitial}
-            rankTitle={currentUser.rankTitle}
-            language={currentUser.language}
-          />
-          <ProfileSummaryStats user={currentUser} />
-          <ProfileTabsSection initialTab={activeTab} currentUser={currentUser} />
-        </div>
-      </MainLayout>
-    </div>
+    <MainLayout aside={profileAside}>
+      {/* w-full нэмж, агуулгыг баруун талын багана руу шахахаас сэргийлэв */}
+      <div className="flex flex-col gap-y-6 w-full max-w-4xl">
+        <ProfileHero
+          name={currentUser.name}
+          username={currentUser.username}
+          memberSince={currentUser.memberSince}
+          avatarUrl={currentUser.avatarUrl}
+          avatarInitial={currentUser.avatarInitial}
+          rankTitle={currentUser.rankTitle}
+          language={currentUser.language}
+        />
+        <ProfileSummaryStats user={currentUser} />
+        <ProfileTabsSection initialTab={activeTab} currentUser={currentUser} />
+      </div>
+    </MainLayout>
   );
 }
