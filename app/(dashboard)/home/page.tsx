@@ -29,11 +29,15 @@ export default async function HomeSection() {
   }[] = [];
 
   if (userId) {
-    // Keep this local and fast: if user row exists this is a cheap upsert path.
-    // Clerk profile syncing is handled elsewhere (webhook/profile flows).
     const ensuredUser = await ensureUser({ id: userId });
 
-    const [completedLessons, totalLessons, inProgressLesson, firstLesson, topPlayers] = await Promise.all([
+    const [
+      completedLessons,
+      totalLessons,
+      inProgressLesson,
+      firstLesson,
+      topPlayers,
+    ] = await Promise.all([
       prisma.userLessonProgress.findMany({
         where: { userId, status: "COMPLETED", completedAt: { not: null } },
         select: { completedAt: true, lessonId: true },
@@ -62,7 +66,9 @@ export default async function HomeSection() {
 
     xp = ensuredUser.totalXp ?? 0;
     heartsRemaining = ensuredUser.heartsRemaining ?? 5;
-    completedLessonsCount = new Set(completedLessons.map((item) => item.lessonId)).size;
+    completedLessonsCount = new Set(
+      completedLessons.map((item) => item.lessonId),
+    ).size;
     totalLessonsCount = totalLessons;
     const nextLesson = inProgressLesson?.lesson ?? firstLesson;
     if (nextLesson) {

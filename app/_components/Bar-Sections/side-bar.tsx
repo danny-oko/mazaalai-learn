@@ -2,15 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import type { MenuLabel } from "./main-bars";
-
-const menuIcons: Record<MenuLabel, string> = {
-  Map: "https://d35aaqx5ub95lt.cloudfront.net/vendor/784035717e2ff1d448c0f6cc4efc89fb.svg",
-  Dictionary:
-    "https://d35aaqx5ub95lt.cloudfront.net/vendor/80a60f598d6a6b0493aeb4d7b93fc0e3.svg",
-  Leaderboard:
-    "https://d35aaqx5ub95lt.cloudfront.net/vendor/ca9178510134b4b0893dbac30b6670aa.svg",
-  Profile: "./chicken.png",
-};
+import { NavMenuIcon } from "./nav-menu-icon";
 
 type HeaderClientProps = {
   menuLabels: readonly MenuLabel[];
@@ -63,12 +55,11 @@ export const SideBar = ({ menuLabels, menuPaths }: HeaderClientProps) => {
                   : "text-[#777777] hover:bg-[#F2EEDD] border-transparent"
               }`}
             >
-              <img
-                src={menuIcons[label]}
-                alt={label}
+              <NavMenuIcon
+                label={label}
                 width={35}
                 height={35}
-                className="h-7 w-7 object-contain transition-all duration-200 md:h-8 md:w-8 lg:h-9 lg:w-9"
+                className="h-7 w-7 transition-all duration-200 md:h-8 md:w-8 lg:h-9 lg:w-9"
               />
               <div className="md:hidden lg:block uppercase text-[14px] font-extrabold tracking-wider">
                 {label}

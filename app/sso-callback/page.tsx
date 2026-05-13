@@ -6,10 +6,6 @@ import { mnUi } from "@/lib/i18n/mn-ui";
 
 const HOME = "/home";
 
-/**
- * Clerk OAuth / SSO return URL. Must match `redirectUrl` in
- * `signIn.authenticateWithRedirect` on the sign-in page.
- */
 export default function SsoCallbackPage() {
   return (
     <AuthShell>
