@@ -42,9 +42,9 @@ export const DockBar = ({ menuLabels, menuPaths }: DockBarProps) => {
             >
               <NavMenuIcon
                 label={label}
-                width={30}
-                height={30}
-                className={`transition-all duration-200`}
+                width={32}
+                height={32}
+                className="size-8 shrink-0 object-contain transition-all duration-200"
               />
             </button>
           );
