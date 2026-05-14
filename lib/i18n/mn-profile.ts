@@ -82,6 +82,21 @@ export const mnProfile = {
   streakFreezeCta: (left: number) => `Ирц хөлдөөх (${left} үлдсэн)`,
 
   heatmapRowLabels: ["Да", "Лх", "Ба"] as const,
+  /** UTC month headers — avoid `toLocaleString("mn-MN")` (Node vs browser ICU differs → hydration errors). */
+  heatmapMonthShortUtc: [
+    "1-р сар",
+    "2-р сар",
+    "3-р сар",
+    "4-р сар",
+    "5-р сар",
+    "6-р сар",
+    "7-р сар",
+    "8-р сар",
+    "9-р сар",
+    "10-р сар",
+    "11-р сар",
+    "12-р сар",
+  ] as const,
   heatmapNoActivity: "Идэвхигүй",
   heatmapLessons: (n: number) => (n === 1 ? "1 хичээл" : `${n} хичээл`),
 
