@@ -64,7 +64,8 @@ export const POST = async (req: NextRequest) => {
       headers: {
         "Content-Type": "application/octet-stream",
         Punctuate: "true",
-        Token: "86d6ceb9ca4d406247fbb4f14d5c2b443e27d8686ab8a776583ab83867e928ad",
+        Token:
+          "e0fb355ff1a60db2b4e1e2ebacb960fe4368ebbc76a75c9ca96d5ff03089bd59",
       },
       body: file,
       signal: controller.signal,
