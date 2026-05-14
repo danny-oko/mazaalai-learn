@@ -69,7 +69,7 @@ export const Header = ({
               streak={streak}
               streakWeekDays={streakWeekDays ?? buildLast7StreakDots(new Set())}
             />
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-3">
               <img
                 src="https://d35aaqx5ub95lt.cloudfront.net/images/goals/2b5a211d830a24fab92e291d50f65d1d.svg"
                 alt="XP Icon"
