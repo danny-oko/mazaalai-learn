@@ -56,6 +56,7 @@ model LessonContent {
   lessonId     String
   name         String
   text         String
+  unicode      String?
   imageUrl     String?
   order        Int
   animationCss String?
