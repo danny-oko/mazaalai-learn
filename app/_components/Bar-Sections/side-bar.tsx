@@ -20,14 +20,14 @@ export const SideBar = ({ menuLabels, menuPaths }: HeaderClientProps) => {
 
   return (
     <aside
-      className="hidden h-full flex-col border-r-2 py-5 md:flex md:w-20 md:px-2 lg:w-[300px] lg:px-3 shrink-0"
+      className="hidden h-full shrink-0 flex-col border-r-2 py-5 md:flex md:w-20 md:px-2 lg:w-[360px] lg:px-3"
       aria-label="Main navigation"
     >
-      <div className="flex h-[60px] items-center justify-center px-2 lg:justify-start lg:px-5">
+      <div className="flex min-h-[72px] items-center justify-center px-2 pb-1 pt-2 lg:justify-start lg:px-5">
         <img
           src="/logo.png"
           alt="Mazaalai Learn"
-          className="block h-8 w-auto object-contain md:h-9"
+          className="block h-10 w-auto max-w-[min(100%,220px)] object-contain drop-shadow-[0_1px_2px_rgba(59,47,47,0.08)] md:h-11 lg:h-[3.25rem] lg:max-w-[280px]"
         />
       </div>
 
@@ -39,7 +39,7 @@ export const SideBar = ({ menuLabels, menuPaths }: HeaderClientProps) => {
               key={label}
               type="button"
               onClick={() => navigateTo(menuPaths[label])}
-              className={`flex w-full items-center justify-start rounded-xl py-2 text-[16px] md:px-0 lg:justify-start lg:gap-5 lg:px-4
+              className={`flex w-full items-center justify-start rounded-xl py-2.5 text-[16px] md:justify-center md:px-0 lg:min-h-[52px] lg:justify-start lg:gap-4 lg:px-3
               transition-all duration-150 font-balsamiq border-2
               ${
                 isActive
@@ -49,11 +49,11 @@ export const SideBar = ({ menuLabels, menuPaths }: HeaderClientProps) => {
             >
               <NavMenuIcon
                 label={label}
-                width={35}
-                height={35}
-                className="h-7 w-7 transition-all duration-200 md:h-8 md:w-8 lg:h-9 lg:w-9"
+                width={40}
+                height={40}
+                className="size-8 shrink-0 object-contain transition-all duration-200 md:size-9 lg:size-10"
               />
-              <div className="md:hidden lg:block uppercase text-[14px] font-extrabold tracking-wider">
+              <div className="hidden min-w-0 flex-1 text-left uppercase text-[14px] font-extrabold leading-none tracking-wide lg:block whitespace-nowrap">
                 {label}
               </div>
             </button>

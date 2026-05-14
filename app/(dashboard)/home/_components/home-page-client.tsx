@@ -1,13 +1,7 @@
 // HomePath.tsx
 "use client";
 
-import { Montserrat } from "next/font/google";
 import { useEffect, useMemo, useRef, useState } from "react";
-const montserrat = Montserrat({
-  subsets: ["latin", "cyrillic"],
-  weight: ["400", "500", "600", "700"],
-});
-
 import Mascot from "./home-animation";
 import {
   getLessonBaseY,
@@ -157,9 +151,7 @@ export const HomePath = () => {
   }, [lessons, sections]);
 
   return (
-    <div
-      className={`flex w-full flex-col items-center px-3 py-8 sm:px-4 sm:py-10 md:px-6 ${montserrat.className}`}
-    >
+    <div className="flex w-full flex-col items-center px-3 py-8 sm:px-4 sm:py-10 md:px-6">
       {activeSection ? (
         <div ref={dividerRef} className="sticky top-3 z-40 mb-8 w-full">
           <HomeSectionDivider
