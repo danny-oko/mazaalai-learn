@@ -1,17 +1,18 @@
+import { Suspense } from "react";
+
 import { MainLayout } from "@/components/layout/MainLayout";
-import {
-  buildProfileUserFromData,
-  fetchProfileDashboardData,
-} from "@/lib/server/build-profile-user";
-import { mnProfile } from "@/lib/i18n/mn-profile";
 import { getCurrentAppUser } from "@/lib/server/get-current-app-user";
 import { redirect } from "next/navigation";
-import LessonProgressCard from "../../home/_components/LessonProgressCard";
-import WebNearbyPlayers from "../../leaderboard/_components/SocialPeersList";
-import ProfileHero from "./ProfileHero";
-import ProfileSummaryStats from "./ProfileSummaryStats";
-import ProfileTabsSection from "./ProfileTabsSection";
-import type { ProfileTab, ProfileUser } from "../common/types";
+
+import type { ProfileTab } from "../common/types";
+import ProfileAsideLessonProgressWrapper from "./ProfileAsideLessonProgressWrapper";
+import ProfileAsideNearbyPlayersWrapper from "./ProfileAsideNearbyPlayersWrapper";
+import {
+  ProfileLessonProgressCardSkeleton,
+  ProfileNearbyPlayersSkeleton,
+} from "./ProfileAsideSkeletons";
+import ProfileMainColumn from "./ProfileMainColumn";
+import ProfileMainColumnSkeleton from "./ProfileMainColumnSkeleton";
 
 type ProfilePageBodyProps = {
   activeTab: ProfileTab;
@@ -81,5 +82,30 @@ export default async function ProfilePageBody({
         <ProfileTabsSection initialTab={activeTab} currentUser={currentUser} />
       </div>
     </MainLayout>
+  const displayName = appUser.name ?? appUser.userName;
+
+  const profileAside = (
+    <>
+      <Suspense fallback={<ProfileLessonProgressCardSkeleton />}>
+        <ProfileAsideLessonProgressWrapper userId={appUser.id} />
+      </Suspense>
+      <Suspense fallback={<ProfileNearbyPlayersSkeleton />}>
+        <ProfileAsideNearbyPlayersWrapper
+          userId={appUser.id}
+          totalXp={appUser.totalXp}
+          displayName={displayName}
+        />
+      </Suspense>
+    </>
+  );
+
+  return (
+    <div className="profile-page-shell min-h-screen overflow-x-hidden bg-transparent pb-24 text-[#3b2f2f] md:pb-10 dark:text-[#d8d2c4]">
+      <MainLayout aside={profileAside}>
+        <Suspense fallback={<ProfileMainColumnSkeleton />}>
+          <ProfileMainColumn activeTab={activeTab} appUser={appUser} />
+        </Suspense>
+      </MainLayout>
+    </div>
   );
 }

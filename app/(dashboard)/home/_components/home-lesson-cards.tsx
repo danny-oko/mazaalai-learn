@@ -1,9 +1,9 @@
 "use client";
 
+import { useNavLoading } from "@/app/_components/nav-loading-context";
 import { Check, Lock, Star } from "lucide-react";
 import { Montserrat } from "next/font/google";
 import { useEffect, useState } from "react";
-import { useNavLoading } from "@/app/_components/nav-loading-context";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -202,7 +202,7 @@ export const LessonCards = ({
               <DialogFooter className="mt-2">
                 <Button
                   type="button"
-                  className="h-11 w-full border-0 bg-[#58cc02] font-bold uppercase tracking-widest text-white hover:bg-[#58cc02]/90 dark:bg-[#ffad33] dark:text-[#131f24] dark:hover:bg-[#ffad33]/80"
+                  className="h-11 w-full border-0 dark:bg-[#58cc02] font-bold uppercase tracking-widest text-white dark:hover:bg-[#58cc02]/90 bg-[#ffad33] dark:text-[#131f24] hover:bg-[#ffad33]/80"
                   onClick={() => {
                     navigateTo(`/lesson/${selectedLesson.id}`);
                     setSelectedLesson(null);
@@ -259,7 +259,7 @@ export const LessonCards = ({
                   ? "cursor-not-allowed border-2 border-dashed border-[#BFC9C1] bg-[#E8E5DC] dark:border-[#252f35] dark:bg-[#1a2124]"
                   : isDone
                     ? "cursor-pointer border-none bg-[#2C6601] shadow-[0_5px_0_#000000] dark:bg-[#132a24] dark:shadow-[0_5px_0_#09120f]"
-                    : "cursor-pointer border-none bg-[#58cc02] shadow-[0_5px_0_rgba(0,118,255,0.39)] dark:bg-[#ffad33] dark:shadow-[0_5px_0_#cc8a29]",
+                    : "cursor-pointer border-none dark:bg-[#58cc02] dark:shadow-[0_5px_0_rgba(0,118,255,0.39)] bg-[#ffad33] shadow-[0_5px_0_#cc8a29]",
               )}
             >
               <Icon
@@ -267,7 +267,7 @@ export const LessonCards = ({
                 strokeWidth={2}
                 className={cn(
                   isLocked
-                    ? "text-[#BFC9C1] dark:text-[#52606b]"
+                    ? "dark:text-[#BFC9C1] text-[#52606b]"
                     : "text-white dark:text-[#131f24]",
                   isDone ? "fill-transparent" : "fill-current",
                 )}
@@ -275,7 +275,7 @@ export const LessonCards = ({
             </button>
 
             {isActive && (
-              <div className="mt-3 mx-auto max-w-[min(85vw,11rem)] rounded-2xl bg-[#58cc02] dark:bg-[#ffad33] px-4 py-1.5 text-center text-[13px] font-bold uppercase leading-snug tracking-widest text-white dark:text-[#131f24] wrap-break-word sm:max-w-none sm:whitespace-nowrap sm:rounded-full sm:px-5">
+              <div className="mt-3 mx-auto max-w-[min(85vw,11rem)] rounded-2xl dark:bg-[#58cc02] bg-[#ffad33] px-4 py-1.5 text-center text-[13px] font-bold uppercase leading-snug tracking-widest text-white dark:text-[#131f24] wrap-break-word sm:max-w-none sm:whitespace-nowrap sm:rounded-full sm:px-5">
                 {l.title}
               </div>
             )}
@@ -283,7 +283,7 @@ export const LessonCards = ({
             {!isActive && (
               <p
                 className={cn(
-                  "mt-2 mx-auto max-w-[min(85vw,11rem)] rounded-2xl bg-[#ECE8D8] dark:bg-[#252f35] px-3 py-1.5 text-center text-[13px] font-bold leading-snug wrap-break-word sm:max-w-none sm:whitespace-nowrap",
+                  "mt-2 mx-auto max-w-[min(85vw,11rem)] rounded-2xl dark:bg-[#ECE8D8] bg-[#252f35] px-3 py-1.5 text-center text-[13px] font-bold leading-snug wrap-break-word sm:max-w-none sm:whitespace-nowrap",
                   isLocked
                     ? "text-[#BFC9C1] dark:text-[#52606b]"
                     : "text-[#0F5238] dark:text-[#4ade80]",

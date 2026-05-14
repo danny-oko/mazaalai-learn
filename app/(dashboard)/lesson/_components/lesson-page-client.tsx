@@ -1,18 +1,18 @@
 "use client";
 
+import { mnUi } from "@/lib/i18n/mn-ui";
 import "@fontsource/plus-jakarta-sans";
+import { Montserrat } from "next/font/google";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { LessonCheckButton } from "./lesson-check-button";
+import { LessonChoiceGrid } from "./lesson-choice-grid";
 import { LessonContentCard } from "./lesson-content-card";
-import { LessonTaskCard } from "./lesson-task-card";
+import { LessonReviewScreen } from "./lesson-review-screen";
 import { LessonStatusScreen } from "./lesson-status-screen";
+import { LessonTaskCard } from "./lesson-task-card";
 import { LessonTopBar } from "./lesson-top-bar";
 import { useLessonGame } from "./use-lesson-game";
-import { LessonReviewScreen } from "./lesson-review-screen";
-import { LessonChoiceGrid } from "./lesson-choice-grid";
-import { mnUi } from "@/lib/i18n/mn-ui";
-import { Montserrat } from "next/font/google";
 
 const montserrat = Montserrat({
   subsets: ["latin", "cyrillic"],
@@ -72,7 +72,7 @@ export function LessonPageClient({
   if (reviewStats)
     return <LessonReviewScreen stats={reviewStats} onContinue={goHome} />;
   if (phase === "teaching" && !currentContent)
-    return <LessonStatusScreen message="No content found." />;
+    return <LessonStatusScreen message="Хичээл байхгүй байна." />;
   if (phase === "tasks" && !currentTask)
     return <LessonStatusScreen message="No tasks found." />;
 

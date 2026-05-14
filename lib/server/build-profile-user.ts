@@ -183,9 +183,6 @@ export type ProfileDashboardData = {
   }[];
   weeklyXpSum: number;
   usersAbove: number;
-  totalLessonsCount: number;
-  inProgressLesson: { lesson: { id: string; title: string } } | null;
-  firstLesson: { id: string; title: string } | null;
 };
 
 export async function fetchProfileDashboardData(
@@ -206,9 +203,6 @@ export async function fetchProfileDashboardData(
     leaguePeers,
     weeklyAgg,
     usersAbove,
-    totalLessonsCount,
-    inProgressLesson,
-    firstLesson,
   ] = await Promise.all([
     prisma.userLessonProgress.findMany({
       where: {
@@ -252,15 +246,6 @@ export async function fetchProfileDashboardData(
     prisma.user.count({
       where: { totalXp: { gt: totalXp } },
     }),
-    prisma.lesson.count(),
-    prisma.userLessonProgress.findFirst({
-      where: { userId, status: "IN_PROGRESS" },
-      select: { lesson: { select: { id: true, title: true } } },
-    }),
-    prisma.lesson.findFirst({
-      orderBy: { order: "asc" },
-      select: { id: true, title: true },
-    }),
   ]);
 
   const completedRows: ProfileCompletedRow[] = completedRowsRaw
@@ -277,9 +262,6 @@ export async function fetchProfileDashboardData(
     leaguePeers,
     weeklyXpSum: weeklyAgg._sum.xpEarned ?? 0,
     usersAbove,
-    totalLessonsCount,
-    inProgressLesson,
-    firstLesson,
   };
 }
 
