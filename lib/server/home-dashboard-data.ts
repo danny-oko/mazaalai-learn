@@ -6,15 +6,18 @@ import { calculateDailyStreak, toUtcDateOnly } from "@/lib/server/daily-streak";
 import { ensureUser } from "@/lib/server/ensure-user";
 
 export const loadHomeProgressSidebar = cache(async (userId: string) => {
+  /** Run before parallel reads: `ensureUser` uses DB writes + retries; bundling it in
+   *  `Promise.all` with many siblings can exhaust the pool and hit "Unable to start a
+   *  transaction in the given time" (interactive transaction wait). */
+  const ensuredUser = await ensureUser({ id: userId });
+
   const [
-    ensuredUser,
     completionRows,
     distinctLessons,
     totalLessons,
     inProgressLesson,
     firstLesson,
   ] = await Promise.all([
-    ensureUser({ id: userId }),
     prisma.userLessonProgress.findMany({
       where: { userId, status: "COMPLETED", completedAt: { not: null } },
       select: { completedAt: true },
