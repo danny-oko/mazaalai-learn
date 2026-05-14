@@ -4,6 +4,7 @@ import { unstable_cache } from "next/cache";
 import { calculateReadingResult } from "@/app/(dashboard)/reading/lib/calculateReadingScore";
 import prisma from "@/lib/prisma";
 import { CACHE_REVALIDATE_SECONDS } from "@/lib/server/cache";
+import { CACHE_TAG_SPEECH, cacheTagUser } from "@/lib/server/cache-tags";
 
 const RETRYABLE_TRANSACTION_CODES = new Set(["P2002", "P2034"]);
 
@@ -298,6 +299,10 @@ async function getReadingCardsForUserUncached({
 }
 
 export function getReadingCardsForUser(input: GetReadingCardsForUserInput) {
+  const tags = [
+    CACHE_TAG_SPEECH,
+    ...(input.userId ? [cacheTagUser(input.userId)] : []),
+  ];
   return unstable_cache(
     async () => getReadingCardsForUserUncached(input),
     [
@@ -307,6 +312,6 @@ export function getReadingCardsForUser(input: GetReadingCardsForUserInput) {
       input.lessonId ?? "",
       input.search ?? "",
     ],
-    { revalidate: CACHE_REVALIDATE_SECONDS },
+    { revalidate: CACHE_REVALIDATE_SECONDS, tags },
   )();
 }

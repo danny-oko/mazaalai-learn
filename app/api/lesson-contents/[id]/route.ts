@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 
 import prisma from "@/lib/prisma";
 import { CACHE_REVALIDATE_SECONDS } from "@/lib/server/cache";
+import { CACHE_TAG_CATALOG } from "@/lib/server/cache-tags";
+import { invalidateAfterCatalogMutation } from "@/lib/server/invalidate-data-cache";
 
 export const GET = async (
   _: NextRequest,
@@ -12,7 +14,7 @@ export const GET = async (
   const content = await unstable_cache(
     async () => prisma.lessonContent.findUnique({ where: { id } }),
     ["api-lesson-contents-id-get", id],
-    { revalidate: CACHE_REVALIDATE_SECONDS },
+    { revalidate: CACHE_REVALIDATE_SECONDS, tags: [CACHE_TAG_CATALOG] },
   )();
   if (!content)
     return NextResponse.json({ message: "Not found" }, { status: 404 });
@@ -38,6 +40,7 @@ export const PATCH = async (
       ...(body.order !== undefined && { order: parseInt(body.order) }),
     },
   });
+  invalidateAfterCatalogMutation();
   return NextResponse.json(content);
 };
 
@@ -47,5 +50,6 @@ export const DELETE = async (
 ) => {
   const { id } = await params;
   await prisma.lessonContent.delete({ where: { id } });
+  invalidateAfterCatalogMutation();
   return NextResponse.json({ message: "Deleted" });
 };
