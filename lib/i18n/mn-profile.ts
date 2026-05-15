@@ -54,26 +54,25 @@ export const mnProfile = {
   notificationsOn: "Асаалттай",
   notificationsOff: "Унтраалттай",
 
-  helpTitle: "Яагаад Мазаалай гэж?",
+  helpTitle: "Яагаад Mazaalai-Learn гэж?",
   helpAppIntro:
     "Mazaalai Learn нь монгол бичгийн үсгийг, video хичээл тоглоомжуулсан контентоор дамжуулан суралцах платформ.\n\nДоорх хэсгүүдээс багийн мэдээлэл, төсөл эхэлсэн шалтгаан болон ашиглагдсан технологийн талаар харж болно.",
   helpAccordionTeamTitle: "Mazaalai learn team",
   helpAccordionWhyTitle: "Яагаад? — Үндсэн шалтгаан",
   helpAccordionChallengesTitle: "Хэрхэн шийдвэрлэсэн бэ?",
-  helpChallengesWinBadge: "Амжилт!",
+  helpChallengesWinBadge: "",
   helpChallengesBullets: [
-    "🧱 Эхний долоо хоног: Brain storming , Төлөвлөгөө",
-    "🪄 2дахь 7 хоног : Төлөвлөгөө, Task хуваарьлалт. Гүйцэтгэл болон харилцаан дээр жижиг асуудлууд гарсан.",
-    "🧪 3дахь 7 хоног : Stand-in уулзалтуудаа идэвхтэй хийж эхэлсэн. Task хуваарилалт ойлгомжтой асуудлаа үр бүтээлтэй шийдэж эхэлсэн.",
-    "🎉 4 дэх 7хоног: Wrapping up . Everyone's focused determined .... :D",
+    "● Тодорхойгүй байдлууд: Санал асуулга болон олонхын саналыг тусгах, Brain storming, Төлөвлөгөө",
+    "● Баг дундах мэдээллийн хоцрогдол: Өдөр болгон Stand Meeting хийсэн",
+    // "● ",
+    // "● 4 дэх 7хоног: Wrapping up . Everyone's focused determined .... :D",
   ] as const,
   helpAccordionTechTitle: "Tech stack",
-  helpTechStackIntro:
-    "Next.js App Router, Tailwind CSS дээр суурилсан — доорх нь ашигласан гол технологиуд (жагсаалт өргөжих боломжтой).",
+  // helpTechStackIntro: "Next.js App Router, Tailwind CSS дээр суурилсан",
   helpTechGroupEngine: "Engine",
   helpTechGroupAi: "AI & Logic",
-  helpTechGroupManagement: "Management",
-  helpTeamNoContribution: "Одоогоор тодорхой хэсэг заагаагүй байна.",
+  helpTechGroupManagement: "Management & Designing",
+  // helpTeamNoContribution: "Одоогоор тодорхой хэсэг заагаагүй байна.",
   helpRootCauseLead: "",
   helpRootCauseParagraphs: [
     "Монгол Улс 2025 оноос хос бичигтэн болох зорилт тавьж, хуулиараа дэмжигдэн хэрэгжиж эхэлсэн ч сургалтын чанар жигд бус, хэрэглээ бага хэвээр. Тиймээс одоог хүртэл сурагчид болон насанд хүрэгчдийн дийлэнх нь монгол бичгээр чөлөөтэй уншиж бичиж сураагүй.",
@@ -176,5 +175,8 @@ export const mnProfile = {
   settingAppearanceLabel: "Харагдах байдал",
   settingAppearanceDesc: "Загвар, үсгийн хэмжээ, харанхуй горим",
   settingNotificationsLabel: "Мэдэгдэл",
-  settingNotificationsDesc: "Cануулах цаг",
+  settingNotificationsDesc: "Сануулах цаг",
+
+  settingFaqLabel: "Mazaalai-learn гэж? / FAQ",
+  settingFaqDesc: "Баг, төслийн шалтгаан, шийдэл, ашигласан технологийн талаар",
 } as const;

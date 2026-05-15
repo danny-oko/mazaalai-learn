@@ -55,6 +55,7 @@ export default function ProfileTabContent({
 
   return (
     <div className="flex min-h-[200px] w-full flex-col gap-6">
+      <SettingsPanel settings={currentUser.settings} />
       <ProfileAccountForm
         initialName={currentUser.name}
         initialUserName={currentUser.username}
@@ -63,7 +64,6 @@ export default function ProfileTabContent({
       <AppearanceToggle />
       <NotificationsPreference />
       <ProfileHelpSection />
-      <SettingsPanel settings={currentUser.settings} />
     </div>
   );
 }

@@ -19,7 +19,7 @@ const accordionShell =
 export function ProfileHelpSection() {
   return (
     <section
-      id="help"
+      id="faq"
       className="scroll-mt-24 rounded-2xl border-3 border-[#E8920A] bg-transparent p-4 shadow-[0_8px_24px_rgba(232,146,10,0.08)] md:p-5 dark:border-[#84d8ff]/40 dark:shadow-[0_8px_24px_rgba(132,216,255,0.12)]"
     >
       <h2 className="mb-1 text-xs font-bold uppercase tracking-[0.2em] text-[#8a806f] dark:text-[#9ba3a7]">

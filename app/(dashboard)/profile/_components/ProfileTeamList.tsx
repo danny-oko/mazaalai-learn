@@ -9,10 +9,7 @@ import {
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
 import { mnProfile } from "@/lib/i18n/mn-profile";
-import {
-  PROJECT_TEAM_MEMBERS,
-  TEAM_FOCUS_LABELS,
-} from "@/lib/project-team";
+import { PROJECT_TEAM_MEMBERS, TEAM_FOCUS_LABELS } from "@/lib/project-team";
 
 export function ProfileTeamList() {
   return (
@@ -41,7 +38,7 @@ export function ProfileTeamList() {
                 </p>
               ) : (
                 <p className="w-full text-left text-xs italic text-[#8a806f] dark:text-[#9ba3a7]">
-                  {mnProfile.helpTeamNoContribution}
+                  {/* {mnProfile.helpTeamNoContribution} */}
                 </p>
               )}
             </HoverCardTrigger>
