@@ -289,8 +289,8 @@ export function LessonChoiceGrid({
                         state === "correct" && "bg-emerald-600",
                         state === "dismissed" &&
                           "bg-muted text-muted-foreground",
-                        state === "active" && "bg-[#523403]",
-                        state === "default" && "bg-[#E8920A]",
+                        state === "active" && "bg-[#523403] dark:bg-[#84d8ff]",
+                        state === "default" && "bg-[#E8920A] dark:bg-[#84d8ff]",
                       )}
                     >
                       {index + 1}
@@ -327,7 +327,7 @@ export function LessonChoiceGrid({
                     state === "dismissed" &&
                       "translate-y-px cursor-default opacity-40 shadow-none",
                     state === "active" &&
-                      "border-[#523403] text-[#523403] shadow-none",
+                      "border-[#523403]  text-[#523403] shadow-none",
                     state === "default" && "border-[#E8920A]",
                   )}
                 >
@@ -335,13 +335,13 @@ export function LessonChoiceGrid({
                     <span
                       className={cn(
                         buttonVariants({ variant: "default", size: "icon-xs" }),
-                        "shrink-0 rounded-full text-xs font-black text-primary-foreground",
+                        "shrink-0 rounded-full text-xs font-black text-primary-foreground ",
                         state === "wrong" && "bg-destructive",
                         state === "correct" && "bg-emerald-600",
                         state === "dismissed" &&
                           "bg-muted text-muted-foreground",
-                        state === "active" && "bg-[#523403]",
-                        state === "default" && "bg-[#E8920A]",
+                        state === "active" && "bg-[#523403] dark:bg-[#84d8ff]",
+                        state === "default" && "bg-[#E8920A] dark:bg-[#84d8ff]",
                       )}
                     >
                       {badge}

@@ -306,7 +306,7 @@ export const LessonCards = ({
                 isLocked
                   ? "cursor-not-allowed border-2 border-[#BFC9C1] bg-[#E8E5DC] shadow-[0_5px_0_#b0b8b2] dark:border-[#3f4a52] dark:bg-[#1a2124] dark:shadow-[0_5px_0_#0d1215]"
                   : isDone
-                    ? "cursor-pointer border-solid border-[#1a4d0f] bg-[#2C6601] shadow-[0_5px_0_#0f3d00] dark:border-[#1e5240] dark:bg-[#1a3d2e] dark:shadow-[0_5px_0_#09120f]"
+                    ? "cursor-pointer border-solid border-[#cc8a29]/50 bg-[#ffad33]/50 shadow-[0_5px_0_#cc8a29]/50 dark:border-[#1e5240]/50 dark:bg-[#1a3d2e]/50 dark:shadow-[0_5px_0_#0a1a14]/50"
                     : "cursor-pointer border-solid border-[#cc8a29] bg-[#ffad33] shadow-[0_5px_0_#cc8a29] dark:border-[#3d9e02] dark:bg-[#58cc02] dark:shadow-[0_5px_0_rgba(0,118,255,0.39)]",
               )}
             >
@@ -316,7 +316,9 @@ export const LessonCards = ({
                 className={cn(
                   isLocked
                     ? "dark:text-[#BFC9C1] text-[#52606b]"
-                    : "text-white dark:text-[#131f24]",
+                    : isDone
+                      ? ""
+                      : "text-white dark:text-[#131f24]",
                   isDone ? "fill-transparent" : "",
                 )}
               />
@@ -334,7 +336,7 @@ export const LessonCards = ({
                   "mt-2 mx-auto max-w-[min(85vw,11rem)] rounded-2xl border-2 px-3 py-1.5 text-center text-[13px] font-bold leading-snug wrap-break-word sm:max-w-none sm:whitespace-nowrap",
                   isLocked
                     ? "border-2 border-[#BFC9C1] bg-[#E8E5DC] text-[#64748b] dark:border-[#3f4a52] dark:bg-[#1a2124] dark:text-[#94a3b8]"
-                    : "border-solid border-[#1a4d0f]/50 bg-[#e2f4e6] text-[#0F5238] dark:border-[#236341] dark:bg-[#132a24] dark:text-[#86efac]",
+                    : "border-solid border-[#ffad33]/50 bg-[#ffad33]/50 text-[#031b2e] dark:border-[#236341] dark:bg-[#132a24] dark:text-[#86efac]",
                 )}
               >
                 {l.title}
