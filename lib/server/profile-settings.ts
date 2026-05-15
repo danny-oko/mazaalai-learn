@@ -20,4 +20,10 @@ export const PROFILE_SETTING_ITEMS: ProfileSettingItem[] = [
     description: mnProfile.settingNotificationsDesc,
     icon: "🔔",
   },
+  {
+    id: "faq",
+    label: mnProfile.settingFaqLabel,
+    description: mnProfile.settingFaqDesc,
+    icon: "❓",
+  },
 ];

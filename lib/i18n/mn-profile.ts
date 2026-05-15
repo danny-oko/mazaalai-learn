@@ -54,13 +54,12 @@ export const mnProfile = {
   notificationsOn: "Асаалттай",
   notificationsOff: "Унтраалттай",
 
-  helpTitle: "Яагаад Мазаалай гэж?",
+  helpTitle: "Яагаад Mazaalai-Learn гэж?",
   helpAppIntro:
     "Mazaalai Learn нь монгол бичгийн үсгийг, video хичээл тоглоомжуулсан контентоор дамжуулан суралцах платформ.\n\nДоорх хэсгүүдээс багийн мэдээлэл, төсөл эхэлсэн шалтгаан болон ашиглагдсан технологийн талаар харж болно.",
-  helpAccordionTeamTitle: "Team Bichigten",
+  helpAccordionTeamTitle: "Mazaalai learn team",
   helpAccordionWhyTitle: "Яагаад? — Үндсэн шалтгаан",
-  helpAccordionChallengesTitle:
-    "Бид баг доторх асуудлуудаа хэрхэн шийдвэрлэсэн бэ?",
+  helpAccordionChallengesTitle: "Хэрхэн шийдвэрлэсэн бэ?",
   helpChallengesWinBadge: "",
   helpChallengesBullets: [
     "● Тодорхойгүй байдлууд: Санал асуулга болон олонхын саналыг тусгах, Brain storming, Төлөвлөгөө",
@@ -176,5 +175,8 @@ export const mnProfile = {
   settingAppearanceLabel: "Харагдах байдал",
   settingAppearanceDesc: "Загвар, үсгийн хэмжээ, харанхуй горим",
   settingNotificationsLabel: "Мэдэгдэл",
-  settingNotificationsDesc: "Cануулах цаг",
+  settingNotificationsDesc: "Сануулах цаг",
+
+  settingFaqLabel: "Mazaalai-learn гэж? / FAQ",
+  settingFaqDesc: "Баг, төслийн шалтгаан, шийдэл, ашигласан технологийн талаар",
 } as const;

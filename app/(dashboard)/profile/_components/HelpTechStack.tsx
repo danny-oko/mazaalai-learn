@@ -14,7 +14,7 @@ export function HelpTechStack() {
   return (
     <div className="min-w-0 space-y-5">
       <p className="text-xs leading-relaxed text-[#706552] dark:text-[#b8b0a4]">
-        {mnProfile.helpTechStackIntro}
+        {/* {mnProfile.helpTechStackIntro} */}
       </p>
       {TECH_STACK_GROUPS.map((group) => (
         <div key={group.id} className="min-w-0">
