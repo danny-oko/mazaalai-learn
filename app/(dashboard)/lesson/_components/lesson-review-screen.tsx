@@ -1,6 +1,6 @@
 "use client";
 
-import { Heart, Star, Target, Timer } from "lucide-react";
+import { Star, Target } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -69,8 +69,7 @@ export function LessonReviewScreen({
         <div
           className={cn(
             "relative w-full overflow-hidden rounded-3xl border-[3px] border-[#E8920A] ",
-            "shadow-[0_20px_50px_rgba(122,89,48,0.12)]",
-            "dark:border-[#84d8ff]/35  dark:shadow-[0_24px_60px_rgba(0,0,0,0.35)]",
+            "dark:border-[#84d8ff]/35  ",
           )}
         >
           <div
@@ -85,9 +84,6 @@ export function LessonReviewScreen({
           <div className="relative flex flex-col items-center gap-8 px-6 py-10 sm:gap-10 sm:px-10 sm:py-12">
             <div className="flex flex-col items-center gap-4 text-center">
               <div className="space-y-2">
-                <p className="font-balsamiq text-xs font-black uppercase tracking-[0.2em] text-[#b0892c] dark:text-[#94a3b8]">
-                  Хичээл дууссан
-                </p>
                 <h1 className="font-balsamiq text-3xl font-black leading-tight text-[#2a2319] dark:text-[#fef3c7] sm:text-4xl">
                   {tierLabel}
                 </h1>
@@ -132,8 +128,6 @@ export function LessonReviewScreen({
                 </p>
               </div>
             </div>
-
-            
 
             <Button
               type="button"
